@@ -1,5 +1,6 @@
 package de.froznmine.cannonfight;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,10 +10,14 @@ import de.froznmine.lobby.LobbySystem;
 
 public class CannonFight extends JavaPlugin {
 	public static Logger LOGGER;
+	public static CannonFight PLUGIN;
 	
 	public void onEnable() { 
+		PLUGIN = this;
 		LOGGER = this.getLogger();
-		 
+		
+		if (!new File(this.getDataFolder() + "config.yml").exists()) this.saveDefaultConfig();
+		
 		registerSerializables();
 		loadConfig();
 		loadArenas();
