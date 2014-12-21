@@ -1,4 +1,4 @@
-package de.froznmine.cannonfight.game;
+package de.froznmine.cannonfight.game.cannons;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,5 +25,13 @@ public class Cannon implements ConfigurationSerializable, Cloneable {
 	
 	public Cannon clone() {
 		return new Cannon(this.serialize());
+	}
+
+	public ItemStack getItemStack() {
+		return item;
+	}
+	
+	public void fire() {
+		// do the specific things
 	}
 }
