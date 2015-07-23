@@ -5,12 +5,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -26,7 +28,7 @@ public class CannonFighter {
 	private int xp;
 	private int level;
 	
-	public CannonFighter(Player p) {
+	private CannonFighter(Player p) {
 		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "players WHERE uuid LIKE %" + p.getUniqueId() + "% LIMIT 1");
 		
 		int id = -1;	
@@ -42,6 +44,8 @@ public class CannonFighter {
 		
 		this.id = id;
 		this.user = Users.getByUUID(p.getUniqueId());
+		
+		online.put(p.getName(), value);
 	}
 
 	public void giveCoins(int amount) {
@@ -85,5 +89,37 @@ public class CannonFighter {
 	
 	public User getUser() {
 		return this.user;
+	}
+
+	public boolean teleportToGame(Location loc) {
+		return user.teleport(loc);
+	}
+	
+	public void show(CannonFighter c) {
+		user.getPlayer().showPlayer(c.user.getPlayer());
+	}
+	
+	public void hide(CannonFighter c) {
+		user.getPlayer().hidePlayer(c.user.getPlayer());
+	}
+	
+	public void sendMessage(String msg) {
+		user.sendMessage(msg);
+	}
+	
+	private static Map<String, CannonFighter> online = new HashMap<String, CannonFighter>();
+	
+	public static CannonFighter get(Player p) {
+		if (online.containsKey(p.getName()))
+			return online.get(p.getName());
+		
+		CannonFighter c = new CannonFighter(p);
+		online.put(p.getName(), c);
+		
+		return c;
+	}
+	
+	public static CannonFighter remove(Player p) {
+		return online.remove(p.getName());
 	}
 }
