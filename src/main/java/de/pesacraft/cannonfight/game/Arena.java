@@ -5,88 +5,90 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import de.pesacraft.lobbysystem.game.GameUser;
-import de.pesacraft.lobbysystem.game.arena.Arena;
+import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.util.Database;
 import de.pesacraft.lobbysystem.util.FileBundle;
 import de.pesacraft.lobbysystem.util.Schematic;
 
-public class Arena implements Arena {
-	private static final long serialVersionUID = 4698771078013639643L;
-
-	private final Schematic schematic;
+public class Arena {
 	private final String name;
-	private final int maxPlayers;
+	private final Location loc1;
+	private final Location loc2;
+	private final Location spectatorSpawn;
 	private final int requiredPlayers;
+	private final Map<CannonFighter, Location> spawns;
+	private final List<Location> freeSpawns;
 	
-	public static void main(String[] args) {
-		Map<String, FileInputStream> files = new HashMap<String, FileInputStream>();
+	public Arena(String name) throws IOException, SQLException {
+		this.name = name;
 		
-		try {
-			files.put("world.schem", new FileInputStream("/Users/darion/Minecraft-Server aktuellste/MCVanilla_29995_1227/plugins/SkyWars/4_Biome.schematic"));
-			files.put("config.yml", new FileInputStream("/Users/darion/Minecraft-Server aktuellste/MCVanilla_29995_1227/plugins/SkyWars/config.yml"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		FileBundle.zipFile("/Users/darion/testarena.cfa", files);
+		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "arenas WHERE name = " + name);
+		
+		requiredPlayers = result.getInt("requiredPlayers");
+		int id = result.getInt("id");
+		
+		World world = Bukkit.getWorld(result.getString("world"));
+		loc1 = new Location(world, result.getInt("x1"), result.getInt("y1"), result.getInt("z1"));
+		loc2 = new Location(world, result.getInt("x2"), result.getInt("y2"), result.getInt("z2"));
+		spectatorSpawn = new Location(world, result.getInt("spectatorX"), result.getInt("spectatorY"), result.getInt("spectatorZ"));
+		
+		result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "spawns WHERE id =" + id);
+		
+		spawns = new HashMap<CannonFighter, Location>();
+		freeSpawns = new ArrayList<Location>();
+		do {
+			Location loc = new Location(world, result.getDouble("x"), result.getDouble("y"), result.getDouble("z"), result.getFloat("yaw"), result.getFloat("pitch"));
+			
+			freeSpawns.add(loc);
+			
+			result.next();
+		} while (!result.isAfterLast());
 	}
 	
-	@SuppressWarnings("deprecation")
-	public Arena(File baseFile) throws IOException {
-		Map<String, ByteArrayInputStream> files = FileBundle.unzipFile(baseFile);
-		
-		this.schematic = Schematic.loadSchematic(files.get("world.schem"));
-		
-		FileConfiguration config = YamlConfiguration.loadConfiguration(files.get("config.yml"));
-		// load stuff
-		this.name = config.getString("name");
-		this.maxPlayers = config.getInt("maximum players");
-		this.requiredPlayers = config.getInt("required players to start");
-	}
-	
-	@Override
 	public boolean load(Location loc) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean delete() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public int getMaxPlayers() {
-		return this.maxPlayers;
+		return this.spawns.size();
 	}
 
-	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+
+	public boolean teleport(CannonFighter c) {
+		if (freeSpawns.isEmpty())
+			return false;
 		
-		map.put("schematic", name);
-		map.put("maxPlayers", maxPlayers);
-		
-		return map;
+		Location loc = freeSpawns.remove(0);
+		spawns.put(c, loc);
+		c.teleportToGame(loc);
+		return true;
+	}
+	
+	public void teleportSpectator(CannonFighter c) {
+		c.teleportToGame(spectatorSpawn);
 	}
 
-	@Override
-	public boolean teleport(GameUser player) {
-		
-		return false;
-	}
-
-	@Override
 	public int getRequiredPlayers() {
-		// TODO Auto-generated method stub
-		return 0;
+		return requiredPlayers;
 	}
 	
 	@Override
@@ -99,7 +101,6 @@ public class Arena implements Arena {
 		return s;
 	}
 
-	@Override
 	public String getPosition() {
 		return name;
 	}
