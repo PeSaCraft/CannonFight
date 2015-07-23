@@ -1,11 +1,11 @@
-package de.froznmine.cannonfight.game.cannons;
+package de.pesacraft.cannonfight.game.cannons;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import de.froznmine.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.CannonFight;
 
 public class Cannons {
 	/**
@@ -19,5 +19,11 @@ public class Cannons {
 	
 	public static List<Cannon> getCannons() {
 		return cannons;
+	}
+
+	public static Cannon getByName(String cannonName) {
+		for (Cannon c : cannons)
+			if (c.getName().equals(cannonName)) return c;
+		return null;
 	}
 }
