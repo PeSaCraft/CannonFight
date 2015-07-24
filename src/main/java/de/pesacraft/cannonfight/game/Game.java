@@ -220,6 +220,25 @@ public class Game implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onCannonFighterDeath(CannonFighterDeathEvent event) {
+		if (event.getGame() == this) {
+			String msg;
+			
+			if (event.getKiller() != null)
+				// von spieler getoetet
+				msg = event.getVictim().getName() + " wurde von " + event.getKiller().getName() + " getötet.";
+			else
+				// anderer todes grund
+				msg = event.getVictim().getName() + " ist gestorben.";	
+			
+			for (CannonFighter c : participants.keySet()) {
+				c.sendMessage(msg);
+				c.sendMessage(players + " Spieler übrig!");
+			}
+		}
+	}
+	
 	public String getPosition() {
 		return "CannonFight" + (state == GameState.INGAME ? " in der Arena " + arena.getPosition() : "");
 	}
