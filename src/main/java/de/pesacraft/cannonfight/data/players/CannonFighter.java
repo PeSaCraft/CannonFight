@@ -124,7 +124,7 @@ public class CannonFighter {
 	public boolean use(ItemStack item) {
 		// find the used cannon
 		for (Cannon c : cannons) {
-			if (c.getItemStack().equals(item)) {
+			if (c.getItem().equals(item)) {
 				// that is the used cannon
 				try {
 					return c.fire(this);
