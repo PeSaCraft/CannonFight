@@ -47,6 +47,7 @@ public class Database {
 		try {
 			Statement statement = conn.createStatement();
 			statement.execute(sql);
+			statement.getResultSet().next();
 			return statement.getResultSet();
 		} catch (SQLException e) {
 			e.printStackTrace();
