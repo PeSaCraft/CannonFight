@@ -3,31 +3,61 @@ package de.pesacraft.cannonfight.game.cannons;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class Cooldown implements ConfigurationSerializable {
+import de.pesacraft.cannonfight.CannonFight;
+
+public abstract class Cooldown {
+	/**
+	 * The cooldowns remaining time
+	 */
+	private int timeLeft;
 	/**
 	 * The cooldowns time
 	 */
-	private final long time;
-	/**
-	 *  The cooldowns price
-	 */
-	private final double price;
+	private final int time;
 	
-	public Cooldown(Map<String, Object> map) {
-		time = (Long) map.get("cooldown time");
-		price = (Double) map.get("upgrade price");
+	private int taskID;
+	
+	public Cooldown(int time) {
+		this.time = time;
+		taskID = -1;
+	}
+
+	public final boolean start() {
+		if (taskID != -1)
+			return false;
+		
+		timeLeft = time;
+		
+		taskID = new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				if (timeLeft-- <= 0) {
+					this.cancel();
+					taskID = -1;
+					finished();
+				}
+				else
+					update();
+			}
+		}.runTaskTimer(CannonFight.PLUGIN, 0, 20).getTaskId();
+		
+		return true;
 	}
 	
-	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("cooldown time", time);
-		map.put("upgrade price", price);
-		
-		return map;
+	public final boolean hasFinished() {
+		return taskID == -1;
 	}
 	
+	public final double done() {
+		return 1 - ((double) timeLeft / time);
+	}
+	
+	protected abstract void update();
+	
+	protected abstract void finished();
 }
