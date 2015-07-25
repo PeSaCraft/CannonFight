@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -30,6 +31,7 @@ public class Game implements Listener {
 		this.arena = arena;
 		this.state = GameState.TELEPORTTOARENA;
 		this.participants = new HashMap<CannonFighter, Role>();
+		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
 	
 	public boolean addPlayer(CannonFighter p) {
@@ -217,6 +219,15 @@ public class Game implements Listener {
 			
 			// player death => reward
 			Bukkit.getServer().getPluginManager().callEvent(new CannonFighterDeathEvent(this, victim, killer));
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		CannonFighter c = CannonFighter.get(event.getPlayer());
+		
+		if (participants.get(c) == Role.PLAYER) {
+			c.use(event.getItem());
 		}
 	}
 	
