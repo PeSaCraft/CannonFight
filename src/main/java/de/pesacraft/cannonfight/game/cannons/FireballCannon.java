@@ -1,6 +1,7 @@
 package de.pesacraft.cannonfight.game.cannons;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -10,11 +11,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.SpawnEgg;
 import org.bukkit.util.Vector;
 
 import de.pesacraft.cannonfight.CannonFight;
@@ -42,7 +41,15 @@ public class FireballCannon extends Cannon {
 		
 		int i = -1;
 		try {
-			i = Database.execute("SELECT id FROM cannons WHERE name = " + NAME).getInt("id");
+			ResultSet result = Database.execute("SELECT id FROM " + Database.getTablePrefix() + "cannons WHERE name = " + NAME, false);
+			if (!result.isBeforeFirst()) {
+				// steht nicht drin!
+				// spalte in spieler leveln hinzufuegen
+				Database.execute("ALTER TABLE `" + Database.getTablePrefix() + "cannonLevels` ADD `" + NAME + "` INT NOT NULL", false);
+				// cannon in db eintragen
+				Database.execute("INSERT INTO `" + Database.getTablePrefix() + "cannons` (`id`, `name`) VALUES (NULL, '" + NAME + "')", false);
+			}
+			i = Database.execute("SELECT id FROM cannons WHERE name = " + NAME, true).getInt("id");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -62,12 +69,12 @@ public class FireballCannon extends Cannon {
 	private ItemStack item;
 	
 	public FireballCannon(int levelAmmo, int levelCooldown, int levelRadius, int levelDamage) throws SQLException {
-		super(Database.execute("SELECT cooldown FROM cannonUpgrades WHERE id = " + id + " AND level = " + levelCooldown).getInt("cooldown"));
+		super(Database.execute("SELECT cooldown FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelCooldown, true).getInt("cooldown"));
 	
-		currentAmmo = maxAmmo = Database.execute("SELECT ammo FROM cannonUpgrades WHERE id = " + id + " AND level = " + levelAmmo).getInt("ammo");
+		currentAmmo = maxAmmo = Database.execute("SELECT ammo FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelAmmo, true).getInt("ammo");
 			
-		radius = Database.execute("SELECT custom1 FROM cannonUpgrades WHERE id = " + id + " AND level = " + levelRadius).getDouble("custom1");
-		damage = Database.execute("SELECT custom2 FROM cannonUpgrades WHERE id = " + id + " AND level = " + levelDamage).getDouble("custom2");
+		radius = Database.execute("SELECT custom1 FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelRadius, true).getDouble("custom1");
+		damage = Database.execute("SELECT custom2 FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelDamage, true).getDouble("custom2");
 	
 		item = ITEM.clone();
 	}
@@ -77,6 +84,7 @@ public class FireballCannon extends Cannon {
 		return item;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean fire(CannonFighter fighter) {
 		if (!hasFinished())
