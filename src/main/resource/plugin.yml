@@ -2,3 +2,6 @@ name: CannonFight
 main: de.froznmine.cannonfight.CannonFight
 version: 0.1
 author: FroznMine
+commands:
+  cannonfight:
+    usage: /cannonfight
