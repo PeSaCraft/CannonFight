@@ -52,9 +52,10 @@ public class CannonFight extends JavaPlugin {
 		if (args.length >= 1) {
 			String subcommand = args[0];
 			
-			if (subcommand.equalsIgnoreCase("join")) {
+			if (subcommand.equalsIgnoreCase("join"))
 				return JoinCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
-			}
+			if (subcommand.equalsIgnoreCase("setup"))
+				return SetupCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
 		}
 		return super.onCommand(sender, command, label, args);
 	}
