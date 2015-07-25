@@ -49,7 +49,7 @@ public class FireballCannon extends Cannon {
 				// cannon in db eintragen
 				Database.execute("INSERT INTO `" + Database.getTablePrefix() + "cannons` (`id`, `name`) VALUES (NULL, '" + NAME + "')", false);
 			}
-			i = Database.execute("SELECT id FROM cannons WHERE name = " + NAME, true).getInt("id");
+			i = Database.execute("SELECT id FROM " + Database.getTablePrefix() + "cannons WHERE name = " + NAME, true).getInt("id");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
