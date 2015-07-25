@@ -1,28 +1,18 @@
 package de.pesacraft.cannonfight.data.players;
 
-import java.io.File;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
-import de.pesacraft.cannonfight.game.cannons.Cooldown;
 import de.pesacraft.cannonfight.util.Database;
 import de.pesacraft.lobbysystem.user.User;
 import de.pesacraft.lobbysystem.user.Users;
@@ -37,7 +27,7 @@ public class CannonFighter {
 	
 	
 	private CannonFighter(Player p) {
-		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "players WHERE uuid LIKE %" + p.getUniqueId() + "% LIMIT 1");
+		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "players WHERE uuid LIKE %" + p.getUniqueId() + "% LIMIT 1", true);
 		
 		int id = -1;	
 		
@@ -60,18 +50,18 @@ public class CannonFighter {
 		CannonFight.MONEY.giveMoney(this, amount);
 	}
 	
-	public boolean buyUpgrade(String cannonName) {
-		int newLevel = cannonLevels.get(cannonName) + 1;
-		double price = Cannons.getByName(cannonName).getUpgradePrice(newLevel);
-		
-		if (price > coins) return false;
-		
-		coins -= price;
-		
-		cannonLevels.put(cannonName, newLevel);
-		
-		return true;
-	}
+//	public boolean buyUpgrade(String cannonName) {
+//		int newLevel = cannonLevels.get(cannonName) + 1;
+//		double price = Cannons.getByName(cannonName).getUpgradePrice(newLevel);
+//		
+//		if (price > coins) return false;
+//		
+//		coins -= price;
+//		
+//		cannonLevels.put(cannonName, newLevel);
+//		
+//		return true;
+//	}
 	
 	public int getID() {
 		return this.id;

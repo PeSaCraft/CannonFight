@@ -1,10 +1,5 @@
 package de.pesacraft.cannonfight.game.cannons;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.CannonFight;

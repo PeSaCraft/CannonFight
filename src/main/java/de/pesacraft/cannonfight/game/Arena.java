@@ -1,10 +1,5 @@
 package de.pesacraft.cannonfight.game;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,13 +10,9 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.util.Database;
-import de.pesacraft.lobbysystem.util.FileBundle;
-import de.pesacraft.lobbysystem.util.Schematic;
 
 public class Arena {
 	private final String name;
@@ -32,20 +23,20 @@ public class Arena {
 	private final Map<CannonFighter, Location> spawns;
 	private final List<Location> freeSpawns;
 	
-	public Arena(String name) throws IOException, SQLException {
+	public Arena(String name) throws SQLException {
 		this.name = name;
 		
-		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "arenas WHERE name = " + name);
+		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "arenas WHERE name = " + name, true);
 		
-		requiredPlayers = result.getInt("requiredPlayers");
 		int id = result.getInt("id");
+		requiredPlayers = result.getInt("requiredPlayers");
 		
 		World world = Bukkit.getWorld(result.getString("world"));
 		loc1 = new Location(world, result.getInt("x1"), result.getInt("y1"), result.getInt("z1"));
 		loc2 = new Location(world, result.getInt("x2"), result.getInt("y2"), result.getInt("z2"));
 		spectatorSpawn = new Location(world, result.getInt("spectatorX"), result.getInt("spectatorY"), result.getInt("spectatorZ"));
 		
-		result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "spawns WHERE id =" + id);
+		result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "spawns WHERE arena =" + id, true);
 		
 		spawns = new HashMap<CannonFighter, Location>();
 		freeSpawns = new ArrayList<Location>();
@@ -96,7 +87,7 @@ public class Arena {
 		String s = "###Arena### Game: CannonFight, ";
 		s += "Name: " + name + ", ";
 		s += "ReqPlayers: " + requiredPlayers + ", ";
-		s += "MaxPlayers: " + maxPlayers;
+		s += "MaxPlayers: " + getMaxPlayers();
 		
 		return s;
 	}

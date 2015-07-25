@@ -9,8 +9,6 @@ import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.GameManager;
-import de.pesacraft.cannonfight.util.Database;
-import de.pesacraft.cannonfight.util.money.DatabaseMoney;
 
 public class JoinCommand {
 

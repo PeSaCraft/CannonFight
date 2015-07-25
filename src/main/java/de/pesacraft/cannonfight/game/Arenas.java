@@ -12,8 +12,8 @@ import de.pesacraft.cannonfight.util.Database;
 public class Arenas {
 	private static Map<String, Arena> arenas;
 
-	public static void load() throws IOException {
-		ResultSet result = Database.execute("SELECT name FROM " + Database.getTablePrefix() + "arenas");
+	public static void load() {
+		ResultSet result = Database.execute("SELECT name FROM " + Database.getTablePrefix() + "arenas", true);
 		
 		arenas = new HashMap<String, Arena>();
 		try {

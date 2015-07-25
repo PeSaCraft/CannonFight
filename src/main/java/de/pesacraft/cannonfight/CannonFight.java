@@ -1,7 +1,6 @@
 package de.pesacraft.cannonfight;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -12,11 +11,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.pesacraft.cannonfight.commands.JoinCommand;
-import de.pesacraft.cannonfight.game.Game;
+import de.pesacraft.cannonfight.game.Arenas;
+import de.pesacraft.cannonfight.util.Database;
 import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
 import de.pesacraft.cannonfight.util.money.DatabaseMoney;
 import de.pesacraft.cannonfight.util.money.Money;
-import de.pesacraft.lobbysystem.LobbySystem;
 
 public class CannonFight extends JavaPlugin {
 	public static Logger LOGGER;
@@ -27,15 +26,14 @@ public class CannonFight extends JavaPlugin {
 		PLUGIN = this;
 		LOGGER = this.getLogger();
 		
-		if (!new File(this.getDataFolder() + "config.yml").exists()) this.saveDefaultConfig();
+		if (!new File(this.getDataFolder() + "config.yml").exists())
+			this.saveDefaultConfig();
 		
-		registerSerializables();
+		Database.setup();
+		Arenas.load();
 		
-		loadConfig();
-		loadArenas();
-		loadCannons();
 		loadMoney();
-		LobbySystem.registerGame(this, Game.class);
+		//LobbySystem.registerGame(this, Game.class);
 	}
 	 
 	private void loadMoney() {
@@ -47,26 +45,6 @@ public class CannonFight extends JavaPlugin {
 		else {
 			MONEY = new DatabaseMoney();
 		}
-	}
-
-	private void loadCannons() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void registerSerializables() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void loadArenas() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void loadConfig() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
