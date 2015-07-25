@@ -1,2 +1,14 @@
 language: de-DE
-maxgames: 2
+
+database:
+  host: "127.0.0.1"
+  port: 3308
+  database: "minecraft"
+  username: "minecraft"
+  password: "password"
+  prefix: "cannonfight_"
+game:
+  time:
+    start: 10
+    play: 300
+    gameover: 10
