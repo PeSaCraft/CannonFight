@@ -8,9 +8,13 @@ import de.pesacraft.cannonfight.util.Database;
 
 public class DatabaseMoney implements Money {
 
+	public DatabaseMoney() {
+		Database.execute("ALTER TABLE `" + Database.getTablePrefix() + "players` ADD `coins` INT NOT NULL", false);
+	}
+	
 	@Override
 	public int getMoney(CannonFighter c) {
-		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID());
+		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID(), true);
 		try {
 			return result.getInt("coins");
 		} catch (SQLException e) {
@@ -24,11 +28,11 @@ public class DatabaseMoney implements Money {
 		if (amount <= 0)
 			return false;
 		
-		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID());
+		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID(), true);
 		
 		try {
 			int newAmount = result.getInt("coins") + amount;
-			Database.execute("UPDATE " + Database.getTablePrefix() + "players SET coins = " + newAmount + " WHERE id = " + c.getID());
+			Database.execute("UPDATE " + Database.getTablePrefix() + "players SET coins = " + newAmount + " WHERE id = " + c.getID(), false);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -42,7 +46,7 @@ public class DatabaseMoney implements Money {
 		if (amount <= 0)
 			return false;
 		
-		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID());
+		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID(), true);
 		
 		try {
 			int newAmount = result.getInt("coins") - amount;
@@ -50,7 +54,7 @@ public class DatabaseMoney implements Money {
 			if (newAmount < 0)
 				return false;
 			
-			Database.execute("UPDATE " + Database.getTablePrefix() + "players SET coins = " + newAmount + " WHERE id = " + c.getID());
+			Database.execute("UPDATE " + Database.getTablePrefix() + "players SET coins = " + newAmount + " WHERE id = " + c.getID(), false);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
