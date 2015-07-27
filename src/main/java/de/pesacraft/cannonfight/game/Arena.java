@@ -48,34 +48,24 @@ public class Arena {
 			result.next();
 		} while (!result.isAfterLast());
 	}
-	
-	public boolean load(Location loc) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean delete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	public int getMaxPlayers() {
 		return this.spawns.size();
 	}
 
 
-	public boolean teleport(CannonFighter c) {
+	public boolean teleport(CannonFighter c, Game game) {
 		if (freeSpawns.isEmpty())
 			return false;
 		
 		Location loc = freeSpawns.remove(0);
 		spawns.put(c, loc);
-		c.teleportToGame(loc);
+		c.teleportToGame(loc, game);
 		return true;
 	}
 	
-	public void teleportSpectator(CannonFighter c) {
-		c.teleportToGame(spectatorSpawn);
+	public void teleportSpectator(CannonFighter c, Game game) {
+		c.teleportToGame(spectatorSpawn, game);
 	}
 
 	public int getRequiredPlayers() {

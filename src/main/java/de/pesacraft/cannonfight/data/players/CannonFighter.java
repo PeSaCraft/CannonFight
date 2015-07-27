@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.game.Game;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.util.Database;
 import de.pesacraft.lobbysystem.user.User;
@@ -22,6 +23,8 @@ public class CannonFighter {
 	private final int id;
 	private int xp;
 	private int level;
+	
+	private Game currentGame;
 	
 	private List<Cannon> cannons;
 	
@@ -71,7 +74,8 @@ public class CannonFighter {
 		return this.user;
 	}
 
-	public boolean teleportToGame(Location loc) {
+	public boolean teleportToGame(Location loc, Game game) {
+		this.currentGame = game;
 		return user.teleport(loc);
 	}
 	

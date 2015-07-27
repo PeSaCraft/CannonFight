@@ -41,7 +41,7 @@ public class Game implements Listener {
 		if (players == getMaxPlayers())
 			return false;
 	
-		arena.teleport(p);
+		arena.teleport(p, this);
 		
 		for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 			entry.getKey().show(p);
@@ -81,7 +81,7 @@ public class Game implements Listener {
 	}
 	
 	public boolean addSpectator(CannonFighter p) {
-		arena.teleportSpectator(p);
+		arena.teleportSpectator(p, this);
 		
 		for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 			p.show(entry.getKey());
@@ -249,7 +249,7 @@ public class Game implements Listener {
 			}
 		}
 	}
-	
+
 	public String getPosition() {
 		return "CannonFight" + (state == GameState.INGAME ? " in der Arena " + arena.getPosition() : "");
 	}
