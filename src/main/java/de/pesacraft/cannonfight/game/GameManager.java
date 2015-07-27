@@ -8,30 +8,54 @@ import java.util.Map;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class GameManager {
-	private static List<Game> currentGames = new ArrayList<Game>();
-	private static Map<Arena, List<CannonFighter>> waiting = new HashMap<Arena, List<CannonFighter>>();
-	
-	public static Game createGame(Arena arena, List<CannonFighter> players) {
-		Game g = new Game(arena);
-		
-		g.addPlayers(players.toArray(new CannonFighter[0]));
-		
-		currentGames.add(g);
-		
-		return g;
-	}
+	private static List<GameManager> games;
 	
 	public static void addPlayer(Arena a, CannonFighter c) {
-		List<CannonFighter> list = waiting.remove(a);
+		for (GameManager g : games) {
+			if (g.arena == a) {
+				// die arena
+				g.addPlayer(c);
+				return;
+			}
+		}
 		
-		if (list == null)
-			list = new ArrayList<CannonFighter>();
-		
-		list.add(c);
-		
-		if (list.size() >= a.getRequiredPlayers())
-			createGame(a, list);
-		else
-			waiting.put(a, list);
+		// arena nicht gefunden!
+		GameManager g = new GameManager(a);
+		g.addPlayer(c);
+		games.add(g);
 	}
+
+	private Arena arena;
+	private Game game;
+	private List<CannonFighter> queue;
+	
+	public GameManager(Arena arena) {
+		this.arena = arena;
+		this.queue = new ArrayList<CannonFighter>();
+	}
+	
+	public void addPlayer(CannonFighter c) {
+		if (game != null) {
+			// es gibt ein spiel
+			if (game.addPlayer(c))
+				// spieler zum spiel hinzugefuegt
+				return;
+			else
+				// kein platz -> warteschlange
+				queue.add(c);
+		}
+		else {
+			queue.add(c);
+			
+			if (queue.size() >= arena.getRequiredPlayers())
+				createGame();
+		}	
+	}
+	
+	public void createGame() {
+		game = new Game(arena);
+		
+		game.addPlayers(queue.toArray(new CannonFighter[0]));
+	}
+	
 }
