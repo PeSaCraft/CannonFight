@@ -130,4 +130,21 @@ public class CannonFighter {
 		
 		return false;
 	}
+
+	public boolean leave() {
+		if (currentGame != null) {
+			// in einem spiel 
+			if (!currentGame.removePlayer(this))
+				currentGame.removeSpectator(this);
+			
+			currentGame = null;
+			return true;
+		}
+		// in keinem spiel
+		return false;
+	}
+
+	public Game getCurrentGame() {
+		return this.currentGame;
+	}
 }
