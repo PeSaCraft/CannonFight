@@ -29,7 +29,7 @@ public class GameManager {
 	private Game game;
 	private List<CannonFighter> queue;
 	
-	public GameManager(Arena arena) {
+	private GameManager(Arena arena) {
 		this.arena = arena;
 		this.queue = new ArrayList<CannonFighter>();
 	}
@@ -52,10 +52,28 @@ public class GameManager {
 		}	
 	}
 	
-	public void createGame() {
+	private void createGame() {
 		game = new Game(arena);
 		
-		game.addPlayers(queue.toArray(new CannonFighter[0]));
+		int added = game.addPlayers(queue.toArray(new CannonFighter[0]));
+		
+		queue.subList(added, queue.size());
+	}
+
+	public static GameManager getForArena(Arena a) {
+		for (GameManager g : games) {
+			if (g.arena == a) {
+				return g;
+			}
+		}
+		return null;
+	}
+
+	public boolean start() {
+		if (game == null)
+			return false;
+		
+		return game.start();
 	}
 	
 }
