@@ -11,6 +11,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.pesacraft.cannonfight.commands.JoinCommand;
+import de.pesacraft.cannonfight.commands.LeaveCommand;
+import de.pesacraft.cannonfight.commands.SetupCommand;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.util.Database;
 import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
@@ -56,6 +58,8 @@ public class CannonFight extends JavaPlugin {
 				return JoinCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
 			if (subcommand.equalsIgnoreCase("setup"))
 				return SetupCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
+			if (subcommand.equalsIgnoreCase("leave"))
+				return LeaveCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
 		}
 		return super.onCommand(sender, command, label, args);
 	}
