@@ -58,14 +58,7 @@ public class Game implements Listener {
 		participants.put(p, Role.PLAYER);
 		players++;
 		if (players == arena.getRequiredPlayers()) {
-			nextCountdown();
-			countdownTask = new BukkitRunnable() {
-				
-				@Override
-				public void run() {
-					countdown();
-				}
-			}.runTaskTimer(CannonFight.PLUGIN, 0, 20);
+			start();
 		}
 		return true;
 	}
@@ -200,8 +193,17 @@ public class Game implements Listener {
 				}
 			}
 		}
+		return true;	
+	}
+	
+	public boolean removeSpectator(CannonFighter c) {
+		if (participants.get(c) != Role.SPECTATOR)
+			return false;
+		
+		participants.remove(c);
+		
 		return true;
-			
+		
 	}
 	
 	public int getMaxPlayers() {
@@ -252,5 +254,24 @@ public class Game implements Listener {
 
 	public String getPosition() {
 		return "CannonFight" + (state == GameState.INGAME ? " in der Arena " + arena.getPosition() : "");
+	}
+
+	public boolean start() {
+		if (state != GameState.TELEPORTTOARENA)
+			return false;
+		
+		state = GameState.START;
+		
+		nextCountdown();
+		
+		countdownTask = new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				countdown();
+			}
+		}.runTaskTimer(CannonFight.PLUGIN, 0, 20);
+		
+		return true;
 	}
 }
