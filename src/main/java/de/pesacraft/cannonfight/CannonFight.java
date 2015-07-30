@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.pesacraft.cannonfight.commands.ForceStartCommand;
 import de.pesacraft.cannonfight.commands.JoinCommand;
 import de.pesacraft.cannonfight.commands.LeaveCommand;
 import de.pesacraft.cannonfight.commands.SetupCommand;
@@ -60,6 +61,8 @@ public class CannonFight extends JavaPlugin {
 				return SetupCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
 			if (subcommand.equalsIgnoreCase("leave"))
 				return LeaveCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
+			if (subcommand.equalsIgnoreCase("force"))
+				return ForceStartCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
 		}
 		return super.onCommand(sender, command, label, args);
 	}
