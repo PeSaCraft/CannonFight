@@ -1,6 +1,5 @@
 package de.pesacraft.cannonfight.game;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

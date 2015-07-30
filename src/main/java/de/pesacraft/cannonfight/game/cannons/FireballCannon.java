@@ -3,7 +3,6 @@ package de.pesacraft.cannonfight.game.cannons;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.SkullType;

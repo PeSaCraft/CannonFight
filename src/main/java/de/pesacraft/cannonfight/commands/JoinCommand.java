@@ -12,6 +12,7 @@ import de.pesacraft.cannonfight.game.GameManager;
 
 public class JoinCommand {
 
+	@SuppressWarnings("deprecation")
 	public static boolean execute(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			// only players can join
