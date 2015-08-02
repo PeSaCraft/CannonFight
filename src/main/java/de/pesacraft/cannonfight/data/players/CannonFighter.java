@@ -75,6 +75,8 @@ public class CannonFighter {
 	}
 
 	public boolean teleportToGame(Location loc, Game game) {
+		if (currentGame != null)
+			return false;
 		this.currentGame = game;
 		return user.teleport(loc);
 	}
@@ -95,26 +97,6 @@ public class CannonFighter {
 		return user.getPlayer().getName();
 	}
 	
-	private static Map<String, CannonFighter> online = new HashMap<String, CannonFighter>();
-	
-	public static CannonFighter get(Player p) {
-		if (online.containsKey(p.getName()))
-			return online.get(p.getName());
-		
-		CannonFighter c = new CannonFighter(p);
-		online.put(p.getName(), c);
-		
-		return c;
-	}
-	
-	public static CannonFighter remove(Player p) {
-		return online.remove(p.getName());
-	}
-
-	public Player getPlayer() {
-		return user.getPlayer();
-	}
-
 	public boolean use(ItemStack item) {
 		// find the used cannon
 		for (Cannon c : cannons) {
@@ -146,5 +128,25 @@ public class CannonFighter {
 
 	public Game getCurrentGame() {
 		return this.currentGame;
+	}
+	
+	public Player getPlayer() {
+		return user.getPlayer();
+	}
+	
+	private static Map<String, CannonFighter> online = new HashMap<String, CannonFighter>();
+	
+	public static CannonFighter get(Player p) {
+		if (online.containsKey(p.getName()))
+			return online.get(p.getName());
+		
+		CannonFighter c = new CannonFighter(p);
+		online.put(p.getName(), c);
+		
+		return c;
+	}
+	
+	public static CannonFighter remove(Player p) {
+		return online.remove(p.getName());
 	}
 }
