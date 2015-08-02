@@ -58,9 +58,12 @@ public class Arena {
 		if (freeSpawns.isEmpty())
 			return false;
 		
-		Location loc = freeSpawns.remove(0);
+		Location loc = freeSpawns.get(0);
+		if (!c.teleportToGame(loc, game)) {
+			return false;
+		}
+		freeSpawns.remove(0);
 		spawns.put(c, loc);
-		c.teleportToGame(loc, game);
 		return true;
 	}
 	
