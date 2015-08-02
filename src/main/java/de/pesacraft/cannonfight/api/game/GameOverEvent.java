@@ -1,5 +1,7 @@
 package de.pesacraft.cannonfight.api.game;
 
+import java.util.List;
+
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -9,9 +11,9 @@ import de.pesacraft.cannonfight.game.Game;
 public class GameOverEvent extends Event {
 	
 	private final Game game;
-	private final CannonFighter winner;
+	private final List<CannonFighter> winner;
 	
-	public GameOverEvent(Game game, CannonFighter winner) {
+	public GameOverEvent(Game game, List<CannonFighter> winner) {
 		this.game = game;
 		this.winner = winner;
 	}
@@ -20,7 +22,7 @@ public class GameOverEvent extends Event {
 		return game;
 	}
 	
-	public CannonFighter getWinner() {
+	public List<CannonFighter> getWinner() {
 		return winner;
 	}
 	
