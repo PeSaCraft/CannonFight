@@ -15,6 +15,10 @@ public class LeaveCommand {
 			sender.sendMessage(Language.get("command.leave-only-players")); 
 			return true;
 		}
+		if (!sender.hasPermission("cannonfight.command.leave") && !sender.hasPermission("cannonfight.command.*")) {
+			sender.sendMessage(Language.get("error.no-permission"));
+			return true;
+		}
 		
 		CannonFighter c = CannonFighter.get((Player) sender);
 		

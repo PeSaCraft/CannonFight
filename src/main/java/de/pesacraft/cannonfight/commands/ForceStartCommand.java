@@ -12,16 +12,25 @@ import de.pesacraft.cannonfight.game.GameManager;
 public class ForceStartCommand {
 
 	public static boolean execute(CommandSender sender, String[] args) {
+		
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can force without given command
 				sender.sendMessage(Language.get("command.force-only-player-without-arg")); // ChatColor.RED + "Only players can force start without a given arena!"
 				return true;
 			}
+			if (!sender.hasPermission("cannonfight.command.force") && !sender.hasPermission("cannonfight.command.*")) {
+				sender.sendMessage(Language.get("error.no-permission"));
+				return true;
+			}
 			CannonFighter c = CannonFighter.get((Player) sender);
 			c.getCurrentGame().start();
 		}
 		else if (args.length == 1) {
+			if (!sender.hasPermission("cannonfight.command.force.specific") && !sender.hasPermission("cannonfight.command.*")) {
+				sender.sendMessage(Language.get("error.no-permission"));
+				return true;
+			}
 			GameManager.getForArena(Arenas.getArena(args[0])).start();
 		}
 		else 

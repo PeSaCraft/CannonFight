@@ -19,6 +19,12 @@ public class SetupCommand {
 			return true;
 		}
 		
+		if (!sender.hasPermission("cannonfight.command.setup") && !sender.hasPermission("cannonfight.command.*")) {
+			sender.sendMessage(Language.get("error.no-permission"));
+			return true;
+		}
+		
+		
 		Player p = (Player) sender;
 		Setup s = activeSetups.get(p);
 		

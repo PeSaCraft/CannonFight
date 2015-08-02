@@ -149,4 +149,8 @@ public class CannonFighter {
 	public static CannonFighter remove(Player p) {
 		return online.remove(p.getName());
 	}
+
+	public boolean hasPermission(String perm) {
+		return getPlayer().hasPermission(perm);
+	}
 }

@@ -25,14 +25,26 @@ public class JoinCommand {
 		Arena a;
 		
 		if (args.length == 0) {
+			if (!sender.hasPermission("cannonfight.command.join.random") && !sender.hasPermission("cannonfight.command.*")) {
+				sender.sendMessage(Language.get("error.no-permission"));
+				return true;
+			}
 			a = Arenas.random();
 			sender.sendMessage(Language.get("command.join-successful-random")); 
 		}
 		else if (args.length == 1) {
+			if (!sender.hasPermission("cannonfight.command.join") && !sender.hasPermission("cannonfight.command.*")) {
+				sender.sendMessage(Language.get("error.no-permission"));
+			return true;
+			}
 			a = Arenas.getArena(args[0]);
 			sender.sendMessage(Language.get("command.join-successful")); 
 		}
 		else {
+			if (!sender.hasPermission("cannonfight.command.join.others") && !sender.hasPermission("cannonfight.command.*")) {
+				sender.sendMessage(Language.get("error.no-permission"));
+				return true;
+			}
 			a = Arenas.getArena(args[0]);
 			c = CannonFighter.get(Bukkit.getPlayer(args[1]));
 			sender.sendMessage(Language.get("command.join-successful-other")); 
@@ -40,7 +52,7 @@ public class JoinCommand {
 
 		GameManager.addPlayer(a, c);
 		
-		return false;
+		return true;
 	}
 
 }

@@ -294,8 +294,16 @@ public class Game implements Listener {
 			}
 		}
 	}
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCannonFighterJoin(CannonFighterJoinGameEvent event) {
+		if (event.isCancelled())
+			return;
+		if (!event.getPlayer().hasPermission("cannonfight.join") && !event.getPlayer().hasPermission("cannonfight.*")) {
+			event.getPlayer().sendMessage(Language.get("error.no-permission"));
+			event.setCancelled(true);
+			return;
+		}
+		
 		if (event.getGame() == this && !event.isCancelled()) {
 			for (CannonFighter c : participants.keySet()) {
 				c.sendMessage(Language.get("info.player-joined")); // players + " Spieler übrig!"
