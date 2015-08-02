@@ -7,6 +7,8 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.bukkit.ChatColor;
+
 public class Language {
 	private static ResourceBundle MESSAGES;
 	
@@ -34,6 +36,6 @@ public class Language {
 	}
 	
 	public static String get(String key) {
-		return MESSAGES.containsKey(key) ? MESSAGES.getString(key) : null;
+		return ChatColor.translateAlternateColorCodes('&', MESSAGES.getString(key));
 	}
 }
