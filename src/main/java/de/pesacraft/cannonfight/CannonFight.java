@@ -32,6 +32,8 @@ public class CannonFight extends JavaPlugin {
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
 		
+		Language.loadLanguage(this.getConfig().getString("language"));
+		
 		Database.setup();
 		Arenas.load();
 		
@@ -44,9 +46,11 @@ public class CannonFight extends JavaPlugin {
 		
 		if (plugin != null) {
 			MONEY = new CraftConomyMoney(plugin);
+			LOGGER.info(Language.get("info.using-craftconomy"));
 		}
 		else {
 			MONEY = new DatabaseMoney();
+			LOGGER.info(Language.get("info.using-buildinmoney"));
 		}
 	}
 	

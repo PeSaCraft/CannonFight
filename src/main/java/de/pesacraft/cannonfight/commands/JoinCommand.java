@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
@@ -16,7 +17,7 @@ public class JoinCommand {
 	public static boolean execute(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			// only players can join
-			sender.sendMessage(ChatColor.RED + "Only players can join!");
+			sender.sendMessage(Language.get("command.join-only-players")); 
 			return true;
 		}
 		
@@ -25,13 +26,16 @@ public class JoinCommand {
 		
 		if (args.length == 0) {
 			a = Arenas.random();
+			sender.sendMessage(Language.get("command.join-successful-random")); 
 		}
 		else if (args.length == 1) {
 			a = Arenas.getArena(args[0]);
+			sender.sendMessage(Language.get("command.join-successful")); 
 		}
 		else {
 			a = Arenas.getArena(args[0]);
 			c = CannonFighter.get(Bukkit.getPlayer(args[1]));
+			sender.sendMessage(Language.get("command.join-successful-other")); 
 		}
 
 		GameManager.addPlayer(a, c);

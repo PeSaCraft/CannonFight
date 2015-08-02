@@ -9,6 +9,7 @@ import java.sql.Statement;
 import org.bukkit.configuration.Configuration;
 
 import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.Language;
 
 public class Database {
 	private static Connection conn;
@@ -33,12 +34,14 @@ public class Database {
 	
 		try {
 			conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + db, user, pass);
+			
+			setupTables();
+			
+			CannonFight.LOGGER.info(Language.get("info.database-loaded"));
 		} catch (SQLException e) {
-			CannonFight.LOGGER.severe("Couldn't connect to the MySQL database " + db + " at " + host + ":" + port + " with user " + user);
+			CannonFight.LOGGER.severe(Language.get("error.database-cantconnect")); // "Couldn't connect to the MySQL database " + db + " at " + host + ":" + port + " with user " + user
 			e.printStackTrace();
 		}
-		
-		setupTables();
 	}
 
 	private static void setupTables() {
@@ -139,6 +142,8 @@ public class Database {
 			return statement.getResultSet();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			CannonFight.LOGGER.severe(Language.get("error.database-execute-failed"));
+			
 		}
 		return null;
 	}

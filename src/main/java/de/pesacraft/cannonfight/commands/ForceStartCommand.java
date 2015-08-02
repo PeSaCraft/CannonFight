@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.GameManager;
@@ -14,7 +15,7 @@ public class ForceStartCommand {
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can force without given command
-				sender.sendMessage(ChatColor.RED + "Only players can force start without a given arena!");
+				sender.sendMessage(Language.get("command.force-only-player-without-arg")); // ChatColor.RED + "Only players can force start without a given arena!"
 				return true;
 			}
 			CannonFighter c = CannonFighter.get((Player) sender);
@@ -26,6 +27,7 @@ public class ForceStartCommand {
 		else 
 			return false;
 		
+		sender.sendMessage(Language.get("command.force-successful")); 
 		return true;
 	}
 

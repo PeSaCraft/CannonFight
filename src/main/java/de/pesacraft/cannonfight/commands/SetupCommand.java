@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.game.Setup;
 
 public class SetupCommand {
@@ -14,7 +15,7 @@ public class SetupCommand {
 	
 	public static boolean execute(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Only players can create arenas!");
+			sender.sendMessage(Language.get("command.setup-only-players")); 
 			return true;
 		}
 		
@@ -24,6 +25,7 @@ public class SetupCommand {
 		if (s == null) {
 			s = new Setup();
 			activeSetups.put(p, s);
+			sender.sendMessage(Language.get("command.setup-new-setup")); 
 		}
 		
 		if (args.length == 0) {
@@ -40,18 +42,23 @@ public class SetupCommand {
 			// pos1 pos2 specPos spawn
 			if (args[0].equalsIgnoreCase("pos1")) {
 				s.setLocation1(p.getLocation());
+				sender.sendMessage(Language.get("command.setup-set-pos1")); 
 			}
 			else if (args[0].equalsIgnoreCase("pos2")) {
 				s.setLocation2(p.getLocation());
+				sender.sendMessage(Language.get("command.setup-set-pos2")); 	
 			}
 			else if (args[0].equalsIgnoreCase("specPos")) {
 				s.setSpectatorLocation(p.getLocation());
+				sender.sendMessage(Language.get("command.setup-set-specPos")); 
 			}
 			else if (args[0].equalsIgnoreCase("spawn")) {
 				s.addSpawn(p.getLocation());
+				sender.sendMessage(Language.get("command.setup-set-spawn")); 
 			}
 			else if (args[0].equalsIgnoreCase("done")) {
 				activeSetups.remove(p);
+				sender.sendMessage(Language.get("command.setup-done"));
 				return true;
 			}
 		}
@@ -59,9 +66,11 @@ public class SetupCommand {
 			// name reqPlayers
 			if (args[0].equalsIgnoreCase("name")) {
 				s.setName(args[1]);
+				sender.sendMessage(Language.get("command.setup-set-name")); 
 			}
 			else if (args[0].equalsIgnoreCase("reqPlayers")) {
 				s.setRequiredPlayers(Integer.parseInt(args[1]));
+				sender.sendMessage(Language.get("command.setup-set-reqPlayers")); 
 			}
 		}
 		return false;

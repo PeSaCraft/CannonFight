@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.util.Database;
 
 public class Arenas {
@@ -22,9 +24,10 @@ public class Arenas {
 			
 				result.next();
 			} while (!result.isAfterLast());
+			CannonFight.LOGGER.info(Language.get("info.arenas-loaded"));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			CannonFight.LOGGER.severe(Language.get("error.arena-load-failed"));
 		}
 	}
 	
