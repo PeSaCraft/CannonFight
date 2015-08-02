@@ -12,3 +12,4 @@ game:
     start: 10
     play: 300
     gameover: 10
+  reward: 20
