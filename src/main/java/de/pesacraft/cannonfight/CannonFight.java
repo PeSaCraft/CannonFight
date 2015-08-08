@@ -15,7 +15,7 @@ import de.pesacraft.cannonfight.commands.JoinCommand;
 import de.pesacraft.cannonfight.commands.LeaveCommand;
 import de.pesacraft.cannonfight.commands.SetupCommand;
 import de.pesacraft.cannonfight.game.Arenas;
-import de.pesacraft.cannonfight.util.Database;
+import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
 import de.pesacraft.cannonfight.util.money.DatabaseMoney;
 import de.pesacraft.cannonfight.util.money.Money;
@@ -34,7 +34,7 @@ public class CannonFight extends JavaPlugin {
 		
 		Language.loadLanguage(this.getConfig().getString("language"));
 		
-		Database.setup();
+		MongoDatabase.setup();
 		Arenas.load();
 		
 		loadMoney();
@@ -72,6 +72,6 @@ public class CannonFight extends JavaPlugin {
 	}
 
 	public void onDisable() { 
-	 
+		MongoDatabase.close();
 	}
 }
