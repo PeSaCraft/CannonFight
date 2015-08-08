@@ -7,46 +7,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.Document;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.game.Game;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
-import de.pesacraft.cannonfight.util.Database;
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.lobbysystem.user.User;
 import de.pesacraft.lobbysystem.user.Users;
+import static com.mongodb.client.model.Filters.*;
 
 public class CannonFighter {
+	private static final MongoCollection<Document> COLLECTION;
 	private final User user;
-	private final int id;
 	private int xp;
-	private int level;
 	
 	private Game currentGame;
 	
-	private List<Cannon> cannons;
+	private List<Cannon> activeItems;
 	
+	static {
+		COLLECTION = Collection.PLAYERS();
+	}
 	
+	@SuppressWarnings("unchecked")
 	private CannonFighter(Player p) {
-		ResultSet result = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "players WHERE uuid LIKE %" + p.getUniqueId() + "% LIMIT 1", true);
+		Document doc = COLLECTION.find(eq("uuid", p.getUniqueId())).first();
 		
-		int id = -1;	
-		
-		try {
-			id = result.getInt("id");
-			this.xp = result.getInt("xp");
-			this.level = result.getInt("level");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			// spieler existiert nicht -> neu hinzufügen
+		if (doc != null) {
+			// Player in database
+			xp = doc.getInteger("xp");
+			activeItems = (List<Cannon>) doc.get("activeItems");
+		}
+		else {
+			// Player not in database
+			xp = 0;
+			activeItems = new ArrayList<Cannon>();
+			
+			COLLECTION.insertOne(new Document("uuid", p.getUniqueId()));
 		}
 		
-		this.id = id;
 		this.user = Users.getByUUID(p.getUniqueId());
-		
-		this.cannons = new ArrayList<Cannon>();
 	}
 
 	public void giveCoins(int amount) {
@@ -65,10 +75,6 @@ public class CannonFighter {
 //		
 //		return true;
 //	}
-	
-	public int getID() {
-		return this.id;
-	}
 	
 	public User getUser() {
 		return this.user;
@@ -99,7 +105,7 @@ public class CannonFighter {
 	
 	public boolean use(ItemStack item) {
 		// find the used cannon
-		for (Cannon c : cannons) {
+		for (Cannon c : activeItems) {
 			if (c.getItem().equals(item)) {
 				// that is the used cannon
 				try {
