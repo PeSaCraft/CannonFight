@@ -1,29 +1,44 @@
 package de.pesacraft.cannonfight.game.cannons.usable;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
+import org.bson.Document;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.SkullType;
+import org.bukkit.block.Block;
+import org.bukkit.block.Skull;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+
+import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
-import de.pesacraft.cannonfight.util.Database;
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.MongoDatabase;
+import de.pesacraft.cannonfight.util.Upgrade;
 
-public class FireballCannon extends Cannon implements Listener {
+@SuppressWarnings("unchecked")
+public class FireballCannon extends Cannon {
+
+	private static final MongoCollection<Document> COLLECTION;
+	
 	/**
 	 * ItemStack representing the cannon ingame
 	 */
@@ -32,32 +47,83 @@ public class FireballCannon extends Cannon implements Listener {
 	 * The cannons name
 	 */
 	protected static final String NAME = "FireballCannon";
-	/**
-	 * The cannons id
-	 */
-	protected static final int id;
+	
+	protected static final Map<Integer, Upgrade<Integer>> COOLDOWN_MAP = new HashMap<Integer, Upgrade<Integer>>();
+	
+	protected static final Map<Integer, Upgrade<Integer>> AMMO_MAP = new HashMap<Integer, Upgrade<Integer>>();
+	
+	protected static final Map<Integer, Upgrade<Double>> RADIUS_MAP = new HashMap<Integer, Upgrade<Double>>();
+	
+	protected static final Map<Integer, Upgrade<Double>> DAMAGE_MAP = new HashMap<Integer, Upgrade<Double>>();
 	
 	static {
-		Configuration config = YamlConfiguration.loadConfiguration(new File(CannonFight.PLUGIN.getDataFolder() + "/cannons.yml"));
+		COLLECTION = Collection.ITEMS();
 		
-		ITEM = config.getItemStack(NAME);
+		Document doc = COLLECTION.find(eq("name", NAME)).first();
 		
-		int i = -1;
-		try {
-			ResultSet result = Database.execute("SELECT id FROM " + Database.getTablePrefix() + "cannons WHERE name = " + NAME, false);
-			if (!result.isBeforeFirst()) {
-				// steht nicht drin!
-				// spalte in spieler leveln hinzufuegen
-				Database.execute("ALTER TABLE `" + Database.getTablePrefix() + "cannonLevels` ADD `" + NAME + "` INT NOT NULL", false);
-				// cannon in db eintragen
-				Database.execute("INSERT INTO `" + Database.getTablePrefix() + "cannons` (`id`, `name`) VALUES (NULL, '" + NAME + "')", false);
-			}
-			i = Database.execute("SELECT id FROM " + Database.getTablePrefix() + "cannons WHERE name = " + NAME, true).getInt("id");
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (doc != null) {
+			// Cannon in database
+			ITEM = ItemStack.deserialize((Document) doc.get("item"));
+			
+			Document cooldownList = (Document) doc.get("cooldown");
+			for (Entry<String, Object> cooldown : cooldownList.entrySet())
+				COOLDOWN_MAP.put(Integer.parseInt(cooldown.getKey()), new Upgrade<Integer>((Document) cooldown.getValue()));
+			
+			Document ammoList = (Document) doc.get("ammo");
+			for (Entry<String, Object> ammo : ammoList.entrySet())
+				AMMO_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Integer>((Document) ammo.getValue()));
+			
+			Document radiusList = (Document) doc.get("radius");
+			for (Entry<String, Object> ammo : ammoList.entrySet())
+				RADIUS_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Double>((Document) ammo.getValue()));
+			
+			Document damage = (Document) doc.get("damage");
+			for (Entry<String, Object> ammo : ammoList.entrySet())
+				DAMAGE_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Double>((Document) ammo.getValue()));
+			
 		}
+		else {
+			// Cannon not in database
+			ITEM = new ItemStack(Material.FIREBALL);
+			
+			Map<String, Object> coolMap = new HashMap<String, Object>();
+			for (int i = 1; i <= 10; i++) {
+				Upgrade<Integer> u = new Upgrade<Integer>(i * 100, 11 - i);
+				COOLDOWN_MAP.put(i, u);
+				coolMap.put(i + "", u);
+			}
+			
+			Map<String, Object> ammoMap = new HashMap<String, Object>();
+			for (int i = 1; i <= 10; i++) {
+				Upgrade<Integer> u = new Upgrade<Integer>(i * 100, i);
+				AMMO_MAP.put(i, u);
+				ammoMap.put(i + "", u);
+			}
+			
+			Map<String, Object> radiusMap = new HashMap<String, Object>();
+			for (int i = 1; i <= 10; i++) {
+				Upgrade<Double> u = new Upgrade<Double>(i * 100, i * 0.1 + 1);
+				RADIUS_MAP.put(i, u);
+				radiusMap.put(i + "", u);
+			}
+			
+			Map<String, Object> damageMap = new HashMap<String, Object>();
+			for (int i = 1; i <= 10; i++) {
+				Upgrade<Double> u = new Upgrade<Double>(i * 100, i * 0.5 + 0.5);
+				DAMAGE_MAP.put(i, u);
+				damageMap.put(i + "", u);
+			}
 		
-		id = i;
+			doc = new Document("name", NAME);
+			doc = doc.append("item", new Document(ITEM.serialize()));
+			
+			doc = doc.append("cooldown", new Document(coolMap));
+			doc = doc.append("ammo", new Document(ammoMap));
+			doc = doc.append("radius", new Document(radiusMap));
+			doc = doc.append("damage", new Document(damageMap));
+			
+			COLLECTION.insertOne(doc);	
+		}
 	}
 
 	@Override
@@ -67,25 +133,19 @@ public class FireballCannon extends Cannon implements Listener {
 	
 	private int maxAmmo;
 	private int currentAmmo;
-	private float radius;
+	private double radius;
 	private double damage;
 	private ItemStack item;
 	
-	private List<Fireball> shoot;
-	
 	public FireballCannon(int levelAmmo, int levelCooldown, int levelRadius, int levelDamage) throws SQLException {
-		super(Database.execute("SELECT cooldown FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelCooldown, true).getInt("cooldown"));
+		super(COOLDOWN_MAP.get(levelCooldown).getValue());
 	
-		currentAmmo = maxAmmo = Database.execute("SELECT ammo FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelAmmo, true).getInt("ammo");
+		currentAmmo = maxAmmo = AMMO_MAP.get(levelAmmo).getValue();
 			
-		radius = Database.execute("SELECT custom1 FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelRadius, true).getFloat("custom1");
-		damage = Database.execute("SELECT custom2 FROM " + Database.getTablePrefix() + "cannonUpgrades WHERE id = " + id + " AND level = " + levelDamage, true).getDouble("custom2");
+		radius = RADIUS_MAP.get(levelRadius).getValue();
+		damage = DAMAGE_MAP.get(levelDamage).getValue();
 	
 		item = ITEM.clone();
-		
-		shoot = new ArrayList<Fireball>();
-		
-		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
 
 	@Override
@@ -93,6 +153,7 @@ public class FireballCannon extends Cannon implements Listener {
 		return item;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean fire(CannonFighter fighter) {
 		if (!hasFinished())
@@ -105,38 +166,24 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Player p = fighter.getPlayer();
 		
-		Fireball fball = p.launchProjectile(Fireball.class);
-		fball.setVelocity(fball.getVelocity().multiply(2));
-		shoot.add(fball);
+		Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
+		
+		Material m = b.getType();
+		
+		b.setType(Material.SKULL);
+		Skull skull = (Skull) b.getState();
+		skull.setSkullType(SkullType.PLAYER);
+		skull.setOwner("FroznMine");
+		skull.update(true);
+
+		FallingBlock fb = p.getWorld().spawnFallingBlock(p.getLocation(), Material.SKULL, b.getData());
+	
+		b.setType(m);
+		fb.setVelocity(new Vector(0, 50, 0));
 		
 		return true;
 	}
-	
-	@EventHandler
-	public void onExplosionPrime(ExplosionPrimeEvent event) {
-		if (shoot.contains(event.getEntity()))
-			event.setRadius(radius);
-	}
-	
-	@EventHandler
-	public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
-		if (!shoot.contains(event.getDamager()))
-			return;
-		
-		event.setDamage(damage);
-		
-		/* muss später aus der Liste entfernt werden,
-		 * da es mehrere EntityDamageByEntityEvents gibt,
-		 * pro getroffene Entity eins
-		 */
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				shoot.remove(event.getDamager());
-			}
-		}.runTaskLater(CannonFight.PLUGIN, 1);
-	}
-	
+
 	@Override
 	public int getMaxAmmo() {
 		return maxAmmo;
