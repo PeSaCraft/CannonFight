@@ -1,12 +1,21 @@
 package de.pesacraft.cannonfight.game;
 
 import java.sql.SQLException;
+import java.util.Map;
 
+import org.bson.Document;
 import org.bukkit.Location;
 
-import de.pesacraft.cannonfight.util.Database;
+import com.mongodb.client.MongoCollection;
+
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.MongoDatabase;
+
+import static com.mongodb.client.model.Filters.*;
 
 public class Setup {
+	private static final MongoCollection<Document> COLLECTION;
+	
 	private String name;
 	
 	private Location loc1;
@@ -19,6 +28,10 @@ public class Setup {
 	private boolean added;
 	
 	private int id;
+	
+	static {
+		COLLECTION = Collection.ARENAS();
+	}
 	
 	public boolean setLocation1(Location loc) {
 		if (added)
@@ -95,57 +108,44 @@ public class Setup {
 		
 		added = true;
 		
-		String query = "INSERT INTO  `" + Database.getTablePrefix() + "arenas` (";
-		query += "`id`, `name`, `requiredPlayers`, `world`, `x1`, `y1`, `z1`, `x2`, `y2`, `z2`, `spectatorX`, `spectatorY`, `spectatorZ`) ";
-		query += "VALUES (NULL,";
+		Document doc = new Document("name", name);
+		doc = doc.append("requiredPlayers", reqPlayers);
+		doc = doc.append("world", loc1.getWorld().getName());
 		
-		query += "'" + name + "',";
-		query += "'" + reqPlayers + "',";
-		query += "'" + loc1.getWorld().getName() + "',";
+		Document docLoc = new Document("x", loc1.getBlockX());
+		docLoc = docLoc.append("y", loc1.getBlockY());
+		docLoc = docLoc.append("z", loc1.getBlockZ());
 		
-		query += "'" + loc1.getBlockX() + "',";
-		query += "'" + loc1.getBlockY() + "',";
-		query += "'" + loc1.getBlockZ() + "',";
+		doc = doc.append("loc1", docLoc);
 		
-		query += "'" + loc2.getBlockX() + "',";
-		query += "'" + loc2.getBlockY() + "',";
-		query += "'" + loc2.getBlockZ() + "',";
+		docLoc = new Document("x", loc2.getBlockX());
+		docLoc = docLoc.append("y", loc2.getBlockY());
+		docLoc = docLoc.append("z", loc2.getBlockZ());
 		
-		query += "'" + specLoc.getBlockX() + "',";
-		query += "'" + specLoc.getBlockY() + "',";
-		query += "'" + specLoc.getBlockZ() + "'";
+		doc = doc.append("loc2", docLoc);
 		
-		query += ")";
+		docLoc = new Document("x", specLoc.getX());
+		docLoc = docLoc.append("y", specLoc.getY());
+		docLoc = docLoc.append("z", specLoc.getZ());
+		docLoc = docLoc.append("yaw", specLoc.getYaw());
+		docLoc = docLoc.append("pitch", specLoc.getPitch());
 		
-		Database.execute(query, false);
+		doc = doc.append("spectatorSpawn", docLoc);
 		
-		try {
-			id = Database.execute("SELECT * FROM " + Database.getTablePrefix() + "arenas WHERE name = " + name, true).getInt("id");
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
+		COLLECTION.insertOne(doc);
 	}
 	
 	public boolean addSpawn(Location loc) {
 		if (!added)
 			return false;
 		
-		String query = "INSERT INTO  `" + Database.getTablePrefix() + "spawns` (";
-		query += "`id`, `arena`, `x`, `y`, `z`, `yaw`, `pitch`) ";
-		query += "VALUES (NULL,";
+		Document doc = new Document("x", loc.getX());
+		doc = doc.append("y", loc.getY());
+		doc = doc.append("z", loc.getZ());
+		doc = doc.append("yaw", loc.getYaw());
+		doc = doc.append("pitch", loc.getPitch());
 		
-		query += "'" + id + "',";
-		
-		query += "'" + loc.getX() + "',";
-		query += "'" + loc.getY() + "',";
-		query += "'" + loc.getZ() + "',";
-		
-		query += "'" + loc.getYaw() + "',";
-		query += "'" + loc.getPitch() + "'";
-	
-		query += ")";
-		
-		Database.execute(query, false);
+		COLLECTION.updateOne(eq("name", name), new Document("$push", new Document("spawns", doc)));
 		
 		return true;
 	}
