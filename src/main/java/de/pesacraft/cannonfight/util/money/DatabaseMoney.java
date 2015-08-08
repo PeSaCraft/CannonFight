@@ -1,26 +1,41 @@
 package de.pesacraft.cannonfight.util.money;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bson.Document;
+import org.bukkit.inventory.ItemStack;
+
+import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.data.players.CannonFighter;
-import de.pesacraft.cannonfight.util.Database;
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.Upgrade;
 
 public class DatabaseMoney implements Money {
 
-	public DatabaseMoney() {
-		Database.execute("ALTER TABLE `" + Database.getTablePrefix() + "players` ADD `coins` INT NOT NULL", false);
-	}
+	private static final MongoCollection<Document> COLLECTION;
 	
+	static {
+		COLLECTION = Collection.PLAYERS();
+	}
+
 	@Override
 	public int getMoney(CannonFighter c) {
-		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID(), true);
-		try {
-			return result.getInt("coins");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return -1;
+		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId())).first();
+		
+		if (doc.containsKey("coins"))
+			// has coins
+			return doc.getInteger("coins");
+		
+		// no coins -> 0 coins, store that
+		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId()), new Document("$set", new Document("coins", 0)));
+		return 0;
+		
 	}
 
 	@Override
@@ -28,17 +43,12 @@ public class DatabaseMoney implements Money {
 		if (amount <= 0)
 			return false;
 		
-		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID(), true);
+		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId())).first();
 		
-		try {
-			int newAmount = result.getInt("coins") + amount;
-			Database.execute("UPDATE " + Database.getTablePrefix() + "players SET coins = " + newAmount + " WHERE id = " + c.getID(), false);
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		int newAmount = doc.getInteger("coins") + amount;
+		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId()), new Document("$set", new Document("coins", newAmount)));
 		
-		return false;
+		return true;
 	}
 
 	@Override
@@ -46,21 +56,15 @@ public class DatabaseMoney implements Money {
 		if (amount <= 0)
 			return false;
 		
-		ResultSet result = Database.execute("SELECT coins FROM " + Database.getTablePrefix() + "players WHERE id = " + c.getID(), true);
+		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId())).first();
 		
-		try {
-			int newAmount = result.getInt("coins") - amount;
-			
-			if (newAmount < 0)
-				return false;
-			
-			Database.execute("UPDATE " + Database.getTablePrefix() + "players SET coins = " + newAmount + " WHERE id = " + c.getID(), false);
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		int newAmount = doc.getInteger("coins") - amount;
 		
-		return false;
+		if (newAmount < 0)
+			return false;
+		
+		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId()), new Document("$set", new Document("coins", newAmount)));
+		return true;
 	}
 
 }
