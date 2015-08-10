@@ -1,4 +1,4 @@
-language: de-DE
+language: de_DE
 
 database:
   host: "127.0.0.1"
