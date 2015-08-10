@@ -41,7 +41,7 @@ public class CannonFighter {
 	
 	@SuppressWarnings("unchecked")
 	private CannonFighter(Player p) {
-		Document doc = COLLECTION.find(eq("uuid", p.getUniqueId())).first();
+		Document doc = COLLECTION.find(eq("uuid", p.getUniqueId().toString())).first();
 		
 		if (doc != null) {
 			// Player in database
@@ -53,7 +53,11 @@ public class CannonFighter {
 			xp = 0;
 			activeItems = new ArrayList<Cannon>();
 			
-			COLLECTION.insertOne(new Document("uuid", p.getUniqueId()));
+			doc = new Document("uuid", p.getUniqueId().toString());
+			doc = doc.append("xp", 0);
+			doc = doc.append("activeItems", activeItems);
+			
+			COLLECTION.insertOne(doc);
 		}
 		
 		this.user = Users.getByUUID(p.getUniqueId());

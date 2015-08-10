@@ -26,14 +26,14 @@ public class DatabaseMoney implements Money {
 
 	@Override
 	public int getMoney(CannonFighter c) {
-		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId())).first();
+		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId().toString())).first();
 		
 		if (doc.containsKey("coins"))
 			// has coins
 			return doc.getInteger("coins");
 		
 		// no coins -> 0 coins, store that
-		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId()), new Document("$set", new Document("coins", 0)));
+		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId().toString()), new Document("$set", new Document("coins", 0)));
 		return 0;
 		
 	}
@@ -43,10 +43,13 @@ public class DatabaseMoney implements Money {
 		if (amount <= 0)
 			return false;
 		
-		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId())).first();
+		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId().toString())).first();
 		
-		int newAmount = doc.getInteger("coins") + amount;
-		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId()), new Document("$set", new Document("coins", newAmount)));
+		int newAmount = amount;
+		if (doc.containsKey("coins"))
+			newAmount += doc.getInteger("coins");
+		
+		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId().toString()), new Document("$set", new Document("coins", newAmount)));
 		
 		return true;
 	}
@@ -56,14 +59,14 @@ public class DatabaseMoney implements Money {
 		if (amount <= 0)
 			return false;
 		
-		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId())).first();
+		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId().toString())).first();
 		
 		int newAmount = doc.getInteger("coins") - amount;
 		
 		if (newAmount < 0)
 			return false;
 		
-		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId()), new Document("$set", new Document("coins", newAmount)));
+		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId().toString()), new Document("$set", new Document("coins", newAmount)));
 		return true;
 	}
 
