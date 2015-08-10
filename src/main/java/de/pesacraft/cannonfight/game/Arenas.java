@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bson.Document;
 import org.bukkit.Location;
@@ -44,5 +45,15 @@ public class Arenas {
 
 	public static Arena getArena(String name) {
 		return arenas.get(name);
+	}
+
+	public static boolean put(String name, Arena arena) {
+		for (Entry<String, Arena> a : arenas.entrySet())
+			if (a.getKey().equals(name))
+				return false;
+		
+		arenas.put(name, arena);
+		
+		return true;
 	}
 }
