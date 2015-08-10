@@ -58,15 +58,21 @@ public class CannonFight extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length >= 1) {
 			String subcommand = args[0];
-			
+			String[] subArgs;
+			if (args.length == 1)
+				// keine weiteren argumente da -> erzeugt fehler
+				subArgs = new String[0];
+			else
+				subArgs = Arrays.copyOfRange(args, 1, args.length);
+				
 			if (subcommand.equalsIgnoreCase("join"))
-				return JoinCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
+				return JoinCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("setup"))
-				return SetupCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
+				return SetupCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("leave"))
-				return LeaveCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
+				return LeaveCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("force"))
-				return ForceStartCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length - 1));
+				return ForceStartCommand.execute(sender, subArgs);
 		}
 		return super.onCommand(sender, command, label, args);
 	}
