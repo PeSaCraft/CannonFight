@@ -14,6 +14,7 @@ import de.pesacraft.cannonfight.commands.ForceStartCommand;
 import de.pesacraft.cannonfight.commands.JoinCommand;
 import de.pesacraft.cannonfight.commands.LeaveCommand;
 import de.pesacraft.cannonfight.commands.SetupCommand;
+import de.pesacraft.cannonfight.commands.SpectateCommand;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
@@ -73,6 +74,8 @@ public class CannonFight extends JavaPlugin {
 				return LeaveCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("force"))
 				return ForceStartCommand.execute(sender, subArgs);
+			if (subcommand.equalsIgnoreCase("spectate"))
+				return SpectateCommand.execute(sender, subArgs);
 		}
 		return super.onCommand(sender, command, label, args);
 	}
