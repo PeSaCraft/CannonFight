@@ -31,7 +31,7 @@ public class Arena {
 	private final Location loc2;
 	private final Location spectatorSpawn;
 	private final int requiredPlayers;
-	private final Map<CannonFighter, Location> spawns;
+	private final Map<CannonFighter, Location> setSpawns;
 	private final List<Location> freeSpawns;
 	
 	static {
@@ -68,11 +68,11 @@ public class Arena {
 			freeSpawns.add(new Location(world, spawn.getDouble("x"), spawn.getDouble("y"), spawn.getDouble("z"), spawn.getDouble("yaw").floatValue(), spawn.getDouble("pitch").floatValue()));
 		}
 		
-		spawns = new HashMap<CannonFighter, Location>();
+		setSpawns = new HashMap<CannonFighter, Location>();
 	}
 
 	public int getMaxPlayers() {
-		return this.spawns.size();
+		return this.freeSpawns.size() + this.setSpawns.size();
 	}
 
 
@@ -85,7 +85,7 @@ public class Arena {
 			return false;
 		}
 		freeSpawns.remove(0);
-		spawns.put(c, loc);
+		setSpawns.put(c, loc);
 		return true;
 	}
 	
