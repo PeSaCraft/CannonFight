@@ -8,12 +8,16 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -55,11 +59,10 @@ public class Game implements Listener {
 		
 		arena.teleport(p, this);
 		
-		p.sendMessage(Language.get("info.player-join"));
+		p.sendMessage(Language.get("info.player-join").replaceAll("%player%", players + "").replaceAll("%maxPlayer%", getMaxPlayers() + ""));
 		
 		for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 			entry.getKey().show(p);
-			entry.getKey().sendMessage(Language.get("info.player-join-others"));
 			switch (entry.getValue()) {
 			case PLAYER:
 				p.show(entry.getKey());
@@ -120,18 +123,35 @@ public class Game implements Listener {
 	}
 	
 	private void countdown() {
+		String msg;
 		switch (state) {
+		case TELEPORTTOARENA:
+			if (time == 0) {
+				for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
+					if (entry.getValue() == Role.PLAYER) {
+						entry.getKey().getPlayer().setWalkSpeed(0);
+						entry.getKey().getPlayer().setFlySpeed(0);
+					}
+				}
+				state = GameState.START;
+				nextCountdown();
+			}
+			break;
 		case START:
 			if (time == 0) {
 				state = GameState.INGAME;
 				nextCountdown();
+				msg = Language.get("info.game-start");
 				for (CannonFighter c : participants.keySet()) {
-					c.sendMessage(Language.get("info.game-start")); // ChatColor.GREEN + "LOS!"
+					c.sendMessage(msg); // ChatColor.GREEN + "LOS!"
+					c.getPlayer().setWalkSpeed(0.2f);
+					c.getPlayer().setFlySpeed(0.2f);
 				}
 				break;	
 			}
+			msg = Language.get("info.game-start-countdown").replaceAll("%time%", time + "");
 			for (CannonFighter c : participants.keySet()) {
-				c.sendMessage(Language.get("info.game-start-countdown")); // ChatColor.AQUA + "Noch " + time + " Sekunden bis zum Start!"
+				c.sendMessage(msg); 
 			}
 			
 			break;
@@ -152,13 +172,15 @@ public class Game implements Listener {
 			}
 			// jede Minute uebrige Zeit, wenn weniger als 1 min alle 15 sek und die letzten 15 sek.
 			if (time % 60 == 0) {
+				msg = Language.get("info.game-remaining-min").replaceAll("%time%", (time / 60) + "");
 				for (CannonFighter c : participants.keySet()) {
-					c.sendMessage(Language.get("info.game-remaining-min")); // ChatColor.AQUA + "Noch " + time % 60 + " Minuten bis zum Ende!"
+					c.sendMessage(msg); // ChatColor.AQUA + "Noch " + time % 60 + " Minuten bis zum Ende!"
 				}
 			}
 			if ((time < 60 && time % 15 == 0) || (time < 15)) {
+				msg = Language.get("info.game-remaining-sec").replaceAll("%time%", time + "");
 				for (CannonFighter c : participants.keySet()) {
-					c.sendMessage(Language.get("info.game-remaining-sec")); // ChatColor.AQUA + "Noch " + time + " Sekunden bis zum Ende!"
+					c.sendMessage(msg); // ChatColor.AQUA + "Noch " + time + " Sekunden bis zum Ende!"
 				}	
 			}
 			
@@ -181,6 +203,9 @@ public class Game implements Listener {
 
 	private void nextCountdown() {
 		switch (state) {
+		case TELEPORTTOARENA:
+			time = 1;
+			break;
 		case START:
 			time = CannonFight.PLUGIN.getConfig().getInt("game.time.start");
 			break;
@@ -265,9 +290,11 @@ public class Game implements Listener {
 			entry.getKey().sendMessage(Language.get("info.game-over")); // ChatColor.RED + "Spiel vorbei!"
 		}
 		
+		int reward = CannonFight.PLUGIN.getConfig().getInt("game.reward");
+		String msg = Language.get("info.game-won").replaceAll("%coins%", reward + "");
 		for (CannonFighter c : event.getWinner()) {
-			c.sendMessage(Language.get("info.game-won"));
-			c.giveCoins(CannonFight.PLUGIN.getConfig().getInt("game.reward"));
+			c.sendMessage(msg);
+			c.giveCoins(reward);
 		}
 	}
 	
@@ -278,26 +305,28 @@ public class Game implements Listener {
 			
 			if (event.getKiller() != null) {
 				// von spieler getoetet
-				msg = Language.get("info.player-died-killed-by-other"); // event.getVictim().getName() + " wurde von " + event.getKiller().getName() + " getötet."
-				event.getKiller().sendMessage(Language.get("info.player-killed"));
-				event.getVictim().sendMessage(Language.get("info.player-got-killed"));
+				msg = Language.get("info.player-died-killed-by-other").replaceAll("%killer%", event.getKiller().getName()).replaceAll("%victim%", event.getVictim().getName()); // event.getVictim().getName() + " wurde von " + event.getKiller().getName() + " getötet."
+				event.getKiller().sendMessage(Language.get("info.player-killed").replaceAll("%victim%", event.getVictim().getName()));
+				event.getVictim().sendMessage(Language.get("info.player-got-killed").replaceAll("%killer%", event.getKiller().getName()));
 			}
 			else {
 				// anderer todes grund
 				msg = Language.get("info.player-died"); // event.getVictim().getName() + " ist gestorben.";	
 				event.getVictim().sendMessage(Language.get("info.player-died-self"));
 			}
-			
+			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", players + "");
 			for (CannonFighter c : participants.keySet()) {
 				c.sendMessage(msg);
-				c.sendMessage(Language.get("info.remaining-players")); // players + " Spieler übrig!"
+				c.sendMessage(msg2); // players + " Spieler übrig!"
 			}
 		}
 	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCannonFighterJoin(CannonFighterJoinGameEvent event) {
 		if (event.isCancelled())
 			return;
+		
 		if (!event.getPlayer().hasPermission("cannonfight.join") && !event.getPlayer().hasPermission("cannonfight.*")) {
 			event.getPlayer().sendMessage(Language.get("error.no-permission"));
 			event.setCancelled(true);
@@ -305,11 +334,13 @@ public class Game implements Listener {
 		}
 		
 		if (event.getGame() == this && !event.isCancelled()) {
+			String msg = Language.get("info.player-join-others").replaceAll("%player%", event.getPlayer().getName());
 			for (CannonFighter c : participants.keySet()) {
-				c.sendMessage(Language.get("info.player-joined")); // players + " Spieler übrig!"
+				c.sendMessage(msg);
 			}
 		}
 	}
+	
 	public String getPosition() {
 		return "CannonFight" + (state == GameState.INGAME ? " in der Arena " + arena.getPosition() : "");
 	}
@@ -317,8 +348,6 @@ public class Game implements Listener {
 	public boolean start() {
 		if (state != GameState.TELEPORTTOARENA)
 			return false;
-		
-		state = GameState.START;
 		
 		nextCountdown();
 		
