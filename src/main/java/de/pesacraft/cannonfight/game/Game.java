@@ -93,7 +93,9 @@ public class Game implements Listener {
 	}
 	
 	public boolean addSpectator(CannonFighter p) {
-		arena.teleportSpectator(p, this);
+		if (!arena.teleportSpectator(p, this))
+			// konnte nicht teleportiert werden
+			return false;
 		
 		for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 			p.show(entry.getKey());

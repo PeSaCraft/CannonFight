@@ -89,8 +89,8 @@ public class Arena {
 		return true;
 	}
 	
-	public void teleportSpectator(CannonFighter c, Game game) {
-		c.teleportToGame(spectatorSpawn, game);
+	public boolean teleportSpectator(CannonFighter c, Game game) {
+		return c.teleportToGame(spectatorSpawn, game);
 	}
 
 	public int getRequiredPlayers() {

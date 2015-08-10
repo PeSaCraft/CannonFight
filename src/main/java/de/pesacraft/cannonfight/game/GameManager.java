@@ -49,6 +49,14 @@ public class GameManager {
 				createGame();
 		}	
 	}
+	public boolean addSpectator(CannonFighter c) {
+		if (game == null)
+			// kein Spiel -> kann nicht zugucken
+			return false;
+	
+		// gibt ein Spiel -> versuchen rein zu kommen 
+		return game.addSpectator(c);
+	}
 	
 	private void createGame() {
 		game = new Game(arena);
