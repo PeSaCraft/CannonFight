@@ -35,19 +35,9 @@ public class MongoDatabase {
 		
 		db = mongo.getDatabase(dbName);
 		
-		setupCollections();
-	}
-	
-	private static void setupCollections() {
-		db.createCollection(PREFIX + "players");
-		
-		db.createCollection(PREFIX + "items");
-		
-		db.createCollection(PREFIX + "arenas");
-		
 		Collection.load(db);
 	}
-	
+
 	public static void close() {
 		mongo.close();
 		

@@ -2,19 +2,51 @@ package de.pesacraft.cannonfight.util;
 
 import org.bson.Document;
 
+import com.mongodb.DB;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoIterable;
 
 public class Collection {
 	private static MongoCollection<Document> PLAYERS;
 	private static MongoCollection<Document> ITEMS;
 	private static MongoCollection<Document> ARENAS;
-
+	
+	private static String playersCollectionName;
+	private static String itemsCollectionName;	
+	private static String arenasCollectionName;
+	
 	protected static void load(com.mongodb.client.MongoDatabase db) {
-		PLAYERS = db.getCollection(MongoDatabase.PREFIX + "players");
+		playersCollectionName = MongoDatabase.PREFIX + "players";
+		itemsCollectionName = MongoDatabase.PREFIX + "items";	
+		arenasCollectionName = MongoDatabase.PREFIX + "arenas";
 		
-		ITEMS = db.getCollection(MongoDatabase.PREFIX + "items");
+		MongoIterable<String> collections = db.listCollectionNames();
 		
-		ARENAS = db.getCollection(MongoDatabase.PREFIX + "arenas");
+		boolean createPlayers = true, createItems = true, createArenas = true;
+		
+		for (String c : collections) {
+			if (c.equals(playersCollectionName))
+				createPlayers = false;
+			if (c.equals(itemsCollectionName))
+				createItems = false;
+			if (c.equals(arenasCollectionName))
+				createArenas = false;	
+		}
+		
+		if (createPlayers)
+			db.createCollection(playersCollectionName);
+		
+		if (createItems)
+			db.createCollection(itemsCollectionName);
+		
+		if (createArenas)
+			db.createCollection(arenasCollectionName);
+		
+		PLAYERS = db.getCollection(playersCollectionName);
+		
+		ITEMS = db.getCollection(itemsCollectionName);
+		
+		ARENAS = db.getCollection(arenasCollectionName);
 	}
 	
 	public static MongoCollection<Document> PLAYERS() {
