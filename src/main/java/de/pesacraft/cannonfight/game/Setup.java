@@ -33,6 +33,10 @@ public class Setup {
 		COLLECTION = Collection.ARENAS();
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+	
 	public boolean setLocation1(Location loc) {
 		if (added)
 			return false;

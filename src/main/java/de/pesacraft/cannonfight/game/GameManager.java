@@ -6,7 +6,7 @@ import java.util.List;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class GameManager {
-	private static List<GameManager> games;
+	private static List<GameManager> games = new ArrayList<GameManager>();
 	
 	public static void addPlayer(Arena a, CannonFighter c) {
 		for (GameManager g : games) {
@@ -58,15 +58,6 @@ public class GameManager {
 		queue.subList(added, queue.size());
 	}
 
-	public static GameManager getForArena(Arena a) {
-		for (GameManager g : games) {
-			if (g.arena == a) {
-				return g;
-			}
-		}
-		return null;
-	}
-
 	public boolean start() {
 		if (game == null)
 			return false;
@@ -74,4 +65,12 @@ public class GameManager {
 		return game.start();
 	}
 	
+	public static GameManager getForArena(Arena a) {
+		for (GameManager g : games) {
+			if (g.arena == a) {
+				return g;
+			}
+		}
+		return null;
+	}	
 }
