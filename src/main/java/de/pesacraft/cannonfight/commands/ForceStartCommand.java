@@ -23,8 +23,9 @@ public class ForceStartCommand {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
+			
 			CannonFighter c = CannonFighter.get((Player) sender);
-			c.getCurrentGame().start();
+			
 			if (!c.isInQueue()) {
 				// wartet nicht auf spielstart
 				sender.sendMessage(Language.get("command.force-not-in-queue"));
