@@ -25,13 +25,36 @@ public class ForceStartCommand {
 			}
 			CannonFighter c = CannonFighter.get((Player) sender);
 			c.getCurrentGame().start();
+			if (!c.isInQueue()) {
+				// wartet nicht auf spielstart
+				sender.sendMessage(Language.get("command.force-not-in-queue"));
+				return true;
+			}
+			
+			// spieler in queue
+			if (GameManager.getForArena(c.getArenaQueuing()).startGame(true)) {
+				// Spiel gestartet
+				sender.sendMessage(Language.get("command.force-specific-successful"));
+			}
+			else {
+				// spiel konnte nicht gestartet werden
+				sender.sendMessage(Language.get("command.force-specific-failed"));
+			}
 		}
 		else if (args.length == 1) {
 			if (!sender.hasPermission("cannonfight.command.force.specific") && !sender.hasPermission("cannonfight.command.*")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
-			GameManager.getForArena(Arenas.getArena(args[0])).start();
+			
+			if (GameManager.getForArena(Arenas.getArena(args[0])).startGame(true)) {
+				// Spiel gestartet
+				sender.sendMessage(Language.get("command.force-specific-successful"));
+			}
+			else {
+				// spiel konnte nicht gestartet werden
+				sender.sendMessage(Language.get("command.force-specific-failed"));
+			}
 		}
 		else 
 			return false;

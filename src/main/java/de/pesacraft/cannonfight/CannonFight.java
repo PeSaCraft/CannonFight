@@ -72,7 +72,7 @@ public class CannonFight extends JavaPlugin {
 				return SetupCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("leave"))
 				return LeaveCommand.execute(sender, subArgs);
-			if (subcommand.equalsIgnoreCase("force"))
+			if (subcommand.equalsIgnoreCase("force") || subcommand.equalsIgnoreCase("start"))
 				return ForceStartCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("spectate"))
 				return SpectateCommand.execute(sender, subArgs);
