@@ -3,24 +3,37 @@ package de.pesacraft.cannonfight.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.command.defaults.GameRuleCommand;
+
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class GameManager {
 	private static List<GameManager> games = new ArrayList<GameManager>();
 	
-	public static void addPlayer(Arena a, CannonFighter c) {
+	public static GameManager getForArena(Arena a) {
+		for (GameManager g : games) {
+			if (g.arena == a) {
+				return g;
+			}
+		}
+		// gamemanager nicht gefunden
+		GameManager g = new GameManager(a);
+		games.add(g);
+		return g;
+	}
+	
+	public static boolean addPlayer(Arena a, CannonFighter c) {
 		for (GameManager g : games) {
 			if (g.arena == a) {
 				// die arena
-				g.addPlayer(c);
-				return;
+				return g.addPlayer(c);
 			}
 		}
 		
 		// arena nicht gefunden!
 		GameManager g = new GameManager(a);
-		g.addPlayer(c);
 		games.add(g);
+		return g.addPlayer(c);
 	}
 
 	private Arena arena;
@@ -32,53 +45,64 @@ public class GameManager {
 		this.queue = new ArrayList<CannonFighter>();
 	}
 	
-	public void addPlayer(CannonFighter c) {
-		if (game != null) {
-			// es gibt ein spiel
-			if (game.addPlayer(c))
-				// spieler zum spiel hinzugefuegt
-				return;
-			else
-				// kein platz -> warteschlange
-				queue.add(c);
-		}
-		else {
-			queue.add(c);
+	public boolean addPlayer(CannonFighter c) {
+		if (!isGameRunning())
+			// kein spiel vorhanden
+			return false;
+		return game.addPlayer(c);
+	}
+
+	public boolean addToQueue(CannonFighter c) {
+		if (queue.add(c)) {
+			c.setInQueue(arena);
 			
-			if (queue.size() >= arena.getRequiredPlayers())
-				createGame();
-		}	
+			startGame(false);
+			return true;
+		}
+		
+		// bereits in der Liste
+		return false;	
 	}
 	public boolean addSpectator(CannonFighter c) {
-		if (game == null)
-			// kein Spiel -> kann nicht zugucken
+		if (!isGameRunning())
+			// kein spiel vorhanden
 			return false;
-	
-		// gibt ein Spiel -> versuchen rein zu kommen 
 		return game.addSpectator(c);
 	}
 	
-	private void createGame() {
-		game = new Game(arena);
-		
-		int added = game.addPlayers(queue.toArray(new CannonFighter[0]));
-		
-		queue.subList(added, queue.size());
-	}
-
-	public boolean start() {
-		if (game == null)
-			return false;
-		
-		return game.start();
+	public boolean leaveQueue(CannonFighter c) {
+		if (queue.remove(c)) {
+			// in der Liste gewesen
+			c.leaveQueue();
+			return true;
+		}
+		// nicht in der Liste
+		return false;
 	}
 	
-	public static GameManager getForArena(Arena a) {
-		for (GameManager g : games) {
-			if (g.arena == a) {
-				return g;
+	public boolean startGame(boolean force) {
+		if (!isGameRunning()) {
+			if (force || queue.size() == arena.getRequiredPlayers()) {
+				game = new Game(arena);
+		
+				for (CannonFighter c : queue) {
+					if (!game.addPlayer(c))
+						// spieler konnte nicht beitreten
+						break;
+				
+					// spieler beigetreten
+					queue.remove(c);
+					c.setInQueue(null);
+				}
+				
+				return game.start();
 			}
 		}
-		return null;
-	}	
+		// spiel läuft bereits
+		return false;
+	}
+	
+	public boolean isGameRunning() {
+		return game != null;
+	}
 }

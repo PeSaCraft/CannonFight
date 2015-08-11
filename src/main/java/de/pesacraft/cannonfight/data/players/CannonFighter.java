@@ -18,6 +18,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Game;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.util.Collection;
@@ -32,6 +33,7 @@ public class CannonFighter {
 	private int xp;
 	
 	private Game currentGame;
+	private Arena inQueue;
 	
 	private List<Cannon> activeItems;
 	
@@ -85,10 +87,15 @@ public class CannonFighter {
 	}
 
 	public boolean teleportToGame(Location loc, Game game) {
-		if (currentGame != null)
+		if (currentGame != null && currentGame != game)
 			return false;
-		this.currentGame = game;
-		return user.teleport(loc);
+		
+		if (user.teleport(loc)) { 
+			this.currentGame = game;
+			this.inQueue = null;
+			return true;
+		}
+		return false;
 	}
 	
 	public void show(CannonFighter c) {
@@ -123,19 +130,25 @@ public class CannonFighter {
 		return false;
 	}
 
-	public boolean leave() {
-		if (currentGame != null) {
-			// in einem spiel 
-			if (!currentGame.removePlayer(this))
-				currentGame.removeSpectator(this);
-			
+	public boolean leaveGame() {
+		if (isInGame()) {
 			currentGame = null;
+			user.leave();
 			return true;
 		}
 		// in keinem spiel
 		return false;
 	}
 
+	public boolean leaveQueue() {
+		if (isInQueue()) {
+			inQueue = null;
+			return true;
+		}
+		// in keiner queue
+		return false;
+	}
+	
 	public Game getCurrentGame() {
 		return this.currentGame;
 	}
@@ -162,5 +175,30 @@ public class CannonFighter {
 
 	public boolean hasPermission(String perm) {
 		return getPlayer().hasPermission(perm);
+	}
+
+	public boolean setInQueue(Arena a) {
+		if (inQueue != null)
+			return false;
+		
+		inQueue = a;
+		return true;
+		
+	}
+	
+	public boolean isInQueue() {
+		return inQueue != null;
+	}
+
+	public boolean isInGame() {
+		return currentGame != null;
+	}
+
+	public void setCurrentGame(Game game) {
+		this.currentGame = game;
+	}
+
+	public Arena getArenaQueuing() {
+		return inQueue;
 	}
 }

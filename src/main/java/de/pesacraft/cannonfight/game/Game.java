@@ -25,6 +25,7 @@ import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.api.game.CannonFighterDeathEvent;
 import de.pesacraft.cannonfight.api.game.CannonFighterJoinGameEvent;
+import de.pesacraft.cannonfight.api.game.CannonFighterLeaveEvent;
 import de.pesacraft.cannonfight.api.game.GameOverEvent;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
@@ -57,9 +58,9 @@ public class Game implements Listener {
 		if (event.isCancelled())
 			return false;
 		
-		arena.teleport(p, this);
+		players++;
 		
-		p.sendMessage(Language.get("info.player-join").replaceAll("%player%", players + "").replaceAll("%maxPlayer%", getMaxPlayers() + ""));
+		arena.teleport(p, this);
 		
 		for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 			entry.getKey().show(p);
@@ -74,7 +75,8 @@ public class Game implements Listener {
 		}
 		
 		participants.put(p, Role.PLAYER);
-		players++;
+		
+		p.sendMessage(Language.get("info.player-join").replaceAll("%player%", players + "").replaceAll("%maxPlayer%", getMaxPlayers() + ""));
 		
 		if (players == arena.getRequiredPlayers())
 			start();
@@ -324,6 +326,20 @@ public class Game implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onCannonFighterLeave(CannonFighterLeaveEvent event) {
+		if (event.getGame() == this) {
+			String msg;
+			
+			msg = Language.get("info.player-left"); // event.getFighter().getName() + " hat das Spiel verlassen.";	
+			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", players + "");
+			for (CannonFighter c : participants.keySet()) {
+				c.sendMessage(msg);
+				c.sendMessage(msg2); // players + " Spieler übrig!"
+			}
+		}
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCannonFighterJoin(CannonFighterJoinGameEvent event) {
 		if (event.isCancelled())
@@ -360,6 +376,24 @@ public class Game implements Listener {
 				countdown();
 			}
 		}.runTaskTimer(CannonFight.PLUGIN, 0, 20);
+		
+		return true;
+	}
+
+	public Arena getArena() {
+		return this.arena;
+	}
+
+	public boolean leave(CannonFighter c) {
+		if (!participants.containsKey(c))
+			// nicht in diesem Spiel
+			return false;
+		
+		participants.remove(c);
+		players--;
+		Bukkit.getServer().getPluginManager().callEvent(new CannonFighterLeaveEvent(this, c));
+		
+		c.leaveGame();
 		
 		return true;
 	}
