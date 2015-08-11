@@ -29,16 +29,55 @@ public class SpectateCommand {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
+			
+			if (c.isInGame() || c.isInQueue()) {
+				c.sendMessage(Language.get("error.has-to-leave-before-join"));
+				return true;
+			}
+			
 			a = Arenas.getArena(args[0]);
 		
-			if (GameManager.getForArena(a).addSpectator(c))
-				sender.sendMessage(Language.get("command.spectate-successful"));
-			else
-				sender.sendMessage(Language.get("command.spectate-failed"));
+			spectate(c, a);
 				
+		}
+		else if (args.length == 2) {
+			if (!sender.hasPermission("cannonfight.command.spectate.others") && !sender.hasPermission("cannonfight.command.*")) {
+				sender.sendMessage(Language.get("error.no-permission"));
+				return true;
+			}
+			
+			c = CannonFighter.get(Bukkit.getPlayer(args[1]));
+			
+			if (c.isInGame() || c.isInQueue()) {
+				c.sendMessage(Language.get("error.has-to-leave-before-join-other"));
+				return true;
+			}
+			
+			a = Arenas.getArena(args[0]);
+			
+			if (spectate(c, a))
+				sender.sendMessage(Language.get("command.spectate-other-successful"));
+			else
+				sender.sendMessage(Language.get("command.spectate-other-failed"));
 		}
 		
 		return true;
 	}
 
+	private static boolean spectate(CannonFighter c, Arena a) {
+		GameManager g = GameManager.getForArena(a);
+		
+		if (g.isGameRunning()) {
+			// Spiel läuft -> hinzufügen
+			if (g.addSpectator(c)) {
+				// konnte rein
+				c.sendMessage(Language.get("command.join-spectate-successful"));
+				return true;
+			}	
+			// konnte nicht rein
+		}
+		// kein Spiel -> kann nicht zugucken
+		c.sendMessage(Language.get("command.join-spectate-failed"));
+		return false;
+	}
 }
