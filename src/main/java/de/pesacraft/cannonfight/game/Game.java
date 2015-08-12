@@ -184,7 +184,7 @@ public class Game implements Listener {
 				state = GameState.GAMEOVER;
 				nextCountdown();
 				
-				List<CannonFighter> winner = new ArrayList<CannonFighter>();
+				Set<CannonFighter> winner = new HashSet<CannonFighter>();
 				
 				for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 					if (entry.getValue() == Role.PLAYER) {
@@ -204,7 +204,7 @@ public class Game implements Listener {
 				state = GameState.GAMEOVER;
 				nextCountdown();
 				
-				List<CannonFighter> winner = new ArrayList<CannonFighter>();
+				Set<CannonFighter> winner = new HashSet<CannonFighter>();
 				
 				for (Entry<CannonFighter, Role> entry : participants.entrySet())
 					if (entry.getValue() == Role.PLAYER)

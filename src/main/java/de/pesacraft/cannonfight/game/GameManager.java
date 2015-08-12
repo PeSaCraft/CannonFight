@@ -1,15 +1,17 @@
 package de.pesacraft.cannonfight.game;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.command.defaults.GameRuleCommand;
 
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class GameManager {
-	private static List<GameManager> games = new ArrayList<GameManager>();
+	private static Set<GameManager> games = new HashSet<GameManager>();
 	
 	public static GameManager getForArena(Arena a) {
 		for (GameManager g : games) {
