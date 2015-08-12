@@ -2,22 +2,35 @@ package de.pesacraft.cannonfight.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import net.minecraft.server.v1_8_R1.BlockPosition;
+import net.minecraft.server.v1_8_R1.ChunkCoordIntPair;
+import net.minecraft.server.v1_8_R1.IBlockData;
+import net.minecraft.server.v1_8_R1.PacketPlayOutMultiBlockChange;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -28,6 +41,7 @@ import de.pesacraft.cannonfight.api.game.CannonFighterJoinGameEvent;
 import de.pesacraft.cannonfight.api.game.CannonFighterLeaveEvent;
 import de.pesacraft.cannonfight.api.game.GameOverEvent;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.util.ModifiedBlock;
 
 public class Game implements Listener {
 	private Arena arena;
@@ -36,12 +50,16 @@ public class Game implements Listener {
 	private int players;
 	private int time;
 	
+	private Map<Chunk, Set<ModifiedBlock>> destroyedBlocks;
+	
 	private BukkitTask countdownTask;
 	
 	protected Game(Arena arena) {
 		this.arena = arena;
 		this.state = GameState.TELEPORTTOARENA;
 		this.participants = new HashMap<CannonFighter, Role>();
+		
+		this.destroyedBlocks = new HashMap<Chunk, Set<ModifiedBlock>>();
 		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
 	
@@ -128,6 +146,7 @@ public class Game implements Listener {
 	
 	private void countdown() {
 		String msg;
+		
 		switch (state) {
 		case TELEPORTTOARENA:
 			if (time == 0) {
@@ -160,6 +179,27 @@ public class Game implements Listener {
 			
 			break;
 		case INGAME:
+			if (players <= 1) {
+				
+				state = GameState.GAMEOVER;
+				nextCountdown();
+				
+				List<CannonFighter> winner = new ArrayList<CannonFighter>();
+				
+				for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
+					if (entry.getValue() == Role.PLAYER) {
+						// spieler der das spiel gewonnen hat	
+						winner.add(entry.getKey());
+						
+						break;
+					}
+				}
+				
+				Bukkit.getServer().getPluginManager().callEvent(new GameOverEvent(this, winner));
+				
+				break;
+			}
+			
 			if (time == 0) {
 				state = GameState.GAMEOVER;
 				nextCountdown();
@@ -195,8 +235,10 @@ public class Game implements Listener {
 				countdownTask.cancel();
 
 				for (CannonFighter c : participants.keySet()) {
-					c.getUser().leave();
+					leave(c);
 				}
+				
+				resetArena();
 			}
 			break;
 		default:
@@ -231,23 +273,6 @@ public class Game implements Listener {
 		participants.remove(c);
 		players--;
 		
-		if (players == 1) {
-			for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
-				if (entry.getValue() == Role.PLAYER) {
-					// spieler der das spiel gewonnen hat
-					state = GameState.GAMEOVER;
-					nextCountdown();
-					
-					List<CannonFighter> winner = new ArrayList<CannonFighter>();
-					
-					winner.add(entry.getKey());
-					
-					Bukkit.getServer().getPluginManager().callEvent(new GameOverEvent(this, winner));
-					
-					break;
-				}
-			}
-		}
 		return true;	
 	}
 	
@@ -287,11 +312,14 @@ public class Game implements Listener {
 			c.use(event.getItem());
 		}
 	}
-	
+		
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
-		for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
-			entry.getKey().sendMessage(Language.get("info.game-over")); // ChatColor.RED + "Spiel vorbei!"
+		if (event.getGame() != this)
+			return;
+		
+		for (CannonFighter c : participants.keySet()) {
+			c.sendMessage(Language.get("info.game-over")); // ChatColor.RED + "Spiel vorbei!"
 		}
 		
 		int reward = CannonFight.PLUGIN.getConfig().getInt("game.reward");
@@ -328,15 +356,18 @@ public class Game implements Listener {
 	
 	@EventHandler
 	public void onCannonFighterLeave(CannonFighterLeaveEvent event) {
-		if (event.getGame() == this) {
-			String msg;
+		if (event.getGame() != this)
+			return;
+		if (state != GameState.INGAME)
+			return;
+		
+		String msg;
 			
-			msg = Language.get("info.player-left"); // event.getFighter().getName() + " hat das Spiel verlassen.";	
-			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", players + "");
-			for (CannonFighter c : participants.keySet()) {
-				c.sendMessage(msg);
-				c.sendMessage(msg2); // players + " Spieler übrig!"
-			}
+		msg = Language.get("info.player-left"); // event.getFighter().getName() + " hat das Spiel verlassen.";	
+		String msg2 = Language.get("info.remaining-players").replaceAll("%player%", players + "");
+		for (CannonFighter c : participants.keySet()) {
+			c.sendMessage(msg);
+			c.sendMessage(msg2); // players + " Spieler übrig!"
 		}
 	}
 
@@ -389,12 +420,41 @@ public class Game implements Listener {
 			// nicht in diesem Spiel
 			return false;
 		
-		participants.remove(c);
-		players--;
-		Bukkit.getServer().getPluginManager().callEvent(new CannonFighterLeaveEvent(this, c));
-		
+		if (participants.remove(c) == Role.PLAYER) {
+			players--;
+			Bukkit.getServer().getPluginManager().callEvent(new CannonFighterLeaveEvent(this, c));
+		}
 		c.leaveGame();
-		
 		return true;
 	}
+	
+	public void addBlocksToRegenerate(List<Block> blocks) {
+		for (Block b : blocks) {
+			Chunk c = b.getChunk();
+			
+			if (!destroyedBlocks.containsKey(c))
+				// list not existing, creating one
+				destroyedBlocks.put(c, new HashSet<ModifiedBlock>());
+			
+			Set<ModifiedBlock> set = destroyedBlocks.get(c);
+			set.add(new ModifiedBlock(b));
+			
+		}
+	}
+	
+	private void resetArena() {
+		for (Entry<Chunk, Set<ModifiedBlock>> entry : destroyedBlocks.entrySet()) {
+			net.minecraft.server.v1_8_R1.Chunk chunk = ((CraftChunk) entry.getKey()).getHandle();
+			
+			for (ModifiedBlock b : entry.getValue()) {
+				chunk.a(new BlockPosition(b.getXOffset(), b.getYOffset(), b.getZOffset()), b.getMat().getId());
+			}
+
+			chunk.initLighting();
+			entry.getValue().clear();
+		}
+
+		destroyedBlocks.clear();
+	}
+
 }
