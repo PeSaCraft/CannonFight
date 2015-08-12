@@ -20,6 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -445,13 +446,25 @@ public class Game implements Listener {
 	private void resetArena() {
 		for (Entry<Chunk, Set<ModifiedBlock>> entry : destroyedBlocks.entrySet()) {
 			net.minecraft.server.v1_8_R1.Chunk chunk = ((CraftChunk) entry.getKey()).getHandle();
+			net.minecraft.server.v1_8_R1.World world = chunk.getWorld();
+			
 			
 			for (ModifiedBlock b : entry.getValue()) {
-				chunk.a(new BlockPosition(b.getXOffset(), b.getYOffset(), b.getZOffset()), b.getMat().getId());
+				BlockPosition bp = new BlockPosition(b.getXOffset(), b.getYOffset(), b.getZOffset());
+				IBlockData ibd = net.minecraft.server.v1_8_R1.Block.getByCombinedId(b.getMaterial().getId() + (b.getData() << 12));
+				chunk.a(bp, ibd);// set block
 			}
 
+			
+			
+			// lighning updaten
 			chunk.initLighting();
-			entry.getValue().clear();
+			// resend chunk
+			Chunk bukkitchunk = chunk.bukkitChunk;
+			world.getWorld().refreshChunk(bukkitchunk.getX(), bukkitchunk.getZ());
+			
+			// clear block list
+			entry.getValue().clear();	
 		}
 
 		destroyedBlocks.clear();

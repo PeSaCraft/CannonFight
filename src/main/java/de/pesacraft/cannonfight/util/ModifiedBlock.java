@@ -20,7 +20,7 @@ public class ModifiedBlock {
 		data = b.getData();
 	}
 
-	public Material getMat() {
+	public Material getMaterial() {
 		return mat;
 	}
 	
