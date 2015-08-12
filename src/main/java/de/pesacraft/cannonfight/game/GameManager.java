@@ -1,6 +1,7 @@
 package de.pesacraft.cannonfight.game;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.command.defaults.GameRuleCommand;
@@ -84,14 +85,18 @@ public class GameManager {
 		if (!isGameRunning()) {
 			if (force || queue.size() == arena.getRequiredPlayers()) {
 				game = new Game(arena);
-		
-				for (CannonFighter c : queue) {
+				
+				Iterator<CannonFighter> it = queue.iterator();
+				
+				while (it.hasNext()) {
+					CannonFighter c = it.next();
+					
 					if (!game.addPlayer(c))
 						// spieler konnte nicht beitreten
 						break;
 				
 					// spieler beigetreten
-					queue.remove(c);
+					it.remove();
 					c.setInQueue(null);
 				}
 				
