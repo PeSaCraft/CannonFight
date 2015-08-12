@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -21,8 +22,14 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.mongodb.client.MongoCollection;
@@ -35,7 +42,7 @@ import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.Upgrade;
 
 @SuppressWarnings("unchecked")
-public class FireballCannon extends Cannon {
+public class FireballCannon extends Cannon implements Listener {
 
 	private static final MongoCollection<Document> COLLECTION;
 	
@@ -74,12 +81,12 @@ public class FireballCannon extends Cannon {
 				AMMO_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Integer>((Document) ammo.getValue()));
 			
 			Document radiusList = (Document) doc.get("radius");
-			for (Entry<String, Object> ammo : ammoList.entrySet())
-				RADIUS_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Double>((Document) ammo.getValue()));
+			for (Entry<String, Object> radius : radiusList.entrySet())
+				RADIUS_MAP.put(Integer.parseInt(radius.getKey()), new Upgrade<Double>((Document) radius.getValue()));
 			
-			Document damage = (Document) doc.get("damage");
-			for (Entry<String, Object> ammo : ammoList.entrySet())
-				DAMAGE_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Double>((Document) ammo.getValue()));
+			Document damageList = (Document) doc.get("damage");
+			for (Entry<String, Object> damage : damageList.entrySet())
+				DAMAGE_MAP.put(Integer.parseInt(damage.getKey()), new Upgrade<Double>((Document) damage.getValue()));
 			
 		}
 		else {
@@ -122,10 +129,10 @@ public class FireballCannon extends Cannon {
 			doc = doc.append("radius", new Document(radiusMap));
 			doc = doc.append("damage", new Document(damageMap));
 			
-			COLLECTION.insertOne(doc);	
+			COLLECTION.insertOne(doc);
 		}
 	}
-
+	
 	@Override
 	public String getName() {
 		return NAME;
@@ -133,27 +140,33 @@ public class FireballCannon extends Cannon {
 	
 	private int maxAmmo;
 	private int currentAmmo;
-	private double radius;
+	private float radius;
 	private double damage;
 	private ItemStack item;
+	
+	private List<Fireball> shoot;
 	
 	public FireballCannon(int levelAmmo, int levelCooldown, int levelRadius, int levelDamage) throws SQLException {
 		super(COOLDOWN_MAP.get(levelCooldown).getValue());
 	
 		currentAmmo = maxAmmo = AMMO_MAP.get(levelAmmo).getValue();
 			
-		radius = RADIUS_MAP.get(levelRadius).getValue();
+		radius = RADIUS_MAP.get(levelRadius).getValue().floatValue();
 		damage = DAMAGE_MAP.get(levelDamage).getValue();
 	
 		item = ITEM.clone();
+		
+		shoot = new ArrayList<Fireball>();
+		
+		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
+
 
 	@Override
 	public ItemStack getItem() {
 		return item;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean fire(CannonFighter fighter) {
 		if (!hasFinished())
@@ -166,22 +179,36 @@ public class FireballCannon extends Cannon {
 		
 		Player p = fighter.getPlayer();
 		
-		Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
-		
-		Material m = b.getType();
-		
-		b.setType(Material.SKULL);
-		Skull skull = (Skull) b.getState();
-		skull.setSkullType(SkullType.PLAYER);
-		skull.setOwner("FroznMine");
-		skull.update(true);
-
-		FallingBlock fb = p.getWorld().spawnFallingBlock(p.getLocation(), Material.SKULL, b.getData());
-	
-		b.setType(m);
-		fb.setVelocity(new Vector(0, 50, 0));
+		Fireball fball = p.launchProjectile(Fireball.class);
+		fball.setVelocity(fball.getVelocity().multiply(2));
+		shoot.add(fball);
 		
 		return true;
+	}
+	
+	@EventHandler
+	public void onExplosionPrime(ExplosionPrimeEvent event) {
+		if (shoot.contains(event.getEntity()))
+			event.setRadius(radius);
+	}
+	
+	@EventHandler
+	public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
+		if (!shoot.contains(event.getDamager()))
+			return;
+		
+		event.setDamage(damage);
+		
+		/* muss später aus der Liste entfernt werden,
+		 * da es mehrere EntityDamageByEntityEvents gibt,
+		 * pro getroffene Entity eins
+		 */
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				shoot.remove(event.getDamager());
+			}
+		}.runTaskLater(CannonFight.PLUGIN, 1);
 	}
 
 	@Override
@@ -202,5 +229,5 @@ public class FireballCannon extends Cannon {
 	@Override
 	protected void finished() {
 		item.setDurability(item.getType().getMaxDurability());
-	}
+	}		
 }

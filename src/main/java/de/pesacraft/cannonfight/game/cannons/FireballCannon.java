@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -22,6 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -34,7 +36,7 @@ import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.Upgrade;
 
 @SuppressWarnings("unchecked")
-public class FireballCannon extends Cannon {
+public class FireballCannon extends Cannon implements Listener {
 
 	private static final MongoCollection<Document> COLLECTION;
 	
@@ -73,12 +75,12 @@ public class FireballCannon extends Cannon {
 				AMMO_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Integer>((Document) ammo.getValue()));
 			
 			Document radiusList = (Document) doc.get("radius");
-			for (Entry<String, Object> ammo : ammoList.entrySet())
-				RADIUS_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Double>((Document) ammo.getValue()));
+			for (Entry<String, Object> radius : radiusList.entrySet())
+				RADIUS_MAP.put(Integer.parseInt(radius.getKey()), new Upgrade<Double>((Document) radius.getValue()));
 			
-			Document damage = (Document) doc.get("damage");
-			for (Entry<String, Object> ammo : ammoList.entrySet())
-				DAMAGE_MAP.put(Integer.parseInt(ammo.getKey()), new Upgrade<Double>((Document) ammo.getValue()));
+			Document damageList = (Document) doc.get("damage");
+			for (Entry<String, Object> damage : damageList.entrySet())
+				DAMAGE_MAP.put(Integer.parseInt(damage.getKey()), new Upgrade<Double>((Document) damage.getValue()));
 			
 		}
 		else {
@@ -145,6 +147,8 @@ public class FireballCannon extends Cannon {
 		damage = DAMAGE_MAP.get(levelDamage).getValue();
 	
 		item = ITEM.clone();
+		
+		Bukkit.getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
 
 	@Override
