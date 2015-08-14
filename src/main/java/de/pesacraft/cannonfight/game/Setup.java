@@ -116,6 +116,16 @@ public class Setup {
 		doc = doc.append("requiredPlayers", reqPlayers);
 		doc = doc.append("world", loc1.getWorld().getName());
 		
+		// loc1 has lower, loc2 upper bounds
+		int x1 = Math.min(loc1.getBlockX(), loc2.getBlockX());
+		int y1 = Math.min(loc1.getBlockY(), loc2.getBlockY());
+		int z1 = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
+		int x2 = Math.max(loc1.getBlockX(), loc2.getBlockX());
+		int y2 = Math.max(loc1.getBlockY(), loc2.getBlockY());
+		int z2 = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
+		loc1 = new Location(loc1.getWorld(), x1, y1, z1);
+		loc2 = new Location(loc2.getWorld(), x2, y2, z2);
+		
 		Document docLoc = new Document("x", loc1.getBlockX());
 		docLoc = docLoc.append("y", loc1.getBlockY());
 		docLoc = docLoc.append("z", loc1.getBlockZ());
