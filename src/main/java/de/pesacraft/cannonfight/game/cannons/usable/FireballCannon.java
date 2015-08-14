@@ -147,7 +147,7 @@ public class FireballCannon extends Cannon implements Listener {
 	
 	private static CannonConstructor constructor;
 	
-	static {
+	public static void setup() {	
 		constructor = new CannonConstructor() {
 			
 			@Override
@@ -511,5 +511,7 @@ shop = new ShopGroup(new ShopMaker() {
 	@Override
 	public CannonConstructor getCannonConstructor() {
 		return null;
-	}	
+	}
+
+		
 }

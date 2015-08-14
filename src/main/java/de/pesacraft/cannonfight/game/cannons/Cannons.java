@@ -17,6 +17,9 @@ public class Cannons {
 	 */
 	private static final Map<String, CannonConstructor> cannons = new HashMap<String, CannonConstructor>();
 	
+	static {
+		FireballCannon.setup();
+	}
 	public static Map<String, CannonConstructor> getCannons() {
 		return cannons;
 	}
