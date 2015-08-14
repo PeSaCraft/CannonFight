@@ -120,7 +120,7 @@ public class CannonFighter {
 			if (c.getItem().equals(item)) {
 				// that is the used cannon
 				try {
-					return c.fire(this);
+					return c.fire();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -200,5 +200,13 @@ public class CannonFighter {
 
 	public Arena getArenaQueuing() {
 		return inQueue;
+	}
+
+	public List<Cannon> getActiveItems() {
+		return this.activeItems;
+	}
+
+	public Cannon getCannon(String name) {
+		return null;
 	}
 }
