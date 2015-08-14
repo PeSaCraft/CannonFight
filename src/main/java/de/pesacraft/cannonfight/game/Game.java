@@ -19,6 +19,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.entity.Player;
@@ -31,6 +32,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,6 +44,7 @@ import de.pesacraft.cannonfight.api.game.CannonFighterJoinGameEvent;
 import de.pesacraft.cannonfight.api.game.CannonFighterLeaveEvent;
 import de.pesacraft.cannonfight.api.game.GameOverEvent;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.util.ModifiedBlock;
 
 public class Game implements Listener {
@@ -153,8 +156,7 @@ public class Game implements Listener {
 			if (time == 0) {
 				for (Entry<CannonFighter, Role> entry : participants.entrySet()) {
 					if (entry.getValue() == Role.PLAYER) {
-						entry.getKey().getPlayer().setWalkSpeed(0);
-						entry.getKey().getPlayer().setFlySpeed(0);
+						preparePlayer(entry.getKey());
 					}
 				}
 				state = GameState.START;
@@ -246,6 +248,26 @@ public class Game implements Listener {
 			break;
 		}
 		time--;	
+	}
+
+	private void preparePlayer(CannonFighter c) {
+		
+		Configuration config = CannonFight.PLUGIN.getConfig();
+		
+		Player p = c.getPlayer();
+		
+		p.setWalkSpeed(0);
+		p.setFlySpeed(0);
+		
+		p.setMaxHealth(config.getDouble("game.lives.perLive"));
+		p.setHealth(p.getPlayer().getMaxHealth());
+		p.setFoodLevel(20);
+		
+		Inventory inv = p.getInventory();
+		
+		for (Cannon cannon : c.getActiveItems()) {
+			inv.addItem(cannon.getItem());
+		}
 	}
 
 	private void nextCountdown() {
@@ -452,11 +474,9 @@ public class Game implements Listener {
 			for (ModifiedBlock b : entry.getValue()) {
 				BlockPosition bp = new BlockPosition(b.getXOffset(), b.getYOffset(), b.getZOffset());
 				IBlockData ibd = net.minecraft.server.v1_8_R1.Block.getByCombinedId(b.getMaterial().getId() + (b.getData() << 12));
-				chunk.a(bp, ibd);// set block
+				chunk.a(bp, ibd); // set block
 			}
 
-			
-			
 			// lighning updaten
 			chunk.initLighting();
 			// resend chunk
@@ -470,4 +490,11 @@ public class Game implements Listener {
 		destroyedBlocks.clear();
 	}
 
+	public boolean locIsInArena(Location loc) {
+		Location lower = arena.getLowerBound();
+		Location upper = arena.getUpperBound();
+		return loc.getBlockX() >= lower.getBlockX() && loc.getBlockX() <= upper.getBlockX()
+				&& loc.getBlockY() >= lower.getBlockY() && loc.getBlockY() <= upper.getBlockY()
+				&& loc.getBlockZ() >= lower.getBlockZ() && loc.getBlockZ() <= upper.getBlockZ();
+	}
 }
