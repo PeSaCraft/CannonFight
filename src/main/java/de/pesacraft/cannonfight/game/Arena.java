@@ -97,6 +97,14 @@ public class Arena {
 		return requiredPlayers;
 	}
 	
+	public Location getLowerBound() {
+		return loc1;
+	}
+	
+	public Location getUpperBound() {
+		return loc2;
+	}
+	
 	@Override
 	public String toString() {
 		String s = "###Arena### Game: CannonFight, ";
