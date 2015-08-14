@@ -2,29 +2,30 @@ package de.pesacraft.cannonfight.game.cannons;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
 
 public class Cannons {
 	/**
 	 * A list containing all available cannons
 	 */
-	private static final Set<Cannon> cannons = new HashSet<Cannon>();
+	private static final Map<String, CannonConstructor> cannons = new HashMap<String, CannonConstructor>();
 	
-	public static void load() {
-		File folder = new File(CannonFight.PLUGIN.getDataFolder() + "cannons");
-	}
-	
-	public static Set<Cannon> getCannons() {
+	public static Map<String, CannonConstructor> getCannons() {
 		return cannons;
 	}
 
-	public static Cannon getByName(String cannonName) {
-		for (Cannon c : cannons)
-			if (c.getName().equals(cannonName)) return c;
-		return null;
+	public static CannonConstructor getConstructorByName(String cannonName) {
+		return cannons.get(cannonName);
+	}
+
+	public static void register(String name, CannonConstructor constructor) {
+		cannons.put(name, constructor);
 	}
 }
