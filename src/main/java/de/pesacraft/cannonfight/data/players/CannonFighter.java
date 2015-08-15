@@ -4,8 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bson.Document;
 import org.bukkit.Location;
@@ -21,6 +24,8 @@ import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Game;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
+import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
+import de.pesacraft.cannonfight.game.cannons.Cannons;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.lobbysystem.user.User;
@@ -37,6 +42,8 @@ public class CannonFighter {
 	
 	private List<Cannon> activeItems;
 	
+	private Map<String, Cannon> cannons;
+	
 	static {
 		COLLECTION = Collection.PLAYERS();
 	}
@@ -48,16 +55,32 @@ public class CannonFighter {
 		if (doc != null) {
 			// Player in database
 			xp = doc.getInteger("xp");
-			activeItems = (List<Cannon>) doc.get("activeItems");
+			
+			cannons = new HashMap<String, Cannon>();
+			Document cannons = (Document) doc.get("cannons");
+			
+			for (Entry<String, Object> entry : cannons.entrySet()) {
+				CannonConstructor constructor = Cannons.getConstructorByName(entry.getKey());
+				
+				this.cannons.put(entry.getKey(), constructor.construct(this, (Document) entry.getValue()));
+			}
+			
+			List<String> activeItems = (List<String>) doc.get("activeItems");
+			
+			for (String c : activeItems) {
+				this.activeItems.add(this.cannons.get(c));
+			}
 		}
 		else {
 			// Player not in database
 			xp = 0;
+			cannons = new HashMap<String, Cannon>();
 			activeItems = new ArrayList<Cannon>();
 			
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
 			doc = doc.append("activeItems", activeItems);
+			doc = doc.append("cannons", cannons);
 			
 			COLLECTION.insertOne(doc);
 		}
@@ -205,7 +228,7 @@ public class CannonFighter {
 	public List<Cannon> getActiveItems() {
 		return this.activeItems;
 	}
-
+	
 	public Cannon getCannon(String name) {
 		return null;
 	}
