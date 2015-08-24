@@ -30,12 +30,11 @@ public class DatabaseMoney implements Money {
 		
 		if (doc.containsKey("coins"))
 			// has coins
-			return doc.getInteger("coins");
+			return ((Number) doc.get("coins")).intValue();
 		
 		// no coins -> 0 coins, store that
 		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId().toString()), new Document("$set", new Document("coins", 0)));
-		return 0;
-		
+		return 0;	
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class DatabaseMoney implements Money {
 		
 		int newAmount = amount;
 		if (doc.containsKey("coins"))
-			newAmount += doc.getInteger("coins");
+			newAmount += ((Number) doc.get("coins")).intValue();
 		
 		COLLECTION.updateOne(eq("uuid", c.getPlayer().getUniqueId().toString()), new Document("$set", new Document("coins", newAmount)));
 		
@@ -61,7 +60,7 @@ public class DatabaseMoney implements Money {
 		
 		Document doc = COLLECTION.find(eq("uuid", c.getPlayer().getUniqueId().toString())).first();
 		
-		int newAmount = doc.getInteger("coins") - amount;
+		int newAmount = ((Number) doc.get("coins")).intValue() - amount;
 		
 		if (newAmount < 0)
 			return false;
