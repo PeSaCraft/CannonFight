@@ -226,4 +226,9 @@ public class CannonFighter {
 	public Cannon getCannon(String name) {
 		return cannons.get(name);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (obj instanceof CannonFighter) ? ((CannonFighter) obj).getName().equals(this.getName()) : false;
+	}
 }
