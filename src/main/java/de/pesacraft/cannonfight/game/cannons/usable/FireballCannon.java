@@ -5,6 +5,7 @@ import static com.mongodb.client.model.Filters.eq;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import java.util.Map.Entry;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,12 +35,14 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
@@ -152,10 +156,10 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			@Override
 			public Cannon construct(CannonFighter fighter, Map<String, Object> map) {
-				int ammo = (int) map.get("ammo");
-				int cooldown = (int) map.get("cooldown");
-				int radius = (int) map.get("radius");
-				int damage = (int) map.get("damage");
+				int ammo = ((Number) map.get("ammo")).intValue();
+				int cooldown = ((Number) map.get("cooldown")).intValue();
+				int radius = ((Number) map.get("radius")).intValue();
+				int damage = ((Number) map.get("damage")).intValue();
 				return new FireballCannon(fighter, ammo, cooldown, radius, damage);
 			}
 			
@@ -322,18 +326,22 @@ public class FireballCannon extends Cannon implements Listener {
 	private static ShopGroup shop;
 	
 	static {
-shop = new ShopGroup(new ShopMaker() {
+		shop = new ShopGroup(new ShopMaker() {
 			
 			@Override
-			public Shop createShop(CannonFighter c) {
-				FireballCannon cannon = (FireballCannon) c.getCannon(NAME);
+			public Shop createShop(final CannonFighter c) {
+				final FireballCannon cannon = (FireballCannon) c.getCannon(NAME);
 				
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData());
 				
-				final ItemStack cooldownItem = getCooldownItem(cannon.levelCooldown);
-				final ItemStack ammoItem = getAmmoItem(cannon.levelAmmo);
-				final ItemStack radiusItem = getRadiusItem(cannon.levelRadius);
-				final ItemStack damageItem = getDamageItem(cannon.levelDamage);
+				final ItemStack cooldownItem = new ItemStack(Material.AIR);
+				setCooldownItem(cooldownItem, cannon.levelCooldown);
+				final ItemStack ammoItem = new ItemStack(Material.AIR);
+				setAmmoItem(ammoItem, cannon.levelAmmo);
+				final ItemStack radiusItem = new ItemStack(Material.AIR);
+				setRadiusItem(radiusItem, cannon.levelRadius);
+				final ItemStack damageItem = new ItemStack(Material.AIR);
+				setDamageItem(damageItem, cannon.levelDamage);
 				
 				Shop s = new Shop(NAME + "-Shop", new ClickHandler() {
 					
@@ -346,47 +354,110 @@ shop = new ShopGroup(new ShopMaker() {
 						
 						if (item.isSimilar(cooldownItem)) {
 							// upgrade cooldown
-							System.out.println("Cooldown upgrade!");
+							if (!COOLDOWN_MAP.containsKey(cannon.levelCooldown + 1)) {
+								// max reached
+								c.sendMessage(Language.get("error.max-upgraded"));
+								return;
+							}
+							
+							if (!cannon.upgradeCooldown()) {
+								// not enough coins for upgrade
+								c.sendMessage(Language.get("error.not-enough-coins"));
+								return;
+							}
+							
+							// upgrade done
+							setCooldownItem(cooldownItem, cannon.levelCooldown);
+							
+							event.setCloseInventory(true);
 							return;
 						}
 						
 						if (item.isSimilar(ammoItem)) {
 							// upgrade ammo
-							System.out.println("Ammo upgrade!");
+							if (!AMMO_MAP.containsKey(cannon.levelAmmo + 1)) {
+								// max reached
+								c.sendMessage(Language.get("error.max-upgraded"));
+								return;
+							}
+							
+							if (!cannon.upgradeAmmo()) {
+								// not enough coins for upgrade
+								c.sendMessage(Language.get("error.not-enough-coins"));
+								return;
+							}
+							
+							// upgrade done
+							setAmmoItem(ammoItem, cannon.levelAmmo);
+							
+							event.setCloseInventory(true);
 							return;
 						}
 						
 						if (item.isSimilar(radiusItem)) {
 							// upgrade radius
-							System.out.println("Radius upgrade!");
+							if (!RADIUS_MAP.containsKey(cannon.levelRadius + 1)) {
+								// max reached
+								c.sendMessage(Language.get("error.max-upgraded"));
+								return;
+							}
+							
+							if (!cannon.upgradeRadius()) {
+								// not enough coins for upgrade
+								c.sendMessage(Language.get("error.not-enough-coins"));
+								return;
+							}
+							
+							// upgrade done
+							setRadiusItem(radiusItem, cannon.levelRadius);
+							
+							event.setCloseInventory(true);
 							return;
 						}
 						
 						if (item.isSimilar(damageItem)) {
 							// upgrade damage
-							System.out.println("Damage upgrade!");
+							if (!DAMAGE_MAP.containsKey(cannon.levelDamage + 1)) {
+								// max reached
+								c.sendMessage(Language.get("error.max-upgraded"));
+								return;
+							}
+							
+							if (!cannon.upgradeDamage()) {
+								// not enough coins for upgrade
+								c.sendMessage(Language.get("error.not-enough-coins"));
+								return;
+							}
+							
+							// upgrade done
+							setDamageItem(damageItem, cannon.levelDamage);
+							
+							event.setCloseInventory(true);
 							return;
 						}
 					}
 				}, 3);
+				
 				s.fill(fill);
 				
 				s.set(0 * 9 + 4, FireballCannon.getItemStack()); // (0, 4) Logo
 				
 				s.set(1 * 9 + 1, cooldownItem); // (1, 1) Cooldown
-				s.set(1 * 9 + 3, cooldownItem); // (1, 3) Ammo
-				s.set(1 * 9 + 5, cooldownItem); // (1, 5) Radius
-				s.set(1 * 9 + 7, cooldownItem); // (1, 7) Damage
+				s.set(1 * 9 + 3, ammoItem); // (1, 3) Ammo
+				s.set(1 * 9 + 5, radiusItem); // (1, 5) Radius
+				s.set(1 * 9 + 7, damageItem); // (1, 7) Damage
 				
-				return null;
+				return s;
 			}
 			
-			private ItemStack getCooldownItem(int levelCooldown) {
-				ItemStack cooldownItem = new ItemStack(Material.WATCH);
+			private void setCooldownItem(ItemStack cooldownItem, int levelCooldown) {
+				cooldownItem.setType(Material.WATCH);
 				
 				cooldownItem.setAmount(levelCooldown);
 				
-				cooldownItem.getItemMeta().setDisplayName("Cooldown Upgrade");
+				ItemMeta meta = cooldownItem.getItemMeta();
+				
+				meta.setDisplayName("Cooldown Upgrade");
 				
 				List<String> lore = new ArrayList<String>();
 				
@@ -395,28 +466,31 @@ shop = new ShopGroup(new ShopMaker() {
 				
 				if (newLevel != null) {
 					// upgradable
-					lore.add("&eUpgrade auf Level " + (levelCooldown + 1));
+					lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (levelCooldown + 1));
 				
-					lore.add("&bPreis: " + newLevel.getPrice());
+					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
-					double change = 1 - (double) newLevel.getValue() / oldLevel.getValue();
-					lore.add("&2Cooldownzeit: " + newLevel.getValue() + "|" + (change < 1 ? "&a " : "&4 ") + change); // green if getting lower, red if getting higher
+					int change = newLevel.getValue() - oldLevel.getValue();
+					lore.add(ChatColor.DARK_GREEN + "Cooldownzeit: " + newLevel.getValue() + (change < 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting lower, red if getting higher
 				}
 				else {
 					// not upgradable anymore
-					lore.add("&4Die Cooldownzeit ist bereits maximal verbessert!");
+					lore.add(ChatColor.GREEN + "Die Cooldownzeit ist bereits maximal verbessert!");
 				}
 				
-				cooldownItem.getItemMeta().setLore(lore);
+				meta.setLore(lore);
 				
-				return cooldownItem;
+				cooldownItem.setItemMeta(meta);
 			}
 			
-			private ItemStack getAmmoItem(int levelAmmo) {
-				ItemStack ammoItem = new ItemStack(Material.MELON_SEEDS);
+			private void setAmmoItem(ItemStack ammoItem, int levelAmmo) {
+				ammoItem.setType(Material.MELON_SEEDS);
+				
 				ammoItem.setAmount(levelAmmo);
 				
-				ammoItem.getItemMeta().setDisplayName("Ammo Upgrade");
+				ItemMeta meta = ammoItem.getItemMeta();
+				
+				meta.setDisplayName("Ammo Upgrade");
 				
 				List<String> lore = new ArrayList<String>();
 				
@@ -425,28 +499,31 @@ shop = new ShopGroup(new ShopMaker() {
 				
 				if (newLevel != null) {
 					// upgradable
-					lore.add("&eUpgrade auf Level " + (levelAmmo + 1));
+					lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (levelAmmo + 1));
 				
-					lore.add("&bPreis: " + newLevel.getPrice());
+					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
-					double change = 1 - (double) newLevel.getValue() / oldLevel.getValue();
-					lore.add("&2Munition: " + newLevel.getValue() + "|" + (change > 1 ? "&a " : "&4 ") + change); // green if getting higher, red if getting lower
+					int change = newLevel.getValue() - oldLevel.getValue();
+					lore.add(ChatColor.DARK_GREEN + "Munition: " + newLevel.getValue() + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
-					lore.add("&4Die Munition ist bereits maximal verbessert!");
+					lore.add(ChatColor.GREEN + "Die Munition ist bereits maximal verbessert!");
 				}
 				
-				ammoItem.getItemMeta().setLore(lore);
+				meta.setLore(lore);
 				
-				return ammoItem;
+				ammoItem.setItemMeta(meta);
 			}
 			
-			private ItemStack getRadiusItem(int levelRadius) {
-				ItemStack radiusItem = new ItemStack(Material.COMPASS);
+			private void setRadiusItem(ItemStack radiusItem, int levelRadius) {
+				radiusItem.setType(Material.COMPASS);
+				
 				radiusItem.setAmount(levelRadius);
 				
-				radiusItem.getItemMeta().setDisplayName("Radius Upgrade");
+				ItemMeta meta = radiusItem.getItemMeta();
+				
+				meta.setDisplayName("Radius Upgrade");
 				
 				List<String> lore = new ArrayList<String>();
 				
@@ -455,28 +532,31 @@ shop = new ShopGroup(new ShopMaker() {
 				
 				if (newLevel != null) {
 					// upgradable
-					lore.add("&eUpgrade auf Level " + (levelRadius + 1));
+					lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (levelRadius + 1));
 				
-					lore.add("&bPreis: " + newLevel.getPrice());
+					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
-					double change = 1 - (double) newLevel.getValue() / oldLevel.getValue();
-					lore.add("&2Radius: " + newLevel.getValue() + "|" + (change > 1 ? "&a " : "&4 ") + change); // green if getting higher, red if getting lower
+					double change = newLevel.getValue() - oldLevel.getValue();
+					lore.add(ChatColor.DARK_GREEN + "Radius: " + newLevel.getValue() + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
-					lore.add("&4Der Radius ist bereits maximal verbessert!");
+					lore.add(ChatColor.GREEN + "Der Radius ist bereits maximal verbessert!");
 				}
 				
-				radiusItem.getItemMeta().setLore(lore);
+				meta.setLore(lore);
 				
-				return radiusItem;
+				radiusItem.setItemMeta(meta);
 			}
 			
-			private ItemStack getDamageItem(int levelDamage) {
-				ItemStack damageItem = new ItemStack(Material.REDSTONE);
+			private void setDamageItem(ItemStack damageItem, int levelDamage) {
+				damageItem.setType(Material.REDSTONE);
+				
 				damageItem.setAmount(levelDamage);
 				
-				damageItem.getItemMeta().setDisplayName("Damage Upgrade");
+				ItemMeta meta = damageItem.getItemMeta();
+				
+				meta.setDisplayName("Damage Upgrade");
 				
 				List<String> lore = new ArrayList<String>();
 				
@@ -485,21 +565,21 @@ shop = new ShopGroup(new ShopMaker() {
 				
 				if (newLevel != null) {
 					// upgradable
-					lore.add("&eUpgrade auf Level " + (levelDamage + 1));
+					lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (levelDamage + 1));
 				
-					lore.add("&bPreis: " + newLevel.getPrice());
+					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
-					double change = 1 - (double) newLevel.getValue() / oldLevel.getValue();
-					lore.add("&2Schaden: " + newLevel.getValue() + "|" + (change > 1 ? "&a " : "&4 ") + change); // green if getting higher, red if getting lower
+					double change = newLevel.getValue() - oldLevel.getValue();
+					lore.add(ChatColor.DARK_GREEN + "Schaden: " + newLevel.getValue() + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
-					lore.add("&4Der Schaden ist bereits maximal verbessert!");
+					lore.add(ChatColor.GREEN + "Der Schaden ist bereits maximal verbessert!");
 				}
 				
-				damageItem.getItemMeta().setLore(lore);
+				meta.setLore(lore);
 				
-				return damageItem;
+				damageItem.setItemMeta(meta);
 			}
 		});
 	}
@@ -508,10 +588,75 @@ shop = new ShopGroup(new ShopMaker() {
 		shop.open(c);
 	}
 
-	@Override
-	public CannonConstructor getCannonConstructor() {
-		return null;
+	public boolean upgradeCooldown() {
+		Upgrade<Integer> upgrade = COOLDOWN_MAP.get(levelCooldown + 1);
+		
+		if (!player.hasEnoughCoins(upgrade.getPrice()))
+			return false;
+		
+		levelCooldown++;
+		
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".cooldown", levelCooldown)));
+		setTime(upgrade.getValue());
+		
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Cooldown auf Level " + levelCooldown);
+		
+		return true;
 	}
 
+	public boolean upgradeAmmo() {
+		Upgrade<Integer> upgrade = AMMO_MAP.get(levelAmmo + 1);
 		
+		if (!player.hasEnoughCoins(upgrade.getPrice()))
+			return false;
+		
+		levelAmmo++;
+		
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".ammo", levelAmmo)));
+		
+		maxAmmo = upgrade.getValue();
+		
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Ammo auf Level " + levelAmmo);
+		
+		return true;
+	}
+
+	public boolean upgradeRadius() {
+		Upgrade<Double> upgrade = RADIUS_MAP.get(levelRadius + 1);
+		
+		if (!player.hasEnoughCoins(upgrade.getPrice()))
+			return false;
+		
+		levelRadius++;
+		
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".radius", levelRadius)));
+		
+		radius = upgrade.getValue().floatValue();
+		
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Radius auf Level " + levelRadius);
+		
+		return true;
+	}
+	
+	public boolean upgradeDamage() {
+		Upgrade<Double> upgrade = DAMAGE_MAP.get(levelDamage + 1);
+		
+		if (!player.hasEnoughCoins(upgrade.getPrice()))
+			return false;
+		
+		levelDamage++;
+		
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".damage", levelDamage)));
+		
+		damage = upgrade.getValue();
+		
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Damage auf Level " + levelDamage);
+		
+		return true;
+	}
+	
+	@Override
+	public CannonConstructor getCannonConstructor() {
+		return constructor;
+	}
 }
