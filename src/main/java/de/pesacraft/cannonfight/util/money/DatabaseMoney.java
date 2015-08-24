@@ -69,4 +69,8 @@ public class DatabaseMoney implements Money {
 		return true;
 	}
 
+	@Override
+	public boolean hasEnoughMoney(CannonFighter c, int amount) {
+		return getMoney(c) >= amount;
+	}
 }

@@ -56,4 +56,8 @@ public class CraftConomyMoney implements Money {
 	
 	}
 
+	@Override
+	public boolean hasEnoughMoney(CannonFighter c, int amount) {
+		return getMoney(c) >= amount;
+	}
 }

@@ -96,7 +96,7 @@ public class CannonFighter {
 	}
 	
 	public boolean hasEnoughCoins(int amount) {
-		return CannonFight.MONEY.getMoney(this) >= amount;
+		return CannonFight.MONEY.hasEnoughMoney(this, amount);
 	}
 	
 	public User getUser() {
@@ -221,6 +221,10 @@ public class CannonFighter {
 
 	public List<Cannon> getActiveItems() {
 		return this.activeItems;
+	}
+	
+	public boolean hasCannon(String name) {
+		return cannons.containsKey(name);
 	}
 	
 	public Cannon getCannon(String name) {
