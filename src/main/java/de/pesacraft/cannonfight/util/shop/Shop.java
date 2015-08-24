@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
-import de.pesacraft.cannonfight.util.InventoryHelper;
 
 public class Shop implements Listener {
 	protected String name;
@@ -48,7 +47,7 @@ public class Shop implements Listener {
 	}
 	
 	public void fill(ItemStack item) {
-		for (int i = 0; i <= items.length; i++)
+		for (int i = 0; i < items.length; i++)
 			items[i] = item.clone();
 	}
 	
@@ -73,7 +72,6 @@ public class Shop implements Listener {
 		ItemSelectEvent e = new ItemSelectEvent(CannonFighter.get((Player) event.getWhoClicked()), event.getCurrentItem());
 		
 		handler.onItemSelect(e);
-		
 		
 		if (e.closeInventory())
 			event.getWhoClicked().closeInventory();

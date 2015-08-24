@@ -40,7 +40,7 @@ public class CannonFighter {
 	private Game currentGame;
 	private Arena inQueue;
 	
-	private List<Cannon> activeItems;
+	private List<Cannon> activeItems = new ArrayList<Cannon>();
 	
 	private Map<String, Cannon> cannons;
 	
@@ -75,7 +75,6 @@ public class CannonFighter {
 			// Player not in database
 			xp = 0;
 			cannons = new HashMap<String, Cannon>();
-			activeItems = new ArrayList<Cannon>();
 			
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
@@ -92,18 +91,13 @@ public class CannonFighter {
 		CannonFight.MONEY.giveMoney(this, amount);
 	}
 	
-//	public boolean buyUpgrade(String cannonName) {
-//		int newLevel = cannonLevels.get(cannonName) + 1;
-//		double price = Cannons.getByName(cannonName).getUpgradePrice(newLevel);
-//		
-//		if (price > coins) return false;
-//		
-//		coins -= price;
-//		
-//		cannonLevels.put(cannonName, newLevel);
-//		
-//		return true;
-//	}
+	public boolean takeCoins(int amount, String... reason) {
+		return CannonFight.MONEY.takeMoney(this, amount, reason);
+	}
+	
+	public boolean hasEnoughCoins(int amount) {
+		return CannonFight.MONEY.getMoney(this) >= amount;
+	}
 	
 	public User getUser() {
 		return this.user;
@@ -230,6 +224,6 @@ public class CannonFighter {
 	}
 	
 	public Cannon getCannon(String name) {
-		return null;
+		return cannons.get(name);
 	}
 }
