@@ -20,6 +20,7 @@ public class Cannons {
 	static {
 		FireballCannon.setup();
 	}
+	
 	public static Map<String, CannonConstructor> getCannons() {
 		return cannons;
 	}
@@ -30,5 +31,9 @@ public class Cannons {
 
 	public static void register(String name, CannonConstructor constructor) {
 		cannons.put(name, constructor);
+	}
+
+	public static Set<String> getCannonSet() {
+		return cannons.keySet();
 	}
 }
