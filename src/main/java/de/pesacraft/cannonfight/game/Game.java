@@ -19,6 +19,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.v1_8_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
@@ -256,8 +257,7 @@ public class Game implements Listener {
 		
 		Player p = c.getPlayer();
 		
-		p.setWalkSpeed(0);
-		p.setFlySpeed(0);
+		createCage(p);
 		
 		p.setMaxHealth(config.getDouble("game.lives.perLive"));
 		p.setHealth(p.getPlayer().getMaxHealth());
@@ -268,6 +268,31 @@ public class Game implements Listener {
 		for (Cannon cannon : c.getActiveItems()) {
 			inv.addItem(cannon.getItem());
 		}
+	}
+
+	private void createCage(Player p) {
+		Block center = p.getEyeLocation().getBlock();
+
+		Block b = center.getRelative(BlockFace.UP);
+		if (!b.getType().isSolid())
+			b.setType(Material.BARRIER);
+		
+		b = center.getRelative(BlockFace.NORTH);
+		if (!b.getType().isSolid())
+			b.setType(Material.BARRIER);
+		
+		b = center.getRelative(BlockFace.EAST);
+		if (!b.getType().isSolid())
+			b.setType(Material.BARRIER);
+		
+		b = center.getRelative(BlockFace.SOUTH);
+		if (!b.getType().isSolid())
+			b.setType(Material.BARRIER);
+		
+		b = center.getRelative(BlockFace.WEST);
+		if (!b.getType().isSolid())
+			b.setType(Material.BARRIER);
+		
 	}
 
 	private void nextCountdown() {
@@ -306,7 +331,6 @@ public class Game implements Listener {
 		participants.remove(c);
 		
 		return true;
-		
 	}
 	
 	public int getMaxPlayers() {
@@ -335,7 +359,7 @@ public class Game implements Listener {
 			c.use(event.getItem());
 		}
 	}
-		
+
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
 		if (event.getGame() != this)
@@ -393,7 +417,7 @@ public class Game implements Listener {
 			c.sendMessage(msg2); // players + " Spieler übrig!"
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCannonFighterJoin(CannonFighterJoinGameEvent event) {
 		if (event.isCancelled())
