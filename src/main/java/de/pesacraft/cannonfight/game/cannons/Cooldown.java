@@ -12,7 +12,7 @@ public abstract class Cooldown {
 	/**
 	 * The cooldowns time
 	 */
-	private final int time;
+	private int time;
 	
 	private int taskID;
 	
@@ -52,6 +52,14 @@ public abstract class Cooldown {
 		return 1 - ((double) timeLeft / time);
 	}
 	
+	public final boolean setTime(int time) {
+		if (!hasFinished())
+			// Timer running: cant change time
+			return false;
+		
+		this.time = time;
+		return true;
+	}
 	protected abstract void update();
 	
 	protected abstract void finished();
