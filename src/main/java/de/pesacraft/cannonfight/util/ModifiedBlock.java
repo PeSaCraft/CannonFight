@@ -1,5 +1,6 @@
 package de.pesacraft.cannonfight.util;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -7,15 +8,10 @@ public class ModifiedBlock {
 	private final Material mat;
 	private final byte data;
 	
-	private final int xOffset;
-	private final int yOffset;
-	private final int zOffset;
+	private final Location loc;
 	
 	public ModifiedBlock(Block b) {
-		xOffset = b.getX() & 0xF; // & 0xF is & 16, which is equal to mod 16
-		yOffset = b.getY() & 0xF; // & 0xF is & 16, which is equal to mod 16
-		zOffset = b.getZ() & 0xF; // & 0xF is & 16, which is equal to mod 16
-		
+		loc = b.getLocation();
 		mat = b.getType();
 		data = b.getData();
 	}
@@ -28,15 +24,19 @@ public class ModifiedBlock {
 		return data;
 	}
 	
+	public Location getLocation() {
+		return loc;
+	}
+	
 	public int getXOffset() {
-		return xOffset;
+		return loc.getBlockX() & 0xF; // & 0xF is & 16, which is equal to mod 16
 	}
 	
 	public int getYOffset() {
-		return yOffset;
+		return loc.getBlockY() & 0xF; // & 0xF is & 16, which is equal to mod 16
 	}
 	
 	public int getZOffset() {
-		return zOffset;
+		return loc.getBlockZ() & 0xF; // & 0xF is & 16, which is equal to mod 16
 	}
 }
