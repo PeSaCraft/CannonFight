@@ -21,4 +21,6 @@ public abstract class Cannon extends Cooldown {
 	public abstract boolean hasAmmo();
 	
 	public abstract CannonConstructor getCannonConstructor();
+	
+	public abstract void openShop();
 }
