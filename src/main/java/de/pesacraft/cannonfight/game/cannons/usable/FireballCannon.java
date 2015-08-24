@@ -24,6 +24,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Fireball;
@@ -34,6 +36,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,6 +51,7 @@ import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
 import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.Upgrade;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
@@ -85,7 +89,8 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		if (doc != null) {
 			// Cannon in database
-			ITEM = ItemStack.deserialize((Document) doc.get("item"));
+			
+			ITEM = ItemSerializer.deserialize((Document) doc.get("item"));
 			
 			Document cooldownList = (Document) doc.get("cooldown");
 			for (Entry<String, Object> cooldown : cooldownList.entrySet())
@@ -107,6 +112,10 @@ public class FireballCannon extends Cannon implements Listener {
 		else {
 			// Cannon not in database
 			ITEM = new ItemStack(Material.FIREBALL);
+			
+			ItemMeta m = ITEM.getItemMeta();
+			m.setDisplayName(NAME);
+			ITEM.setItemMeta(m);
 			
 			Map<String, Object> coolMap = new HashMap<String, Object>();
 			for (int i = 1; i <= 10; i++) {
@@ -137,7 +146,9 @@ public class FireballCannon extends Cannon implements Listener {
 			}
 		
 			doc = new Document("name", NAME);
-			doc = doc.append("item", new Document(ITEM.serialize()));
+			
+			
+			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM)));
 			
 			doc = doc.append("cooldown", new Document(coolMap));
 			doc = doc.append("ammo", new Document(ammoMap));
@@ -160,12 +171,29 @@ public class FireballCannon extends Cannon implements Listener {
 				int cooldown = ((Number) map.get("cooldown")).intValue();
 				int radius = ((Number) map.get("radius")).intValue();
 				int damage = ((Number) map.get("damage")).intValue();
+				
 				return new FireballCannon(fighter, ammo, cooldown, radius, damage);
 			}
 			
 			@Override
 			public boolean canConstruct(String name) {
 				return name.equals(NAME);
+			}
+
+			@Override
+			public Cannon buyNew(CannonFighter fighter) {
+				return new FireballCannon(fighter);
+			}
+
+			@Override
+			public int getPrice() {
+				return AMMO_MAP.get(1).getPrice() + COOLDOWN_MAP.get(1).getPrice() + RADIUS_MAP.get(1).getPrice() + DAMAGE_MAP.get(1).getPrice();
+			}
+
+			@Override
+			public ItemStack getItem() {
+				System.out.println(ITEM.getItemMeta().getDisplayName());
+				return ITEM.clone();
 			}
 		};
 		
@@ -216,6 +244,17 @@ public class FireballCannon extends Cannon implements Listener {
 		shoot = new ArrayList<Fireball>();
 		
 		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
+	}
+
+	public FireballCannon(CannonFighter player) {
+		this(player, 1, 1, 1, 1);
+		
+		Document doc = new Document("ammo", levelAmmo);
+		doc = doc.append("cooldown", levelCooldown);
+		doc = doc.append("radius", levelRadius);
+		doc = doc.append("damage", levelDamage);
+		
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME, doc)));
 	}
 
 	@Override
@@ -586,6 +625,11 @@ public class FireballCannon extends Cannon implements Listener {
 	
 	public static void openShopPage(CannonFighter c) {
 		shop.open(c);
+	}
+	
+	@Override
+	public void openShop() {
+		openShopPage(player);
 	}
 
 	public boolean upgradeCooldown() {
