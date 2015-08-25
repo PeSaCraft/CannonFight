@@ -53,7 +53,6 @@ import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
-import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.Upgrade;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
@@ -193,7 +192,6 @@ public class FireballCannon extends Cannon implements Listener {
 
 			@Override
 			public ItemStack getItem() {
-				System.out.println(ITEM.getItemMeta().getDisplayName());
 				return ITEM.clone();
 			}
 		};
@@ -390,7 +388,7 @@ public class FireballCannon extends Cannon implements Listener {
 						if (!event.isPickUpAction())
 							return;
 						
-						ItemStack item = event.getItem();
+						ItemStack item = event.getItemInSlot();
 						
 						if (item.isSimilar(fill))
 							return;

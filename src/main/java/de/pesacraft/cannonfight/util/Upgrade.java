@@ -14,7 +14,7 @@ public class Upgrade<T> extends BasicDBObject {
 		put("price", price);
 		put("value", value);
 	}
-
+	
 	public Upgrade(Map<String, Object> map) {
 		put("price", map.get("price"));
 		put("value", map.get("value"));

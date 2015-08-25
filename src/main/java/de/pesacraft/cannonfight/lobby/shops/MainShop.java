@@ -42,7 +42,7 @@ public class MainShop {
 						if (!event.isPickUpAction())
 							return;
 						
-						ItemStack item = event.getItem();
+						ItemStack item = event.getItemInSlot();
 						
 						if (item.isSimilar(fill))
 							return;
@@ -60,6 +60,7 @@ public class MainShop {
 						}
 						if (item.isSimilar(setupItem)) {
 							// open setup
+							SetupShop.openShopPage(event.getFighter());
 							return;
 						}
 						if (item.isSimilar(powerupItem)) {

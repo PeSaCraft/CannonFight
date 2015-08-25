@@ -60,7 +60,7 @@ public class CannonShop {
 						if (!event.isPickUpAction())
 							return;
 						
-						ItemStack item = event.getItem();
+						ItemStack item = event.getItemInSlot();
 						CannonFighter p = event.getFighter();
 						
 						if (item.isSimilar(fill))

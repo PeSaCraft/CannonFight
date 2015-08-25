@@ -3,33 +3,46 @@ package de.pesacraft.cannonfight.util.shop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class ItemInteractEvent {
+	private InventoryView view;
 	private CannonFighter fighter;
-	private ItemStack item;
+	private ItemStack slotItem;
+	private ItemStack cursorItem;
 	private boolean closeInv;
 	private boolean cancelAction;
 	private InventoryAction action;
 	private int rawSlot;
 	
 	public ItemInteractEvent(InventoryClickEvent event) {
+		this.view = event.getView();
 		this.fighter = CannonFighter.get((Player) event.getWhoClicked());
-		this.item = event.getCurrentItem();
+		this.slotItem = event.getCurrentItem();
+		this.cursorItem = event.getCursor();
 		this.closeInv = false;
 		this.cancelAction = true;
 		this.action = event.getAction();
 		this.rawSlot = event.getRawSlot();
 	}
 
+	public InventoryView getView() {
+		return view;
+	}
+	
 	public CannonFighter getFighter() {
 		return fighter;
 	}
 	
-	public ItemStack getItem() {
-		return item;
+	public ItemStack getItemInSlot() {
+		return slotItem;
+	}
+	
+	public ItemStack getItemInCursor() {
+		return cursorItem;
 	}
 	
 	public InventoryAction getAction() {
@@ -58,5 +71,9 @@ public class ItemInteractEvent {
 
 	public boolean isPickUpAction() {
 		return getAction() == InventoryAction.PICKUP_ALL || getAction() == InventoryAction.PICKUP_HALF || getAction() == InventoryAction.PICKUP_ONE || getAction() == InventoryAction.PICKUP_SOME;
+	}
+
+	public boolean isPlaceAction() {
+		return getAction() == InventoryAction.PLACE_ALL || getAction() == InventoryAction.PLACE_ONE || getAction() == InventoryAction.PLACE_SOME;
 	}
 }
