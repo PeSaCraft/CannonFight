@@ -230,6 +230,10 @@ public class CannonFighter {
 	public Cannon getCannon(String name) {
 		return cannons.get(name);
 	}
+
+	public void addCannon(Cannon cannon) {
+		cannons.put(cannon.getName(), cannon);
+	}
 	
 	@Override
 	public boolean equals(Object obj) {

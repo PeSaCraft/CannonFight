@@ -29,9 +29,6 @@ public class ItemSerializer {
 		ItemMeta meta = null;
 		
 		for (Entry<String, Object> entry : map.entrySet()) {
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue().toString());
-			System.out.println();
 			if (entry.getKey().equals("meta")) {
 				meta = (ItemMeta) ConfigurationSerialization.deserializeObject((Map<String, Object>) entry.getValue(), ConfigurationSerialization.getClassByAlias("ItemMeta"));
 				break;

@@ -27,7 +27,7 @@ public class Cage {
 		this.used = false;
 	}
 	
-	public void createCage(ItemStack material) {
+	public void createCage(ItemStack material) throws IllegalStateException {
 		if (used)
 			throw new IllegalStateException("Cage already in use!");
 		
@@ -47,7 +47,7 @@ public class Cage {
 		}
 	}
 	
-	public void destroyCage() {
+	public void destroyCage() throws IllegalStateException {
 		if (!used)
 			throw new IllegalStateException("Cage not used: Nothing to remove!");
 		
