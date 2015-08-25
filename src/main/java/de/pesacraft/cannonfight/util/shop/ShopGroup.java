@@ -30,4 +30,7 @@ public class ShopGroup {
 		}
 	}
 	
+	public void regenerate(CannonFighter c) {
+		shops.put(c.getPlayer().getUniqueId(), maker.createShop(c));
+	}
 }
