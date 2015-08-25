@@ -223,6 +223,10 @@ public class CannonFighter {
 		return this.activeItems;
 	}
 	
+	public boolean isSelected(String cannon) {
+		return this.activeItems.contains(getCannon(cannon));
+	}
+	
 	public boolean hasCannon(String name) {
 		return cannons.containsKey(name);
 	}
