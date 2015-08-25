@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
 import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
@@ -74,13 +75,18 @@ public class CannonShop {
 								CannonConstructor constructor = Cannons.getConstructorByName(cannon);
 								
 								if (p.hasEnoughCoins(constructor.getPrice())) {
-									constructor.buyNew(p);
+									Cannon c = constructor.buyNew(p);
 									p.takeCoins(constructor.getPrice(), cannon + " gekauft");
-									event.setCloseInventory(true);
+									p.addCannon(c);
+									// open upgrade shop
+									// regenerate this shop, cannon isnt buyable anymore
+									c.openShop();
+									shop.regenerate(p);
+									return;
 								}
-								else {
-									p.sendMessage(Language.get("error.not-enough-coins"));
-								}
+								
+								p.sendMessage(Language.get("error.not-enough-coins"));
+								
 								return;
 							}
 						}
