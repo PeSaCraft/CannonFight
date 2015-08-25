@@ -1,6 +1,7 @@
 package de.pesacraft.cannonfight.util.shop;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
@@ -16,6 +17,8 @@ public class ItemInteractEvent {
 	private boolean closeInv;
 	private boolean cancelAction;
 	private InventoryAction action;
+	private ClickType clickType;
+	private int hotbarKey;
 	private int rawSlot;
 	
 	public ItemInteractEvent(InventoryClickEvent event) {
@@ -26,6 +29,8 @@ public class ItemInteractEvent {
 		this.closeInv = false;
 		this.cancelAction = true;
 		this.action = event.getAction();
+		this.clickType = event.getClick();
+		this.hotbarKey = clickType == ClickType.NUMBER_KEY ? event.getHotbarButton() : -1;
 		this.rawSlot = event.getRawSlot();
 	}
 
@@ -47,6 +52,14 @@ public class ItemInteractEvent {
 	
 	public InventoryAction getAction() {
 		return action;
+	}
+	
+	public ClickType getClickType() {
+		return clickType;
+	}
+	
+	public int getHotbarKey() {
+		return hotbarKey;
 	}
 	
 	public int getRawSlot() {
