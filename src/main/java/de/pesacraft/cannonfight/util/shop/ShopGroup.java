@@ -31,6 +31,8 @@ public class ShopGroup {
 	}
 	
 	public void regenerate(CannonFighter c) {
+		// unregister listener and then recreate the shop
+		shops.get(c.getPlayer().getUniqueId()).unregister();
 		shops.put(c.getPlayer().getUniqueId(), maker.createShop(c));
 	}
 }

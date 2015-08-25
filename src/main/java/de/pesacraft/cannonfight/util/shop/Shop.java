@@ -45,6 +45,10 @@ public class Shop implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
 	
+	public void unregister() {
+		InventoryClickEvent.getHandlerList().unregister(this);
+		InventoryCloseEvent.getHandlerList().unregister(this);
+	}
 	public void set(int i, ItemStack item) {
 		items[i] = item;
 	}
