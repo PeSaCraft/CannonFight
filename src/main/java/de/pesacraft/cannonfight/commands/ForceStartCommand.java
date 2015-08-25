@@ -12,7 +12,6 @@ import de.pesacraft.cannonfight.game.GameManager;
 public class ForceStartCommand {
 
 	public static boolean execute(CommandSender sender, String[] args) {
-		
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can force without given command
@@ -35,11 +34,11 @@ public class ForceStartCommand {
 			// spieler in queue
 			if (GameManager.getForArena(c.getArenaQueuing()).startGame(true)) {
 				// Spiel gestartet
-				sender.sendMessage(Language.get("command.force-specific-successful"));
+				sender.sendMessage(Language.get("command.force-own-successful"));
 			}
 			else {
 				// spiel konnte nicht gestartet werden
-				sender.sendMessage(Language.get("command.force-specific-failed"));
+				sender.sendMessage(Language.get("command.force-own-failed"));
 			}
 		}
 		else if (args.length == 1) {
@@ -59,8 +58,6 @@ public class ForceStartCommand {
 		}
 		else 
 			return false;
-		
-		sender.sendMessage(Language.get("command.force-successful")); 
 		return true;
 	}
 
