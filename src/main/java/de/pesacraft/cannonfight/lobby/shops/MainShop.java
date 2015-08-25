@@ -8,6 +8,7 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
@@ -15,7 +16,7 @@ import org.bukkit.material.MaterialData;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
-import de.pesacraft.cannonfight.util.shop.ItemSelectEvent;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.ShopGroup;
 import de.pesacraft.cannonfight.util.shop.ShopMaker;
@@ -37,7 +38,10 @@ public class MainShop {
 				Shop s = new Shop("CannonFight Shop", new ClickHandler() {
 					
 					@Override
-					public void onItemSelect(ItemSelectEvent event) {
+					public void onItemInteract(ItemInteractEvent event) {
+						if (!event.isPickUpAction())
+							return;
+						
 						ItemStack item = event.getItem();
 						
 						if (item.isSimilar(fill))
@@ -45,13 +49,13 @@ public class MainShop {
 						
 						if (item.isSimilar(cannonItem)) {
 							// open cannonshop
-							FireballCannon.openShopPage(event.getFighter());
+							CannonShop.openShopPage(event.getFighter());
 							return;
 						}
 						
 						if (item.isSimilar(upgradeItem)) {
 							// open upgradeshop
-							CannonShop.openShopPage(event.getFighter());
+							FireballCannon.openShopPage(event.getFighter());
 							return;
 						}
 						if (item.isSimilar(setupItem)) {
@@ -62,6 +66,12 @@ public class MainShop {
 							// open powerupshop
 							return;
 						}
+					}
+
+					@Override
+					public void onInventoryClose(InventoryCloseEvent event) {
+						// TODO Auto-generated method stub
+						
 					}
 				}, 3);
 				

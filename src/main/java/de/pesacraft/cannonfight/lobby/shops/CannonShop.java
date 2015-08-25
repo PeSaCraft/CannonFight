@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -19,7 +20,7 @@ import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
 import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
-import de.pesacraft.cannonfight.util.shop.ItemSelectEvent;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.ShopGroup;
 import de.pesacraft.cannonfight.util.shop.ShopMaker;
@@ -52,10 +53,13 @@ public class CannonShop {
 					items.add(item);
 				}
 				
-				Shop s = new Shop("CannonFight Shop", new ClickHandler() {
+				Shop s = new Shop("Cannon Shop", new ClickHandler() {
 					
 					@Override
-					public void onItemSelect(ItemSelectEvent event) {
+					public void onItemInteract(ItemInteractEvent event) {
+						if (!event.isPickUpAction())
+							return;
+						
 						ItemStack item = event.getItem();
 						CannonFighter p = event.getFighter();
 						
@@ -90,6 +94,12 @@ public class CannonShop {
 								return;
 							}
 						}
+					}
+
+					@Override
+					public void onInventoryClose(InventoryCloseEvent event) {
+						// TODO Auto-generated method stub
+						
 					}
 				}, rows);
 				

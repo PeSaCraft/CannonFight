@@ -36,6 +36,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -55,7 +56,7 @@ import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.Upgrade;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
-import de.pesacraft.cannonfight.util.shop.ItemSelectEvent;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.ShopGroup;
 import de.pesacraft.cannonfight.util.shop.ShopMaker;
@@ -385,7 +386,10 @@ public class FireballCannon extends Cannon implements Listener {
 				Shop s = new Shop(NAME + "-Shop", new ClickHandler() {
 					
 					@Override
-					public void onItemSelect(ItemSelectEvent event) {
+					public void onItemInteract(ItemInteractEvent event) {
+						if (!event.isPickUpAction())
+							return;
+						
 						ItemStack item = event.getItem();
 						
 						if (item.isSimilar(fill))
@@ -474,6 +478,12 @@ public class FireballCannon extends Cannon implements Listener {
 							event.setCloseInventory(true);
 							return;
 						}
+					}
+
+					@Override
+					public void onInventoryClose(InventoryCloseEvent event) {
+						// TODO Auto-generated method stub
+						
 					}
 				}, 3);
 				

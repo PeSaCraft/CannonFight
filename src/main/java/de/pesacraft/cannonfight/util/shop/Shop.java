@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.server.v1_8_R3.ItemCloth;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -67,13 +70,21 @@ public class Shop implements Listener {
 		if (!event.getInventory().getName().equals(name))
 			return;
 		
-		event.setCancelled(true);
+		ItemInteractEvent e = new ItemInteractEvent(event);
 		
-		ItemSelectEvent e = new ItemSelectEvent(CannonFighter.get((Player) event.getWhoClicked()), event.getCurrentItem());
+		handler.onItemInteract(e);
 		
-		handler.onItemSelect(e);
+		event.setCancelled(e.cancelAction());
 		
 		if (e.closeInventory())
 			event.getWhoClicked().closeInventory();
+	}
+	
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent event) {
+		if (!event.getInventory().getName().equals(name))
+			return;
+		
+		handler.onInventoryClose(event);
 	}
 }
