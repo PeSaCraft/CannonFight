@@ -36,6 +36,7 @@ public class CannonFighter {
 	private static final MongoCollection<Document> COLLECTION;
 	private final User user;
 	private int xp;
+	private int slots;
 	
 	private Game currentGame;
 	private Arena inQueue;
@@ -54,7 +55,8 @@ public class CannonFighter {
 		
 		if (doc != null) {
 			// Player in database
-			xp = doc.getInteger("xp");
+			xp = ((Number) doc.get("xp")).intValue();
+			slots = ((Number) doc.get("slots")).intValue();
 			
 			cannons = new HashMap<String, Cannon>();
 			Document cannons = (Document) doc.get("cannons");
@@ -70,14 +72,20 @@ public class CannonFighter {
 			for (String c : activeItems) {
 				this.activeItems.add(this.cannons.get(c));
 			}
+			
+			// fill list
+			while (this.activeItems.size() < this.slots)
+				this.activeItems.add(null);
 		}
 		else {
 			// Player not in database
 			xp = 0;
+			slots = 1;
 			cannons = new HashMap<String, Cannon>();
 			
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
+			doc = doc.append("slots", slots);
 			doc = doc.append("activeItems", activeItems);
 			doc = doc.append("cannons", cannons);
 			
@@ -227,6 +235,10 @@ public class CannonFighter {
 		return this.activeItems.contains(getCannon(cannon));
 	}
 	
+	public int getActivePosition(String cannonName) {
+		return this.activeItems.indexOf(getCannon(cannonName));
+	}
+	
 	public boolean hasCannon(String name) {
 		return cannons.containsKey(name);
 	}
@@ -237,6 +249,34 @@ public class CannonFighter {
 
 	public void addCannon(Cannon cannon) {
 		cannons.put(cannon.getName(), cannon);
+	}
+	
+	public int getSlots() {
+		return slots;
+	}
+	
+	public Cannon getActiveItem(int pos) {
+		try {
+			return this.activeItems.get(pos);
+		}
+		catch (IndexOutOfBoundsException ex) {
+			// not a valid index: no cannon there
+			return null;
+		}
+	}
+	
+	public Cannon selectCannonToSlot(int pos, String cannon) {
+		try {
+			return this.activeItems.set(pos, getCannon(cannon));
+		}
+		catch (IndexOutOfBoundsException ex) {
+			// too huge index: return null as there is no cannon
+			return null;
+		}
+	}
+	
+	public void deselectCannon(String name) {
+		this.activeItems.set(this.activeItems.indexOf(getCannon(name)), null);
 	}
 	
 	@Override
