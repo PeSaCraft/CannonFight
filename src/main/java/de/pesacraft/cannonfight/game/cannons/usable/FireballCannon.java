@@ -295,7 +295,6 @@ public class FireballCannon extends Cannon implements Listener {
 		if (!shoot.contains(event.getEntity().getEntityId()))
 			return;
 		
-		System.out.println("FireballCannon explodiert!");
 		Iterator<Block> blocks = event.blockList().iterator();
 		
 		while (blocks.hasNext()) {

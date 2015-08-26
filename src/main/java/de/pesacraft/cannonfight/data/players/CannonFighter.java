@@ -155,14 +155,9 @@ public class CannonFighter {
 				// skip empty
 				continue;
 			
-			if (c.getItem().equals(item)) {
+			if (c.getItem().equals(item))
 				// that is the used cannon
-				try {
-					return c.fire();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
+				return c.fire();
 		}
 		
 		return false;
