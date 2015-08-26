@@ -75,7 +75,14 @@ public class Arena {
 		return this.freeSpawns.size() + this.setSpawns.size();
 	}
 
-
+	public void resetSpawns() {
+		for (Location l : setSpawns.values()) {
+			freeSpawns.add(l);
+		}
+		
+		setSpawns.clear();
+	}
+	
 	public boolean teleport(CannonFighter c, Game game) {
 		if (freeSpawns.isEmpty())
 			return false;

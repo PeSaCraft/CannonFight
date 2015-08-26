@@ -96,7 +96,7 @@ public class GameManager {
 					if (!game.addPlayer(c))
 						// spieler konnte nicht beitreten
 						break;
-				
+					
 					// spieler beigetreten
 					it.remove();
 					c.setInQueue(null);
@@ -109,7 +109,17 @@ public class GameManager {
 		return false;
 	}
 	
+	
 	public boolean isGameRunning() {
 		return game != null;
+	}
+
+	public static void gameOver(Game game) {
+		GameManager man = getForArena(game.getArena());
+		
+		if (man.game == game)
+			// that is the game of that gamemanager
+			// remove it and make space for a new one
+			man.game = null;
 	}
 }

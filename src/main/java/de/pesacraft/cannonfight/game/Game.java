@@ -96,7 +96,6 @@ public class Game implements Listener {
 		if (event.isCancelled())
 			return false;
 		
-		
 		if (!teleportPlayerToArena(p))
 			return false;
 		
@@ -253,6 +252,7 @@ public class Game implements Listener {
 
 				for (ActivePlayer c : players)
 					leave(c.getPlayer());
+
 				for (Spectator c : spectators)
 					leave(c.getPlayer());
 				
@@ -261,6 +261,9 @@ public class Game implements Listener {
 				resetArena();
 				
 				HandlerList.unregisterAll(this);
+				
+				// notify GameManager, that the game is over
+				GameManager.gameOver(this);
 			}
 			break;
 		default:
@@ -320,7 +323,6 @@ public class Game implements Listener {
 			return false;
 		
 		players.remove(new Participant(c));
-		
 		return true;	
 	}
 	
@@ -513,6 +515,8 @@ public class Game implements Listener {
 		mbu.notifyClients();
 		
 		destroyedBlocks.clear();
+		
+		arena.resetSpawns();
 	}
 
 	public boolean locIsInArena(Location loc) {
