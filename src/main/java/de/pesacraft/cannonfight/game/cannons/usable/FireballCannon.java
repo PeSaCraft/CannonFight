@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -80,7 +81,7 @@ public class FireballCannon extends Cannon implements Listener {
 	
 	protected static final Map<Integer, Upgrade<Double>> RADIUS_MAP = new HashMap<Integer, Upgrade<Double>>();
 	
-	protected static final Map<Integer, Upgrade<Double>> DAMAGE_MAP = new HashMap<Integer, Upgrade<Double>>();
+	protected static final Map<Integer, Upgrade<Integer>> DAMAGE_MAP = new HashMap<Integer, Upgrade<Integer>>();
 	
 	static {
 		COLLECTION = Collection.ITEMS();
@@ -106,7 +107,7 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			Document damageList = (Document) doc.get("damage");
 			for (Entry<String, Object> damage : damageList.entrySet())
-				DAMAGE_MAP.put(Integer.parseInt(damage.getKey()), new Upgrade<Double>((Document) damage.getValue()));
+				DAMAGE_MAP.put(Integer.parseInt(damage.getKey()), new Upgrade<Integer>((Document) damage.getValue()));
 			
 		}
 		else {
@@ -133,14 +134,14 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			Map<String, Object> radiusMap = new HashMap<String, Object>();
 			for (int i = 1; i <= 10; i++) {
-				Upgrade<Double> u = new Upgrade<Double>(i * 100, i * 0.1 + 1);
+				Upgrade<Double> u = new Upgrade<Double>(i * 100, i * 0.2 + 2);
 				RADIUS_MAP.put(i, u);
 				radiusMap.put(i + "", u);
 			}
 			
 			Map<String, Object> damageMap = new HashMap<String, Object>();
 			for (int i = 1; i <= 10; i++) {
-				Upgrade<Double> u = new Upgrade<Double>(i * 100, i * 0.5 + 0.5);
+				Upgrade<Integer> u = new Upgrade<Integer>(i * 100, i + 1);
 				DAMAGE_MAP.put(i, u);
 				damageMap.put(i + "", u);
 			}
@@ -211,12 +212,12 @@ public class FireballCannon extends Cannon implements Listener {
 	private int maxAmmo;
 	private int currentAmmo;
 	private float radius;
-	private double damage;
+	private int damage;
 	private ItemStack item;
 	
 	private CannonFighter player;
 	
-	private List<Fireball> shoot;
+	private List<Integer> shoot;
 	
 	private int levelAmmo;
 	private int levelCooldown;
@@ -240,7 +241,7 @@ public class FireballCannon extends Cannon implements Listener {
 	
 		item = ITEM.clone();
 		
-		shoot = new ArrayList<Fireball>();
+		shoot = new ArrayList<Integer>();
 		
 		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
@@ -258,7 +259,7 @@ public class FireballCannon extends Cannon implements Listener {
 
 	@Override
 	public ItemStack getItem() {
-		return item;
+		return item.clone();
 	}
 	
 	@Override
@@ -275,52 +276,45 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Fireball fball = p.launchProjectile(Fireball.class);
 		fball.setVelocity(fball.getVelocity().multiply(2));
-		shoot.add(fball);
+		fball.setYield(radius);
 		
+		shoot.add(fball.getEntityId());
 		return true;
 	}
 	
 	@EventHandler
-	public void onExplosionPrime(ExplosionPrimeEvent event) {
-		if (shoot.contains(event.getEntity()))
-			event.setRadius(radius);
-	}
-	
-	@EventHandler
-	public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
-		if (!shoot.contains(event.getDamager()))
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if (!shoot.contains(event.getDamager().getEntityId()))
 			return;
 		
 		event.setDamage(damage);
-		
-		/* muss später aus der Liste entfernt werden,
-		 * da es mehrere EntityDamageByEntityEvents gibt,
-		 * pro getroffene Entity eins
-		 */
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				shoot.remove(event.getDamager());
-			}
-		}.runTaskLater(CannonFight.PLUGIN, 1);
 	}
 	
 	@EventHandler
-	public void onEntityExplosion(EntityExplodeEvent event) {
-		if (!shoot.contains(event.getEntity()))
+	public void onEntityExplosion(final EntityExplodeEvent event) {
+		if (!shoot.contains(event.getEntity().getEntityId()))
 			return;
 		
+		System.out.println("FireballCannon explodiert!");
 		Iterator<Block> blocks = event.blockList().iterator();
 		
 		while (blocks.hasNext()) {
 			Block b = blocks.next();
-			
-			if (!player.getCurrentGame().locIsInArena(b.getLocation()))
+			if (!player.getCurrentGame().locIsInArena(b.getLocation())) {
 				// block not part of map -> won't be destroyed
 				blocks.remove();
+			}
 		}
 		
 		player.getCurrentGame().addBlocksToRegenerate(event.blockList());
+		
+		// thats the last called event, remove the entity from the list
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				shoot.remove(new Integer(event.getEntity().getEntityId()));
+			}
+		}.runTaskLater(CannonFight.PLUGIN, 1);
 	}
 
 	@Override
@@ -607,8 +601,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Double> oldLevel = FireballCannon.DAMAGE_MAP.get(levelDamage);
-				Upgrade<Double> newLevel = FireballCannon.DAMAGE_MAP.get(levelDamage + 1);
+				Upgrade<Integer> oldLevel = FireballCannon.DAMAGE_MAP.get(levelDamage);
+				Upgrade<Integer> newLevel = FireballCannon.DAMAGE_MAP.get(levelDamage + 1);
 				
 				if (newLevel != null) {
 					// upgradable
@@ -617,7 +611,16 @@ public class FireballCannon extends Cannon implements Listener {
 					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
 					double change = newLevel.getValue() - oldLevel.getValue();
-					lore.add(ChatColor.DARK_GREEN + "Schaden: " + newLevel.getValue() + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
+					
+					String hearts = "";
+					
+					for (int i = 0; i < newLevel.getValue() / 2; i++)
+						hearts += "\u2764";
+					
+					if (newLevel.getValue() % 2 == 1)
+						hearts += "\u2765";
+					
+					lore.add(ChatColor.DARK_GREEN + "Schaden: " + newLevel.getValue() + hearts + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
@@ -691,7 +694,7 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 	
 	public boolean upgradeDamage() {
-		Upgrade<Double> upgrade = DAMAGE_MAP.get(levelDamage + 1);
+		Upgrade<Integer> upgrade = DAMAGE_MAP.get(levelDamage + 1);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
