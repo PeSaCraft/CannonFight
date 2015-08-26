@@ -29,6 +29,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -258,6 +259,8 @@ public class Game implements Listener {
 				players.clear();
 				spectators.clear();
 				resetArena();
+				
+				HandlerList.unregisterAll(this);
 			}
 			break;
 		default:

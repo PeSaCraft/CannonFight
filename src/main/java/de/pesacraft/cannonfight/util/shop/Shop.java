@@ -9,6 +9,7 @@ import net.minecraft.server.v1_8_R3.ItemCloth;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -46,9 +47,9 @@ public class Shop implements Listener {
 	}
 	
 	public void unregister() {
-		InventoryClickEvent.getHandlerList().unregister(this);
-		InventoryCloseEvent.getHandlerList().unregister(this);
+		HandlerList.unregisterAll(this);
 	}
+	
 	public void set(int i, ItemStack item) {
 		items[i] = item;
 	}
