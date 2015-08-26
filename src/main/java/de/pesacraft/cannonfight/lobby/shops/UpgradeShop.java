@@ -1,0 +1,188 @@
+package de.pesacraft.cannonfight.lobby.shops;
+
+import static com.mongodb.client.model.Filters.eq;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.bson.Document;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.mongodb.client.MongoCollection;
+
+import de.pesacraft.cannonfight.CannonFight;
+import de.pesacraft.cannonfight.Language;
+import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.game.cannons.Cannon;
+import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
+import de.pesacraft.cannonfight.game.cannons.Cannons;
+import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.ItemSerializer;
+import de.pesacraft.cannonfight.util.Upgrade;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
+import de.pesacraft.cannonfight.util.shop.Shop;
+import de.pesacraft.cannonfight.util.shop.ShopGroup;
+import de.pesacraft.cannonfight.util.shop.ShopMaker;
+import de.pesacraft.cannonfight.util.shop.ClickHandler;
+
+public class UpgradeShop {
+	
+	private static final MongoCollection<Document> COLLECTION;
+	
+	/**
+	 * ItemStack representing the slot upgrade
+	 */
+	protected static final ItemStack ITEM_SLOTS;
+	/**
+	 * The slot upgrade name in the database
+	 */
+	public static final String NAME_SLOTS = "Slots";
+	
+	protected static final Map<Integer, Upgrade<Integer>> SLOT_UPGRADES = new HashMap<Integer, Upgrade<Integer>>();
+	
+	private static final ShopGroup shop;
+		
+	static {
+		COLLECTION = Collection.ITEMS();
+		
+		Document doc = COLLECTION.find(eq("name", NAME_SLOTS)).first();
+		
+		if (doc != null) {
+			// Cannon in database
+			
+			ITEM_SLOTS = ItemSerializer.deserialize((Document) doc.get("item"));
+			
+			Document upgrades = (Document) doc.get("upgrades");
+			for (Entry<String, Object> upgrade : upgrades.entrySet())
+				SLOT_UPGRADES.put(Integer.parseInt(upgrade.getKey()), new Upgrade<Integer>((Document) upgrade.getValue()));
+			
+		}
+		else {
+			// Cannon not in database
+			ITEM_SLOTS = new ItemStack(Material.RAILS);
+			
+			ItemMeta m = ITEM_SLOTS.getItemMeta();
+			m.setDisplayName(NAME_SLOTS);
+			ITEM_SLOTS.setItemMeta(m);
+			
+			Map<String, Object> upgrades = new HashMap<String, Object>();
+			for (int i = 1; i <= 10; i++) {
+				Upgrade<Integer> u = new Upgrade<Integer>(i * 1000, i);
+				SLOT_UPGRADES.put(i, u);
+				upgrades.put(i + "", u);
+			}
+			
+			doc = new Document("name", NAME_SLOTS);
+			
+			
+			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_SLOTS)));
+			
+			doc = doc.append("upgrades", new Document(upgrades));
+			
+			COLLECTION.insertOne(doc);
+		}
+		
+		shop = new ShopGroup(new ShopMaker() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public Shop createShop(CannonFighter c) {
+				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData());
+				
+				final ItemStack slotItem = setupSlotItem(c);
+				
+				Shop s = new Shop("Upgrade Shop", new ClickHandler() {
+					
+					@Override
+					public void onItemInteract(ItemInteractEvent event) {
+						if (!event.isPickUpAction())
+							return;
+						
+						ItemStack item = event.getItemInSlot();
+						final CannonFighter p = event.getFighter();
+						
+						if (item.isSimilar(fill))
+							return;
+						
+						if (item.isSimilar(slotItem)) {
+							// upgrade slots
+							if (!SLOT_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
+								// max reached
+								p.sendMessage(Language.get("error.max-upgraded"));
+								return;
+							}
+							
+							if (!p.upgradeSlots()) {
+								// not enough coins for upgrade
+								p.sendMessage(Language.get("error.not-enough-coins"));
+								return;
+							}
+							
+							// upgrade done
+							// regenerate shop
+							shop.regenerate(p);
+							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+								
+								@Override
+								public void run() {
+									openShopPage(p);
+								}
+							}, 1);
+							return;
+						}
+					}
+
+					@Override
+					public void onInventoryClose(InventoryCloseEvent event) {
+						// TODO Auto-generated method stub
+						
+					}
+				}, 3);
+				
+				s.fill(fill);
+				
+				s.set(1 * 9 + 4, slotItem); // (1, 4) Slots
+				
+				return s;
+			}
+
+			private ItemStack setupSlotItem(CannonFighter p) {
+				ItemStack i = ITEM_SLOTS.clone();
+				ItemMeta m = i.getItemMeta();
+				
+				List<String> lore = new ArrayList<String>();
+				
+				Upgrade<Integer> upgrade = getSlotsUpgradeForLevel(p.getSlotsLevel() + 1);
+				
+				lore.add(ChatColor.GREEN + "Hier kannst du dir mehr Slots kaufen.");
+				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getSlots() + " Slots");
+				lore.add(ChatColor.GREEN + "Ein Upgrade auf " + ChatColor.GOLD + upgrade.getValue() + " Slots");
+				lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice());
+				
+				m.setLore(lore);
+				
+				i.setItemMeta(m);
+				
+				return i;
+			}
+		});
+	}
+	
+	public static void openShopPage(CannonFighter c) {
+		shop.open(c);
+	}
+
+	public static Upgrade<Integer> getSlotsUpgradeForLevel(int level) {
+		return SLOT_UPGRADES.get(level);
+	}
+}

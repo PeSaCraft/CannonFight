@@ -55,14 +55,16 @@ public class MainShop {
 						
 						if (item.isSimilar(upgradeItem)) {
 							// open upgradeshop
-							FireballCannon.openShopPage(event.getFighter());
+							UpgradeShop.openShopPage(event.getFighter());
 							return;
 						}
+						
 						if (item.isSimilar(setupItem)) {
 							// open setup
 							SetupShop.openShopPage(event.getFighter());
 							return;
 						}
+						
 						if (item.isSimilar(powerupItem)) {
 							// open powerupshop
 							return;
