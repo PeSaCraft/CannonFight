@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R3.IBlockData;
+import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk;
 import net.minecraft.server.v1_8_R3.PacketPlayOutMultiBlockChange;
 
 import org.bukkit.Bukkit;
@@ -23,6 +25,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.v1_8_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,6 +55,8 @@ import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.util.Cage;
 import de.pesacraft.cannonfight.util.CageForm;
 import de.pesacraft.cannonfight.util.ModifiedBlock;
+import de.pesacraft.cannonfight.util.blockrestore.MassBlockUpdate;
+import de.pesacraft.cannonfight.util.blockrestore.RelightingStrategy;
 
 public class Game implements Listener {
 	private Arena arena;
@@ -62,7 +67,7 @@ public class Game implements Listener {
 	private GameState state;
 	private int time;
 	
-	private Map<Chunk, Set<ModifiedBlock>> destroyedBlocks;
+	private Set<ModifiedBlock> destroyedBlocks;
 	
 	private BukkitTask countdownTask;
 	
@@ -73,7 +78,7 @@ public class Game implements Listener {
 		this.players = new ArrayList<ActivePlayer>();
 		this.spectators = new ArrayList<Spectator>();
 		
-		this.destroyedBlocks = new HashMap<Chunk, Set<ModifiedBlock>>();
+		this.destroyedBlocks = new HashSet<ModifiedBlock>();
 		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
 	}
 	
@@ -101,9 +106,6 @@ public class Game implements Listener {
 		players.add(active);
 		
 		p.sendMessage(Language.get("info.player-join").replaceAll("%player%", players.size() + "").replaceAll("%maxPlayer%", getMaxPlayers() + ""));
-		
-		if (players.size() == arena.getRequiredPlayers())
-			start();
 		
 		return true;
 	}
@@ -252,6 +254,7 @@ public class Game implements Listener {
 					leave(c.getPlayer());
 				for (Spectator c : spectators)
 					leave(c.getPlayer());
+				
 				players.clear();
 				spectators.clear();
 				resetArena();
@@ -280,8 +283,13 @@ public class Game implements Listener {
 		
 		Inventory inv = p.getInventory();
 		
-		for (Cannon cannon : c.getActiveItems()) {
-			inv.addItem(cannon.getItem());
+		
+		for (int i = 0; i < c.getSlots(); i++) {
+			Cannon cannon = c.getActiveItem(i);
+			if (cannon == null)
+				// skip empty slots
+				continue;
+			inv.setItem(i, cannon.getItem());
 		}
 	}
 
@@ -472,40 +480,35 @@ public class Game implements Listener {
 	
 	public void addBlocksToRegenerate(List<Block> blocks) {
 		for (Block b : blocks) {
-			Chunk c = b.getChunk();
-			
-			if (!destroyedBlocks.containsKey(c))
-				// list not existing, creating one
-				destroyedBlocks.put(c, new HashSet<ModifiedBlock>());
-			
-			Set<ModifiedBlock> set = destroyedBlocks.get(c);
-			set.add(new ModifiedBlock(b));
-			
+			destroyedBlocks.add(new ModifiedBlock(b));	
 		}
 	}
 	
+	/*
+	 * The regeneration uses desht's MassBlockUpdate class,
+	 * using direct chunk access and consolidated lighting recalculation
+	 * 
+	 * Thanks for that!
+	 */
+	@SuppressWarnings("deprecation")
 	private void resetArena() {
-		for (Entry<Chunk, Set<ModifiedBlock>> entry : destroyedBlocks.entrySet()) {
-			net.minecraft.server.v1_8_R3.Chunk chunk = ((CraftChunk) entry.getKey()).getHandle();
-			net.minecraft.server.v1_8_R3.World world = chunk.getWorld();
-			
-			
-			for (ModifiedBlock b : entry.getValue()) {
-				BlockPosition bp = new BlockPosition(b.getXOffset(), b.getYOffset(), b.getZOffset());
-				IBlockData ibd = net.minecraft.server.v1_8_R3.Block.getByCombinedId(b.getMaterial().getId() + (b.getData() << 12));
-				chunk.a(bp, ibd); // set block
-			}
+		
+		if (destroyedBlocks.size() == 0)
+			// no regeneration needed
+			return;
+		
+		MassBlockUpdate mbu = new MassBlockUpdate(CannonFight.PLUGIN, this.arena.getLowerBound().getWorld());
+		
+		mbu.setRelightingStrategy(RelightingStrategy.DEFERRED);
+		mbu.setMaxRelightTimePerTick(2, TimeUnit.MILLISECONDS);
 
-			// lighning updaten
-			chunk.initLighting();
-			// resend chunk
-			Chunk bukkitchunk = chunk.bukkitChunk;
-			world.getWorld().refreshChunk(bukkitchunk.getX(), bukkitchunk.getZ());
-			
-			// clear block list
-			entry.getValue().clear();	
+		for (ModifiedBlock b : destroyedBlocks) {
+			Location l = b.getLocation();
+			mbu.setBlock(l.getBlockX(), l.getBlockY(), l.getBlockZ(), b.getMaterial().getId(), b.getData());
 		}
 
+		mbu.notifyClients();
+		
 		destroyedBlocks.clear();
 	}
 
