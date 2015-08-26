@@ -26,8 +26,10 @@ import de.pesacraft.cannonfight.game.Game;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
+import de.pesacraft.cannonfight.lobby.shops.UpgradeShop;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.MongoDatabase;
+import de.pesacraft.cannonfight.util.Upgrade;
 import de.pesacraft.lobbysystem.user.User;
 import de.pesacraft.lobbysystem.user.Users;
 import static com.mongodb.client.model.Filters.*;
@@ -36,6 +38,8 @@ public class CannonFighter {
 	private static final MongoCollection<Document> COLLECTION;
 	private final User user;
 	private int xp;
+	
+	private int slotsLevel;
 	private int slots;
 	
 	private Game currentGame;
@@ -56,7 +60,9 @@ public class CannonFighter {
 		if (doc != null) {
 			// Player in database
 			xp = ((Number) doc.get("xp")).intValue();
-			slots = ((Number) doc.get("slots")).intValue();
+			
+			slotsLevel = ((Number) doc.get("slotsLevel")).intValue();
+			slots = UpgradeShop.getSlotsUpgradeForLevel(slotsLevel).getValue();
 			
 			cannons = new HashMap<String, Cannon>();
 			Document cannons = (Document) doc.get("cannons");
@@ -80,12 +86,15 @@ public class CannonFighter {
 		else {
 			// Player not in database
 			xp = 0;
-			slots = 1;
+			
+			slotsLevel = 1;
+			slots = UpgradeShop.getSlotsUpgradeForLevel(slotsLevel).getValue();
+			
 			cannons = new HashMap<String, Cannon>();
 			
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
-			doc = doc.append("slots", slots);
+			doc = doc.append("slotsLevel", slotsLevel);
 			doc = doc.append("activeItems", activeItems);
 			doc = doc.append("cannons", cannons);
 			
@@ -142,6 +151,10 @@ public class CannonFighter {
 	public boolean use(ItemStack item) {
 		// find the used cannon
 		for (Cannon c : activeItems) {
+			if (c == null)
+				// skip empty
+				continue;
+			
 			if (c.getItem().equals(item)) {
 				// that is the used cannon
 				try {
@@ -251,8 +264,29 @@ public class CannonFighter {
 		cannons.put(cannon.getName(), cannon);
 	}
 	
+	public int getSlotsLevel() {
+		return slotsLevel;
+	}
+	
 	public int getSlots() {
 		return slots;
+	}
+	
+	public boolean upgradeSlots() {
+		Upgrade<Integer> upgrade = UpgradeShop.getSlotsUpgradeForLevel(slotsLevel + 1);
+		
+		if (!hasEnoughCoins(upgrade.getPrice()))
+			return false;
+		
+		slotsLevel++;
+		
+		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("slotsLevel", slotsLevel)));
+		
+		slots = upgrade.getValue();
+		
+		takeCoins(upgrade.getPrice(), UpgradeShop.NAME_SLOTS + "-Upgrade auf Level " + slotsLevel);
+		
+		return true;
 	}
 	
 	public Cannon getActiveItem(int pos) {
