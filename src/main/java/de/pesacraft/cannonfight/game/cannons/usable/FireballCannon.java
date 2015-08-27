@@ -32,6 +32,8 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -319,6 +321,15 @@ public class FireballCannon extends Cannon implements Listener {
 		}.runTaskLater(CannonFight.PLUGIN, 1);
 	}
 
+	@EventHandler
+	public void onBlockIgnite(BlockIgniteEvent event) {
+		if (!shoot.contains(event.getIgnitingEntity()))
+			return;
+		
+		player.getCurrentGame().addBlocksToRegenerate(event.getBlock());
+		System.out.println(event.getCause());
+	}
+	
 	@Override
 	public int getMaxAmmo() {
 		return maxAmmo;

@@ -474,12 +474,27 @@ public class Game implements Listener {
 		if (victimSession.isDead()) {
 			// player lost last life: out of game
 			removePlayer(victim);
-			addSpectator(victim);
+			
+			// make spectator
+			// has to be done that way, else the teleportback location will be overriden
+			victim.getPlayer().teleport(arena.getSpectatorLocation());
+			
+			// show and hide players
+			for (ActivePlayer active : players)
+				// remaining players shouldn't see spectator
+				// he can already see them
+				active.getPlayer().hide(victim);
+			
+			for (Spectator spectator : spectators)
+				// spectators can already see him
+				// he has to see other spectators
+				victim.show(spectator.getPlayer());
+			
+			spectators.add(new Spectator(victim));
 		}
-		else {
+		else
 			// player not dead, respawn
 			respawn(victimSession);
-		}
 		
 		if (killer != null && killer != victim) {
 			// if there is a killer and the person didn't killed himself add a kill
@@ -660,6 +675,12 @@ public class Game implements Listener {
 		p.getInventory().clear();
 			
 		return true;
+	}
+	
+	public void addBlocksToRegenerate(Block... blocks) {
+		for (Block b : blocks) {
+			destroyedBlocks.add(new ModifiedBlock(b));	
+		}
 	}
 	
 	public void addBlocksToRegenerate(List<Block> blocks) {

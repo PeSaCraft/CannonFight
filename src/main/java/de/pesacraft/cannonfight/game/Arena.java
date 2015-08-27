@@ -129,4 +129,8 @@ public class Arena {
 	public Location getSpawn(CannonFighter c) {
 		return setSpawns.get(c);
 	}
+
+	public Location getSpectatorLocation() {
+		return spectatorSpawn;
+	}
 }
