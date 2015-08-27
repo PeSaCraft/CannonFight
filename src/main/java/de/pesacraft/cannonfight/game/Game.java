@@ -33,6 +33,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -286,7 +287,7 @@ public class Game implements Listener {
 		Player p = c.getPlayer();
 		
 		p.setMaxHealth(config.getDouble("game.lives.perLive"));
-		p.setHealth(p.getPlayer().getMaxHealth());
+		p.setHealth(p.getMaxHealth());
 		p.setFoodLevel(20);
 		
 		Inventory inv = p.getInventory();
@@ -442,21 +443,65 @@ public class Game implements Listener {
 		return relatives;
 	}
 	
-	@EventHandler
-	public void onPlayerDeath(PlayerDeathEvent event) {
-		Player p = event.getEntity();
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamage(EntityDamageEvent event) {
+		if (!(event.getEntity() instanceof Player))
+			return;
+		
+		Player p = (Player) event.getEntity();
+		if (p.getHealth() > event.getFinalDamage())
+			// player will not die
+			return;
+		
+		// player will die
+		// check if it is a player in this game
 		CannonFighter victim = CannonFighter.get(p);
+		
+		if (!players.contains(new Participant(victim)))
+			// player not in this game
+			return;
+		
 		CannonFighter killer = p.getKiller() != null ? CannonFighter.get(p.getKiller()) : null;
 		
-		if (players.contains(new Participant(victim))) {
+		// player death => reward
+		Bukkit.getServer().getPluginManager().callEvent(new CannonFighterDeathEvent(this, victim, killer));
+	
+		ActivePlayer victimSession = players.get(players.indexOf(new Participant(victim)));
+		
+		victimSession.looseLife();
+		
+		if (victimSession.isDead()) {
+			// player lost last life: out of game
 			removePlayer(victim);
 			addSpectator(victim);
-			
-			// player death => reward
-			Bukkit.getServer().getPluginManager().callEvent(new CannonFighterDeathEvent(this, victim, killer));
 		}
+		else {
+			// player not dead, respawn
+			respawn(victimSession);
+		}
+		
+		if (killer != null) {
+			// if there is a killer add a kill
+			ActivePlayer killerSession = players.get(players.indexOf(new Participant(victim)));
+			killerSession.addKill();
+		}
+		
+		event.setCancelled(true);
 	}
 	
+	private void respawn(ActivePlayer a) {
+		CannonFighter c = a.getPlayer();
+		Player p = c.getPlayer();
+		
+		p.teleport(arena.getSpawn(c));
+		
+		p.setHealth(p.getMaxHealth());
+		p.setFoodLevel(20);
+		p.setFireTicks(0);
+		
+		c.sendMessage(Language.get("info.respawned").replaceAll("%lives%", a.getLives() + ""));
+	}
+
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		CannonFighter c = CannonFighter.get(event.getPlayer());
@@ -601,6 +646,7 @@ public class Game implements Listener {
 		p.setMaxHealth(20);
 		p.setHealth(p.getPlayer().getMaxHealth());
 		p.setFoodLevel(20);
+		p.setFireTicks(0);
 		
 		p.getInventory().clear();
 			

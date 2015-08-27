@@ -38,7 +38,7 @@ public class ActivePlayer extends Participant {
 		cage = null;
 	}
 	
-	public void looseLive() {
+	public void looseLife() {
 		if (isDead())
 			return;
 		lives--;

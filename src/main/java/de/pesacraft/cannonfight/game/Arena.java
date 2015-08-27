@@ -125,4 +125,8 @@ public class Arena {
 	public String getPosition() {
 		return name;
 	}
+
+	public Location getSpawn(CannonFighter c) {
+		return setSpawns.get(c);
+	}
 }
