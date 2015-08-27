@@ -16,11 +16,13 @@ public abstract class Cannon extends Cooldown {
 	
 	public abstract int getMaxAmmo();
 	
-	public abstract boolean fire();
+	public abstract boolean fire(ItemStack item);
 	
 	public abstract boolean hasAmmo();
 	
 	public abstract CannonConstructor getCannonConstructor();
 	
 	public abstract void openShop();
+
+	public abstract void reset();
 }
