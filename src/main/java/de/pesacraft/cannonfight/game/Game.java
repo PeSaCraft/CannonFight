@@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
@@ -480,9 +481,9 @@ public class Game implements Listener {
 			respawn(victimSession);
 		}
 		
-		if (killer != null) {
-			// if there is a killer add a kill
-			ActivePlayer killerSession = players.get(players.indexOf(new Participant(victim)));
+		if (killer != null && killer != victim) {
+			// if there is a killer and the person didn't killed himself add a kill
+			ActivePlayer killerSession = players.get(players.indexOf(new Participant(killer)));
 			killerSession.addKill();
 		}
 		
@@ -518,6 +519,14 @@ public class Game implements Listener {
 		}
 	}
 
+	@EventHandler
+	public void onPlayerLeave(PlayerQuitEvent event) {
+		CannonFighter c = CannonFighter.get(event.getPlayer());
+		
+		if (players.contains(new Participant(c)) || spectators.contains(new Participant(c)))
+			leave(c);
+	}
+		
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
 		if (event.getGame() != this)
