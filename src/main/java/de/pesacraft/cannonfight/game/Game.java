@@ -41,6 +41,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.Language;
@@ -340,6 +341,35 @@ public class Game implements Listener {
 	}
 
 	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Player p = event.getPlayer();
+		CannonFighter c = CannonFighter.get(p);
+		Participant par = new Participant(c);
+		
+		if (players.contains(par)) {
+			if (locIsInArena(event.getTo()))
+				return;
+			Vector direction = event.getFrom().toVector().subtract(event.getTo().toVector()).normalize();
+
+			direction.setX( direction.getX()*2 );
+			direction.setY( direction.getY()*2 );
+			direction.setZ( direction.getZ()*2 );
+ 
+			event.setTo(event.getFrom());
+
+			p.setVelocity(direction);
+			
+			return;
+		}
+		
+		if (spectators.contains(par)) {
+			if (locIsInArena(event.getTo()))
+				return;
+			event.setTo(event.getFrom());	
+		}
+	}
+	
+	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player p = event.getEntity();
 		CannonFighter victim = CannonFighter.get(p);
@@ -497,6 +527,8 @@ public class Game implements Listener {
 	 */
 	@SuppressWarnings("deprecation")
 	private void resetArena() {
+		// reset spawns
+		arena.resetSpawns();
 		
 		if (destroyedBlocks.size() == 0)
 			// no regeneration needed
@@ -515,8 +547,6 @@ public class Game implements Listener {
 		mbu.notifyClients();
 		
 		destroyedBlocks.clear();
-		
-		arena.resetSpawns();
 	}
 
 	public boolean locIsInArena(Location loc) {
