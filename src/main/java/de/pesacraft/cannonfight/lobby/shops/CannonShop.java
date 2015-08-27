@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -61,7 +62,7 @@ public class CannonShop {
 							return;
 						
 						ItemStack item = event.getItemInSlot();
-						CannonFighter p = event.getFighter();
+						final CannonFighter p = event.getFighter();
 						
 						if (item.isSimilar(fill))
 							return;
@@ -82,10 +83,17 @@ public class CannonShop {
 									Cannon c = constructor.buyNew(p);
 									p.takeCoins(constructor.getPrice(), cannon + " gekauft");
 									p.addCannon(c);
-									// open upgrade shop
+									
 									// regenerate this shop, cannon isnt buyable anymore
-									c.openShop();
 									shop.regenerate(p);
+									Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+										
+										@Override
+										public void run() {
+											openShopPage(p);
+										}
+									}, 1);
+									
 									return;
 								}
 								
@@ -97,10 +105,7 @@ public class CannonShop {
 					}
 
 					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {
-						// TODO Auto-generated method stub
-						
-					}
+					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, rows);
 				
 				s.fill(fill);

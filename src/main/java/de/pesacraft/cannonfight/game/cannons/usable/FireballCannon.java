@@ -412,7 +412,14 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setCooldownItem(cooldownItem, cannon.levelCooldown);
 							
-							event.setCloseInventory(true);
+							shop.regenerate(c);
+							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+								
+								@Override
+								public void run() {
+									openShopPage(c);
+								}
+							}, 1);
 							return;
 						}
 						
@@ -433,7 +440,14 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setAmmoItem(ammoItem, cannon.levelAmmo);
 							
-							event.setCloseInventory(true);
+							shop.regenerate(c);
+							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+								
+								@Override
+								public void run() {
+									openShopPage(c);
+								}
+							}, 1);
 							return;
 						}
 						
@@ -454,7 +468,14 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setRadiusItem(radiusItem, cannon.levelRadius);
 							
-							event.setCloseInventory(true);
+							shop.regenerate(c);
+							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+								
+								@Override
+								public void run() {
+									openShopPage(c);
+								}
+							}, 1);
 							return;
 						}
 						
@@ -475,16 +496,20 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setDamageItem(damageItem, cannon.levelDamage);
 							
-							event.setCloseInventory(true);
+							shop.regenerate(c);
+							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+								
+								@Override
+								public void run() {
+									openShopPage(c);
+								}
+							}, 1);
 							return;
 						}
 					}
 
 					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {
-						// TODO Auto-generated method stub
-						
-					}
+					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, 3);
 				
 				s.fill(fill);

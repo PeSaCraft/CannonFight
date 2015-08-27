@@ -160,10 +160,7 @@ public class SetupShop {
 					}
 
 					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {
-						// TODO Auto-generated method stub
-						
-					}
+					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, rows);
 				
 				s.fill(fill);

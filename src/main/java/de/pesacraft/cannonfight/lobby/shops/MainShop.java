@@ -72,10 +72,7 @@ public class MainShop {
 					}
 
 					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {
-						// TODO Auto-generated method stub
-						
-					}
+					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, 3);
 				
 				s.fill(fill);
