@@ -39,6 +39,9 @@ public class SetupShop {
 			@Override
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData());
+				ItemMeta meta = fill.getItemMeta();
+				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				fill.setItemMeta(meta);
 				
 				Set<String> cannons = Cannons.getCannonSet();
 				

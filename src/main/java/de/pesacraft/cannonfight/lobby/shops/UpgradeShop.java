@@ -98,6 +98,9 @@ public class UpgradeShop {
 			@Override
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData());
+				ItemMeta meta = fill.getItemMeta();
+				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				fill.setItemMeta(meta);
 				
 				final ItemStack slotItem = setupSlotItem(c);
 				

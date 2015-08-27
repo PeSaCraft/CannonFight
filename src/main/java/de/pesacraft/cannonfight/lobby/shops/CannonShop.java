@@ -36,6 +36,9 @@ public class CannonShop {
 			@Override
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData());
+				ItemMeta meta = fill.getItemMeta();
+				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				fill.setItemMeta(meta);
 				
 				Set<String> cannons = Cannons.getCannonSet();
 				int rows = (int) Math.ceil(cannons.size() / 7.0) + 2; // 7 items per row, spacer row above and below

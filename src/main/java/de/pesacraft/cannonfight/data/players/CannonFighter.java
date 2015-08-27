@@ -112,6 +112,10 @@ public class CannonFighter {
 		
 		this.user = Users.getByUUID(p.getUniqueId());
 	}
+	
+	public int getCoins() {
+		return CannonFight.MONEY.getMoney(this);
+	}
 
 	public void giveCoins(int amount) {
 		CannonFight.MONEY.giveMoney(this, amount);

@@ -373,6 +373,9 @@ public class FireballCannon extends Cannon implements Listener {
 				final FireballCannon cannon = (FireballCannon) c.getCannon(NAME);
 				
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getData());
+				ItemMeta meta = fill.getItemMeta();
+				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				fill.setItemMeta(meta);
 				
 				final ItemStack cooldownItem = new ItemStack(Material.AIR);
 				setCooldownItem(cooldownItem, cannon.levelCooldown);
