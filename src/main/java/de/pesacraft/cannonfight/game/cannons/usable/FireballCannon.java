@@ -240,7 +240,7 @@ public class FireballCannon extends Cannon implements Listener {
 		damage = DAMAGE_MAP.get(levelDamage).getValue();
 	
 		item = ITEM.clone();
-		
+		item.setAmount(currentAmmo);
 		shoot = new ArrayList<Integer>();
 		
 		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFight.PLUGIN);
@@ -263,7 +263,10 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 	
 	@Override
-	public boolean fire() {
+	public boolean fire(ItemStack item) {
+		if (this.item != item)
+			this.item = item;
+		
 		if (!hasFinished())
 			return false;
 		
@@ -333,9 +336,15 @@ public class FireballCannon extends Cannon implements Listener {
 
 	@Override
 	protected void finished() {
-		item.setDurability(item.getType().getMaxDurability());
+		item.setDurability((short) 0);
 		item.setAmount(maxAmmo);
 		currentAmmo = maxAmmo;
+	}
+	
+	@Override
+	public void reset() {
+		cancel();
+		finished();
 	}
 	
 	public int getLevelAmmo() {
@@ -668,7 +677,7 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".ammo", levelAmmo)));
 		
-		maxAmmo = upgrade.getValue();
+		currentAmmo = maxAmmo = upgrade.getValue();
 		
 		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Ammo auf Level " + levelAmmo);
 		

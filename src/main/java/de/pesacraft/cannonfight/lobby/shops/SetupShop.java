@@ -180,6 +180,8 @@ public class SetupShop {
 			private ItemStack setupItem(CannonFighter player, Cannon cannon) {
 				ItemStack i = cannon.getItem();
 				
+				i.setAmount(1);
+				
 				ItemMeta m = i.getItemMeta();
 				
 				List<String> lore = new ArrayList<String>();

@@ -157,7 +157,7 @@ public class CannonFighter {
 			
 			if (c.getItem().equals(item))
 				// that is the used cannon
-				return c.fire();
+				return c.fire(item);
 		}
 		
 		return false;
@@ -311,5 +311,13 @@ public class CannonFighter {
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof CannonFighter) ? ((CannonFighter) obj).getName().equals(this.getName()) : false;
+	}
+
+	public void resetCannons() {
+		for (Cannon c : getActiveItems()) {
+			if (c == null)
+				continue;
+			c.reset();
+		}
 	}
 }
