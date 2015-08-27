@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,8 +15,14 @@ import de.pesacraft.cannonfight.commands.ForceStartCommand;
 import de.pesacraft.cannonfight.commands.JoinCommand;
 import de.pesacraft.cannonfight.commands.LeaveCommand;
 import de.pesacraft.cannonfight.commands.SetupCommand;
+import de.pesacraft.cannonfight.commands.ShopCommand;
 import de.pesacraft.cannonfight.commands.SpectateCommand;
+import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.Arenas;
+import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
+import de.pesacraft.cannonfight.game.cannons.Cannons;
+import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
+import de.pesacraft.cannonfight.lobby.shops.MainShop;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
 import de.pesacraft.cannonfight.util.money.DatabaseMoney;
@@ -76,6 +83,8 @@ public class CannonFight extends JavaPlugin {
 				return ForceStartCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("spectate"))
 				return SpectateCommand.execute(sender, subArgs);
+			if (subcommand.equalsIgnoreCase("shop"))
+				return ShopCommand.execute(sender, subArgs);
 		}
 		return super.onCommand(sender, command, label, args);
 	}
