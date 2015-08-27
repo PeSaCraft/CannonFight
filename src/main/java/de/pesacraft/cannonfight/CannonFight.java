@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.pesacraft.cannonfight.commands.CoinsCommand;
 import de.pesacraft.cannonfight.commands.ForceStartCommand;
 import de.pesacraft.cannonfight.commands.JoinCommand;
 import de.pesacraft.cannonfight.commands.LeaveCommand;
@@ -85,6 +86,8 @@ public class CannonFight extends JavaPlugin {
 				return SpectateCommand.execute(sender, subArgs);
 			if (subcommand.equalsIgnoreCase("shop"))
 				return ShopCommand.execute(sender, subArgs);
+			if (subcommand.equalsIgnoreCase("coins"))
+				return CoinsCommand.execute(sender, subArgs);
 		}
 		return super.onCommand(sender, command, label, args);
 	}
