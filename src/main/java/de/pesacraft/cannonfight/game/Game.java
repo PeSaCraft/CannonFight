@@ -11,9 +11,11 @@ import java.util.concurrent.TimeUnit;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.ChunkCoordIntPair;
+import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.IBlockData;
 import net.minecraft.server.v1_8_R3.PacketPlayOutMapChunk;
 import net.minecraft.server.v1_8_R3.PacketPlayOutMultiBlockChange;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -347,15 +349,26 @@ public class Game implements Listener {
 		Participant par = new Participant(c);
 		
 		if (players.contains(par)) {
-			if (locIsInArena(event.getTo()))
+			Location to = event.getTo();
+			Location from = event.getFrom();
+			
+			if (locIsInArena(to)) {
+				Set<Block> relatives = getBlocksForWall(to.getBlock());
+				
+				for (Block rel : relatives) {
+					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.BARRIER, false, rel.getX(), rel.getY() + 0.5f, rel.getZ(), 0, 0, 0, 0, 1);
+					((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+				}
 				return;
-			Vector direction = event.getFrom().toVector().subtract(event.getTo().toVector()).normalize();
+			}
+			
+			Vector direction = from.toVector().subtract(to.toVector()).normalize();
 
-			direction.setX( direction.getX()*2 );
-			direction.setY( direction.getY()*2 );
-			direction.setZ( direction.getZ()*2 );
+			direction.setX(direction.getX()* 2);
+			direction.setY(direction.getY()* 2);
+			direction.setZ(direction.getZ() * 2);
  
-			event.setTo(event.getFrom());
+			event.setTo(from);
 
 			p.setVelocity(direction);
 			
@@ -369,6 +382,58 @@ public class Game implements Listener {
 		}
 	}
 	
+	private Set<Block> getBlocksForWall(Block base) {
+		Set<Block> relatives = new HashSet<Block>();
+		
+		for (int i = 1; i <= 5; i++) {
+			Block relative = base.getRelative(BlockFace.NORTH, i);
+			
+			if (!locIsInArena(relative.getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.SOUTH, i)).getLocation())) {
+				// block nearby outside arena:
+				// show particle wall
+				relatives.add(relative);
+				
+				Block up = relative.getRelative(BlockFace.UP);
+				
+				relatives.add(up);
+				relatives.add(up.getRelative(BlockFace.UP));
+				
+				relatives.add(relative.getRelative(BlockFace.DOWN));
+				
+				relatives.add(relative.getRelative(BlockFace.EAST));
+				relatives.add(up.getRelative(BlockFace.EAST));
+				
+				relatives.add(relative.getRelative(BlockFace.WEST));
+				relatives.add(up.getRelative(BlockFace.WEST));
+				
+				return relatives;
+			}
+			
+			if (!locIsInArena((relative = base.getRelative(BlockFace.EAST, i)).getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.WEST, i)).getLocation())) {
+				// block nearby outside arena:
+				// show particle wall
+				relatives.add(relative);
+				
+				Block up = relative.getRelative(BlockFace.UP);
+				
+				relatives.add(up);
+				relatives.add(up.getRelative(BlockFace.UP));
+				
+				relatives.add(relative.getRelative(BlockFace.DOWN));
+				
+				relatives.add(relative.getRelative(BlockFace.NORTH));
+				relatives.add(up.getRelative(BlockFace.NORTH));
+				
+				relatives.add(relative.getRelative(BlockFace.SOUTH));
+				relatives.add(up.getRelative(BlockFace.SOUTH));
+				
+				return relatives;
+			}
+		}
+		
+		return relatives;
+	}
+
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player p = event.getEntity();
