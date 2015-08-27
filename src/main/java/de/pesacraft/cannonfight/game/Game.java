@@ -255,7 +255,7 @@ public class Game implements Listener {
 
 				for (ActivePlayer c : players)
 					leave(c.getPlayer());
-
+				
 				for (Spectator c : spectators)
 					leave(c.getPlayer());
 				
@@ -281,7 +281,6 @@ public class Game implements Listener {
 	}
 
 	private void preparePlayer(CannonFighter c) {
-		
 		Configuration config = CannonFight.PLUGIN.getConfig();
 		
 		Player p = c.getPlayer();
@@ -292,6 +291,7 @@ public class Game implements Listener {
 		
 		Inventory inv = p.getInventory();
 		
+		inv.clear();
 		
 		for (int i = 0; i < c.getSlots(); i++) {
 			Cannon cannon = c.getActiveItem(i);
@@ -301,7 +301,7 @@ public class Game implements Listener {
 			inv.setItem(i, cannon.getItem());
 		}
 	}
-
+	
 	private void nextCountdown() {
 		switch (state) {
 		case TELEPORTTOARENA:
@@ -364,24 +364,32 @@ public class Game implements Listener {
 			
 			Vector direction = from.toVector().subtract(to.toVector()).normalize();
 
-			direction.setX(direction.getX()* 2);
-			direction.setY(direction.getY()* 2);
+			direction.setX(direction.getX() * 2);
+			direction.setY(direction.getY() * 2);
 			direction.setZ(direction.getZ() * 2);
- 
-			event.setTo(from);
-
-			p.setVelocity(direction);
+ 			
+ 			p.setVelocity(direction);
 			
+			event.setTo(from);
 			return;
 		}
 		
 		if (spectators.contains(par)) {
-			if (locIsInArena(event.getTo()))
+			if (locIsInArena(event.getTo())) {
+				Set<Block> relatives = getBlocksForWall(event.getTo().getBlock());
+				
+				for (Block rel : relatives) {
+					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.BARRIER, false, rel.getX(), rel.getY() + 0.5f, rel.getZ(), 0, 0, 0, 0, 1);
+					((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+				}
 				return;
+			}
+			
 			event.setTo(event.getFrom());	
+			p.sendMessage(Language.get("error.cannot-leave-arena-bounds"));
 		}
 	}
-	
+
 	private Set<Block> getBlocksForWall(Block base) {
 		Set<Block> relatives = new HashSet<Block>();
 		
@@ -433,7 +441,7 @@ public class Game implements Listener {
 		
 		return relatives;
 	}
-
+	
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player p = event.getEntity();
@@ -453,8 +461,16 @@ public class Game implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		CannonFighter c = CannonFighter.get(event.getPlayer());
 		
-		if (players.contains(new Participant(c)))
+		if (players.contains(new Participant(c))) {
+			// thats a player, original action will be cancelled
+			event.setCancelled(true);
+			
+			if (state != GameState.INGAME)
+				// not in game: no item usable
+				return;
+			
 			c.use(event.getItem());
+		}
 	}
 
 	@EventHandler
@@ -566,8 +582,11 @@ public class Game implements Listener {
 		Participant part = new Participant(c);
 		if (players.contains(part)) {
 			// normal player: leave event
-			
 			Bukkit.getServer().getPluginManager().callEvent(new CannonFighterLeaveEvent(this, c));
+			
+			// spectators are hidden for normal players
+			for (Spectator s : spectators)
+				c.getPlayer().showPlayer(s.getPlayer().getPlayer());
 		}
 		else if (!spectators.contains(part))
 			// not player and not specator: not in game -> cannot leave
@@ -575,6 +594,16 @@ public class Game implements Listener {
 		
 		// normal player or spectator
 		c.leaveGame();
+		c.resetCannons();
+		
+		Player p = c.getPlayer();
+		
+		p.setMaxHealth(20);
+		p.setHealth(p.getPlayer().getMaxHealth());
+		p.setFoodLevel(20);
+		
+		p.getInventory().clear();
+			
 		return true;
 	}
 	
