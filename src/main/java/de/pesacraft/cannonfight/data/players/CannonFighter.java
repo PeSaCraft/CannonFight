@@ -95,7 +95,16 @@ public class CannonFighter {
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
 			doc = doc.append("slotsLevel", slotsLevel);
-			doc = doc.append("activeItems", activeItems);
+			
+			List<String> activeStrings = new ArrayList<String>();
+			for (Cannon c : getActiveItems()) {
+				if (c == null)
+					activeStrings.add("null");
+				else
+					activeStrings.add(c.getName());
+			}
+			
+			doc = doc.append("activeItems", activeStrings);
 			doc = doc.append("cannons", cannons);
 			
 			COLLECTION.insertOne(doc);
@@ -296,7 +305,9 @@ public class CannonFighter {
 	
 	public Cannon selectCannonToSlot(int pos, String cannon) {
 		try {
-			return this.activeItems.set(pos, getCannon(cannon));
+			Cannon c = this.activeItems.set(pos, getCannon(cannon));
+			saveActiveItems();
+			return c;
 		}
 		catch (IndexOutOfBoundsException ex) {
 			// too huge index: return null as there is no cannon
@@ -306,6 +317,19 @@ public class CannonFighter {
 	
 	public void deselectCannon(String name) {
 		this.activeItems.set(this.activeItems.indexOf(getCannon(name)), null);
+		saveActiveItems();
+	}
+	
+	private void saveActiveItems() {
+		List<String> strings = new ArrayList<String>();
+		for (Cannon c : getActiveItems()) {
+			if (c == null)
+				strings.add("null");
+			else
+				strings.add(c.getName());
+		}
+		
+		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("activeItems", strings)));	
 	}
 	
 	@Override
