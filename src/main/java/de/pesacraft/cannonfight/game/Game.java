@@ -464,13 +464,13 @@ public class Game implements Listener {
 		
 		CannonFighter killer = p.getKiller() != null ? CannonFighter.get(p.getKiller()) : null;
 		
-		// player death => reward
-		Bukkit.getServer().getPluginManager().callEvent(new CannonFighterDeathEvent(this, victim, killer));
-	
 		ActivePlayer victimSession = players.get(players.indexOf(new Participant(victim)));
 		
 		victimSession.looseLife();
 		
+		// player death => reward
+		Bukkit.getServer().getPluginManager().callEvent(new CannonFighterDeathEvent(this, victim, killer, victimSession.isDead()));
+			
 		if (victimSession.isDead()) {
 			// player lost last life: out of game
 			removePlayer(victim);
@@ -553,7 +553,7 @@ public class Game implements Listener {
 		String msg = Language.get("info.game-won").replaceAll("%coins%", reward + "");
 		for (CannonFighter c : event.getWinner()) {
 			c.sendMessage(msg);
-			c.giveCoins(reward);
+			c.giveCoins(reward / event.getWinner().size());
 		}
 	}
 	
@@ -573,10 +573,11 @@ public class Game implements Listener {
 				msg = Language.get("info.player-died"); // event.getVictim().getName() + " ist gestorben.";	
 				event.getVictim().sendMessage(Language.get("info.player-died-self"));
 			}
-			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", players.size() + "");
 			
 			sendMessageToAll(msg);
-			sendMessageToAll(msg2);
+			
+			if (event.isOutOfGame())
+				sendMessageToAll(Language.get("info.remaining-players").replaceAll("%player%", players.size() + ""));
 		}
 	}
 	
