@@ -1,5 +1,6 @@
 package de.pesacraft.cannonfight.game.cannons;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.CannonFight;
@@ -17,7 +18,7 @@ public abstract class Cooldown {
 	private int taskID;
 	
 	public Cooldown(int time) {
-		this.time = time;
+		this.time = time * 4; // 4 updates per second
 		taskID = -1;
 	}
 
@@ -39,7 +40,7 @@ public abstract class Cooldown {
 				else
 					update();
 			}
-		}.runTaskTimer(CannonFight.PLUGIN, 0, 20).getTaskId();
+		}.runTaskTimer(CannonFight.PLUGIN, 0, 5).getTaskId();
 		
 		return true;
 	}
@@ -49,7 +50,7 @@ public abstract class Cooldown {
 	}
 	
 	public final double done() {
-		return 1 - ((double) timeLeft / time);
+		return (double) timeLeft / time;
 	}
 	
 	public final boolean setTime(int time) {
@@ -60,6 +61,14 @@ public abstract class Cooldown {
 		this.time = time;
 		return true;
 	}
+	
+	protected final void cancel() {
+		if (!hasFinished()) {
+			Bukkit.getScheduler().cancelTask(taskID);
+			taskID = -1;
+		}
+	}
+	
 	protected abstract void update();
 	
 	protected abstract void finished();
