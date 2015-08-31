@@ -5,9 +5,13 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,10 +33,12 @@ import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
 import de.pesacraft.cannonfight.util.money.DatabaseMoney;
 import de.pesacraft.cannonfight.util.money.Money;
 
-public class CannonFight extends JavaPlugin {
+public class CannonFight extends JavaPlugin implements Listener {
 	public static Logger LOGGER;
 	public static CannonFight PLUGIN;
 	public static Money MONEY;
+	
+	private static Location lobbyLocation;
 	
 	public void onEnable() { 
 		PLUGIN = this;
@@ -47,6 +53,10 @@ public class CannonFight extends JavaPlugin {
 		Arenas.load();
 		
 		loadMoney();
+		
+		lobbyLocation = (Location) this.getConfig().get("lobby");
+		
+		Bukkit.getPluginManager().registerEvents(this, this);
 		//LobbySystem.registerGame(this, Game.class);
 	}
 	 
@@ -94,5 +104,25 @@ public class CannonFight extends JavaPlugin {
 
 	public void onDisable() { 
 		MongoDatabase.close();
+		
+		this.getConfig().set("lobby", lobbyLocation);
+		this.saveConfig();
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		event.getPlayer().teleport(lobbyLocation);
+		event.setJoinMessage(Language.get("info.join-lobby").replaceAll("%player%", event.getPlayer().getName()));
+	}
+	
+	public static void setLobbyLocation(Location l) {
+		lobbyLocation.setWorld(l.getWorld());
+		
+		lobbyLocation.setX(l.getBlockX());
+		lobbyLocation.setY(l.getBlockY());
+		lobbyLocation.setZ(l.getBlockZ());
+		
+		lobbyLocation.setYaw(l.getYaw());
+		lobbyLocation.setPitch(l.getPitch());
 	}
 }

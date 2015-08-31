@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
@@ -47,27 +48,36 @@ public class SetupCommand {
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup done " + ChatColor.BLUE + "Schließt die Erstellung dieser Arena ab.");
 		}
 		else if (args.length == 1) {
-			// pos1 pos2 specPos spawn done
+			// pos1 pos2 specPos spawn done lobby
 			if (args[0].equalsIgnoreCase("pos1")) {
 				s.setLocation1(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-pos1")); 
+				sender.sendMessage(Language.get("command.setup-set-pos1"));
+				return true;
 			}
 			else if (args[0].equalsIgnoreCase("pos2")) {
 				s.setLocation2(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-pos2")); 	
+				sender.sendMessage(Language.get("command.setup-set-pos2"));
+				return true;
 			}
 			else if (args[0].equalsIgnoreCase("specPos")) {
 				s.setSpectatorLocation(p.getLocation());
 				sender.sendMessage(Language.get("command.setup-set-specPos")); 
+				return true;
 			}
 			else if (args[0].equalsIgnoreCase("spawn")) {
 				s.addSpawn(p.getLocation());
 				sender.sendMessage(Language.get("command.setup-set-spawn")); 
+				return true;
 			}
 			else if (args[0].equalsIgnoreCase("done")) {
 				Arenas.put(s.getName(), new Arena(s.getName()));
 				activeSetups.remove(p);
 				sender.sendMessage(Language.get("command.setup-done"));
+				return true;
+			}
+			else if (args[0].equalsIgnoreCase("lobby")) {
+				CannonFight.setLobbyLocation(p.getLocation());
+				sender.sendMessage(Language.get("command.setup-lobby"));
 				return true;
 			}
 		}
