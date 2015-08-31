@@ -1,4 +1,4 @@
-package de.pesacraft.cannonfight.util;
+package de.pesacraft.cannonfight.util.blockrestore;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
