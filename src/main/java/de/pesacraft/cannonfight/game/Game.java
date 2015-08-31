@@ -60,8 +60,8 @@ import de.pesacraft.cannonfight.data.players.Spectator;
 import de.pesacraft.cannonfight.game.cannons.Cannon;
 import de.pesacraft.cannonfight.util.Cage;
 import de.pesacraft.cannonfight.util.CageForm;
-import de.pesacraft.cannonfight.util.ModifiedBlock;
 import de.pesacraft.cannonfight.util.blockrestore.MassBlockUpdate;
+import de.pesacraft.cannonfight.util.blockrestore.ModifiedBlock;
 import de.pesacraft.cannonfight.util.blockrestore.RelightingStrategy;
 
 public class Game implements Listener {
@@ -680,13 +680,21 @@ public class Game implements Listener {
 	
 	public void addBlocksToRegenerate(Block... blocks) {
 		for (Block b : blocks) {
-			destroyedBlocks.add(new ModifiedBlock(b));	
+			ModifiedBlock m = new ModifiedBlock(b);
+			if (destroyedBlocks.contains(m))
+				// already changed, don't override
+				continue;
+			destroyedBlocks.add(m);	
 		}
 	}
 	
 	public void addBlocksToRegenerate(List<Block> blocks) {
 		for (Block b : blocks) {
-			destroyedBlocks.add(new ModifiedBlock(b));	
+			ModifiedBlock m = new ModifiedBlock(b);
+			if (destroyedBlocks.contains(m))
+				// already changed, don't override
+				continue;
+			destroyedBlocks.add(m);	
 		}
 	}
 	
