@@ -10,6 +10,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.h2.command.ddl.AlterIndexRename;
 
+import de.pesacraft.cannonfight.util.blockrestore.ModifiedBlock;
+
 public class Cage {
 	
 	private final CageForm form;

@@ -13,6 +13,8 @@ public class Participant {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof Participant) ? ((Participant) obj).player.equals(this.player) : false;
+		if (obj == null || !(obj instanceof Participant))
+			return false;
+		return ((Participant) obj).player.equals(this.player);
 	}
 }

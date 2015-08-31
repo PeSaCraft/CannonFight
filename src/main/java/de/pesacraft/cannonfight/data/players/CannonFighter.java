@@ -338,7 +338,9 @@ public class CannonFighter {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof CannonFighter) ? ((CannonFighter) obj).getName().equals(this.getName()) : false;
+		if (obj == null || !(obj instanceof CannonFighter))
+			return false;
+		return ((CannonFighter) obj).getName().equals(this.getName());
 	}
 
 	public void resetCannons() {
