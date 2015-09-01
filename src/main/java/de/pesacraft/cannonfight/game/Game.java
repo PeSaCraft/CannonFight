@@ -58,6 +58,7 @@ import de.pesacraft.cannonfight.api.game.CannonFighterDeathEvent;
 import de.pesacraft.cannonfight.api.game.CannonFighterJoinGameEvent;
 import de.pesacraft.cannonfight.api.game.CannonFighterLeaveEvent;
 import de.pesacraft.cannonfight.api.game.GameOverEvent;
+import de.pesacraft.cannonfight.commands.LeaveCommand;
 import de.pesacraft.cannonfight.data.players.ActivePlayer;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.data.players.Participant;
@@ -547,7 +548,7 @@ public class Game implements Listener {
 		CannonFighter c = CannonFighter.get(event.getPlayer());
 		
 		if (players.contains(new Participant(c)) || spectators.contains(new Participant(c)))
-			leave(c);
+			LeaveCommand.leaveAll(c);
 	}
 	
 	@EventHandler

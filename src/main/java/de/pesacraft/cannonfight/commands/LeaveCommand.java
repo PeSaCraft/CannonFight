@@ -32,14 +32,7 @@ public class LeaveCommand implements CommandExecutor {
 			
 			CannonFighter c = CannonFighter.get((Player) sender);
 			
-			if (c.isInGame())
-				// leave game
-				leaveGame(c);
-			
-			if (c.isInQueue())
-				// leave queue
-				leaveQueue(c);
-			
+			leaveAll(c);
 			return true;
 		}
 		else if (args.length == 1) {
@@ -83,6 +76,16 @@ public class LeaveCommand implements CommandExecutor {
 		return true;
 	}
 	
+	public static void leaveAll(CannonFighter c) {
+		if (c.isInGame())
+			// leave game
+			leaveGame(c);
+		
+		if (c.isInQueue())
+			// leave queue
+			leaveQueue(c);
+	}
+
 	private static boolean leaveGame(CannonFighter c) {
 		Game g = c.getCurrentGame();
 		if (g.leave(c)) {
