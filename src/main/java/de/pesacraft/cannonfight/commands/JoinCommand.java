@@ -2,6 +2,8 @@ package de.pesacraft.cannonfight.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,22 +13,24 @@ import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.GameManager;
 
-public class JoinCommand {
+public class JoinCommand implements CommandExecutor {
 
 	@SuppressWarnings("deprecation")
-	public static boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			// only players can join
-			sender.sendMessage(Language.get("command.join-only-players")); 
-			return true;
-		}
-		
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {		
 		CannonFighter c = CannonFighter.get((Player) sender);
 		Arena a;
 		
 		if (args.length == 0) {
 			// zufällige Arena
-			if (!sender.hasPermission("cannonfight.command.join.random") && !sender.hasPermission("cannonfight.command.*")) {
+			
+			if (!(sender instanceof Player)) {
+				// only players can join
+				sender.sendMessage(Language.get("command.join-only-players")); 
+				return true;
+			}
+			
+			if (!sender.hasPermission("cannonfight.command.join.random")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
@@ -38,10 +42,19 @@ public class JoinCommand {
 			a = Arenas.random();
 			
 			join(c, a);
+			return true;
 		}
-		else if (args.length == 1) {
+		
+		if (args.length == 1) {
 			// angegebene Arena
-			if (!sender.hasPermission("cannonfight.command.join") && !sender.hasPermission("cannonfight.command.*")) {
+			
+			if (!(sender instanceof Player)) {
+				// only players can join
+				sender.sendMessage(Language.get("command.join-only-players")); 
+				return true;
+			}
+			
+			if (!sender.hasPermission("cannonfight.command.join")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
@@ -54,10 +67,12 @@ public class JoinCommand {
 			a = Arenas.getArena(args[0]);
 			
 			join(c, a);
+			return true;
 		}
-		else {
+		
+		if (args.length == 2) {
 			// anderen in eine arena
-			if (!sender.hasPermission("cannonfight.command.join.others") && !sender.hasPermission("cannonfight.command.*")) {
+			if (!sender.hasPermission("cannonfight.command.join.other")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
@@ -73,8 +88,11 @@ public class JoinCommand {
 				sender.sendMessage(Language.get("command.join-successful-other")); 
 			else
 				sender.sendMessage(Language.get("command.join-failed-other")); 
+			
+			return true;
 		}
 		
+		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [arena] [player]"));
 		return true;
 	}
 

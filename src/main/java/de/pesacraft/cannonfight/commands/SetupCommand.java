@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,16 +15,17 @@ import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.Setup;
 
-public class SetupCommand {
+public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();
 	
-	public static boolean execute(CommandSender sender, String[] args) {
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(Language.get("command.setup-only-players")); 
 			return true;
 		}
 		
-		if (!sender.hasPermission("cannonfight.command.setup") && !sender.hasPermission("cannonfight.command.*")) {
+		if (!sender.hasPermission("cannonfight.command.setup")) {
 			sender.sendMessage(Language.get("error.no-permission"));
 			return true;
 		}
@@ -46,8 +49,10 @@ public class SetupCommand {
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup specPos " + ChatColor.BLUE + "Zuschauer Spawn an aktueller Position festlegen");
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup spawn " + ChatColor.BLUE + "Fügt an aktueller Position einen Spawn hinzu, nur möglich wenn vorherige Schritte gemacht wurden.");
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup done " + ChatColor.BLUE + "Schließt die Erstellung dieser Arena ab.");
+			
+			return true;
 		}
-		else if (args.length == 1) {
+		if (args.length == 1) {
 			// pos1 pos2 specPos spawn done lobby
 			if (args[0].equalsIgnoreCase("pos1")) {
 				s.setLocation1(p.getLocation());
@@ -81,7 +86,8 @@ public class SetupCommand {
 				return true;
 			}
 		}
-		else if (args.length == 2) {
+		
+		if (args.length == 2) {
 			// name reqPlayers
 			if (args[0].equalsIgnoreCase("name")) {
 				s.setName(args[1]);
@@ -91,8 +97,11 @@ public class SetupCommand {
 				s.setRequiredPlayers(Integer.parseInt(args[1]));
 				sender.sendMessage(Language.get("command.setup-set-reqPlayers")); 
 			}
+			return true;
 		}
-		return false;
+		
+		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label));
+		return true;
 	}
 
 }

@@ -2,6 +2,8 @@ package de.pesacraft.cannonfight.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,21 +13,22 @@ import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.GameManager;
 
-public class SpectateCommand {
+public class SpectateCommand implements CommandExecutor {
 
 	@SuppressWarnings("deprecation")
-	public static boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			// only players can join
-			sender.sendMessage(Language.get("command.spectate-only-players")); 
-			return true;
-		}
-		
-		CannonFighter c = CannonFighter.get((Player) sender);
-		Arena a;
-		
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 1) {
-			if (!sender.hasPermission("cannonfight.command.spectate") && !sender.hasPermission("cannonfight.command.*")) {
+			if (!(sender instanceof Player)) {
+				// only players can join
+				sender.sendMessage(Language.get("command.spectate-only-players")); 
+				return true;
+			}
+			
+			CannonFighter c = CannonFighter.get((Player) sender);
+			Arena a;
+			
+			if (!sender.hasPermission("cannonfight.command.spectate")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
@@ -38,15 +41,17 @@ public class SpectateCommand {
 			a = Arenas.getArena(args[0]);
 		
 			spectate(c, a);
-				
+			
+			return true;	
 		}
 		else if (args.length == 2) {
-			if (!sender.hasPermission("cannonfight.command.spectate.others") && !sender.hasPermission("cannonfight.command.*")) {
+			if (!sender.hasPermission("cannonfight.command.spectate.other")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
 			
-			c = CannonFighter.get(Bukkit.getPlayer(args[1]));
+			CannonFighter c = CannonFighter.get(Bukkit.getPlayer(args[1]));
+			Arena a;
 			
 			if (c.isInGame() || c.isInQueue()) {
 				c.sendMessage(Language.get("error.has-to-leave-before-join-other"));
@@ -59,8 +64,11 @@ public class SpectateCommand {
 				sender.sendMessage(Language.get("command.spectate-other-successful"));
 			else
 				sender.sendMessage(Language.get("command.spectate-other-failed"));
+			
+			return true;
 		}
 		
+		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [arena] [player]"));
 		return true;
 	}
 

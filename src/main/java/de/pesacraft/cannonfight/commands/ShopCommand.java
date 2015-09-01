@@ -2,6 +2,8 @@ package de.pesacraft.cannonfight.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,26 +14,29 @@ import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.GameManager;
 import de.pesacraft.cannonfight.lobby.shops.MainShop;
 
-public class ShopCommand {
+public class ShopCommand implements CommandExecutor {
 
 	@SuppressWarnings("deprecation")
-	public static boolean execute(CommandSender sender, String[] args) {
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can have coins
 				sender.sendMessage(Language.get("command.shop-only-players")); 
 				return true;
 			}
-			if (!sender.hasPermission("cannonfight.command.shop") && !sender.hasPermission("cannonfight.command.*")) {
+			if (!sender.hasPermission("cannonfight.command.shop")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
 			
 			CannonFighter c = CannonFighter.get((Player) sender);
 			MainShop.openShopPage(c);
+			return true;
 		}
-		else if (args.length == 1) {
-			if (!sender.hasPermission("cannonfight.command.shop.other") && !sender.hasPermission("cannonfight.command.*")) {
+		
+		if (args.length == 1) {
+			if (!sender.hasPermission("cannonfight.command.shop.other")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
@@ -40,10 +45,10 @@ public class ShopCommand {
 			MainShop.openShopPage(c);
 			
 			sender.sendMessage(Language.get("info.shop-open-other").replaceAll("%player%", c.getName()));
+			return true;
 		}
-		else {
-			sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/cannonfight shop [player]"));
-		}
+		
+		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [player]"));
 		return true;
 	}
 }
