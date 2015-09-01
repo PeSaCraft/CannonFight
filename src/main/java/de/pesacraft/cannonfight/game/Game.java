@@ -611,12 +611,6 @@ public class Game implements Listener {
 		if (event.isCancelled())
 			return;
 		
-		if (!event.getPlayer().hasPermission("cannonfight.join") && !event.getPlayer().hasPermission("cannonfight.*")) {
-			event.getPlayer().sendMessage(Language.get("error.no-permission"));
-			event.setCancelled(true);
-			return;
-		}
-		
 		if (event.getGame() == this && !event.isCancelled()) {
 			String msg = Language.get("info.player-join-others").replaceAll("%player%", event.getPlayer().getName());
 			sendMessageToAll(msg);

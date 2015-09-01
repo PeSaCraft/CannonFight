@@ -43,10 +43,15 @@ public class LeaveCommand implements CommandExecutor {
 		}
 		else if (args.length == 1) {
 			// ein anderer spieler
-			CannonFighter c = CannonFighter.get(Bukkit.getPlayer(args[0]));
-			
 			if (!sender.hasPermission("cannonfight.command.leave.other")) {
 				sender.sendMessage(Language.get("error.no-permission"));
+				return true;
+			}
+			
+			CannonFighter c = CannonFighter.get(Bukkit.getPlayer(args[0]));
+			
+			if (c == null) {
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", c.getName()));
 				return true;
 			}
 			

@@ -42,6 +42,12 @@ public class ShopCommand implements CommandExecutor {
 			}
 		
 			CannonFighter c = CannonFighter.get(Bukkit.getPlayer(args[0]));
+			
+			if (c == null) {
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", c.getName()));
+				return true;
+			}
+			
 			MainShop.openShopPage(c);
 			
 			sender.sendMessage(Language.get("info.shop-open-other").replaceAll("%player%", c.getName()));

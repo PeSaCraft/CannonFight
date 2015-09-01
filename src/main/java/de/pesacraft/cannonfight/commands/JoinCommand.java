@@ -79,6 +79,11 @@ public class JoinCommand implements CommandExecutor {
 			
 			c = CannonFighter.get(Bukkit.getPlayer(args[1]));
 			
+			if (c == null) {
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", c.getName()));
+				return true;
+			}
+			
 			if (c.isInGame() || c.isInQueue()) {
 				c.sendMessage(Language.get("error.has-to-leave-before-join-other"));
 				return true;

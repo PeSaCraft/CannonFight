@@ -106,7 +106,3 @@ permissions:
     default: true
   cannonfight.command.spectate.other:
     default: op
-  
-  
-  
-  
