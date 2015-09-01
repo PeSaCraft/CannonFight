@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -144,6 +145,8 @@ public class CannonFight extends JavaPlugin implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.getPlayer().teleport(lobbyLocation);
 		event.setJoinMessage(Language.get("info.join-lobby").replaceAll("%player%", event.getPlayer().getName()));
+		
+		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 	}
 	
 	public static void setLobbyLocation(Location l) {

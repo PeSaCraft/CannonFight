@@ -21,6 +21,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -156,7 +157,7 @@ public class Game implements Listener {
 		
 		return true;
 	}
-	
+
 	private boolean teleportSpectatorToArena(CannonFighter p) {
 		if (!arena.teleportSpectator(p, this))
 			return false;
@@ -172,6 +173,8 @@ public class Game implements Listener {
 			spectator.getPlayer().show(p);
 			p.show(spectator.getPlayer());
 		}
+		
+		p.getPlayer().setGameMode(GameMode.SPECTATOR);
 		
 		return true;
 	}
@@ -287,6 +290,8 @@ public class Game implements Listener {
 		Configuration config = CannonFight.PLUGIN.getConfig();
 		
 		Player p = c.getPlayer();
+		
+		p.setGameMode(GameMode.ADVENTURE);
 		
 		p.setMaxHealth(config.getDouble("game.lives.perLive"));
 		p.setHealth(p.getMaxHealth());
@@ -542,7 +547,7 @@ public class Game implements Listener {
 		if (players.contains(new Participant(c)) || spectators.contains(new Participant(c)))
 			leave(c);
 	}
-		
+	
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
 		if (event.getGame() != this)
@@ -671,6 +676,8 @@ public class Game implements Listener {
 		p.setHealth(p.getPlayer().getMaxHealth());
 		p.setFoodLevel(20);
 		p.setFireTicks(0);
+		
+		p.setGameMode(GameMode.ADVENTURE);
 		
 		p.getInventory().clear();
 			
