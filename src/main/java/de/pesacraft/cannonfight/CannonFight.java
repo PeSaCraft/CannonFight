@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -147,6 +148,11 @@ public class CannonFight extends JavaPlugin implements Listener {
 		event.setJoinMessage(Language.get("info.join-lobby").replaceAll("%player%", event.getPlayer().getName()));
 		
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
+	}
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		event.setQuitMessage(Language.get("info.leave-lobby").replaceAll("%player%", event.getPlayer().getName()));
 	}
 	
 	public static void setLobbyLocation(Location l) {
