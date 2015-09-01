@@ -471,7 +471,7 @@ public class Game implements Listener {
 		if (!players.contains(new Participant(victim)))
 			// player not in this game
 			return;
-		
+
 		CannonFighter killer = p.getKiller() != null ? CannonFighter.get(p.getKiller()) : null;
 		
 		ActivePlayer victimSession = players.get(players.indexOf(new Participant(victim)));
@@ -586,6 +586,22 @@ public class Game implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onPlayerDamage(EntityDamageEvent event) {
+		if (!(event.getEntity() instanceof Player))
+			return;
+		
+		CannonFighter c = CannonFighter.get((Player) event.getEntity());
+		
+		// check if it is a player in this game
+		if (c.getCurrentGame() != this)
+			return;
+		
+		// player in that game
+		if (state != GameState.INGAME)
+			// cancel all damage if game not ingame
+			event.setCancelled(true);
+	}
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
 		if (event.getGame() != this)
