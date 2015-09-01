@@ -165,9 +165,14 @@ public class UpgradeShop {
 				
 				lore.add(ChatColor.GREEN + "Hier kannst du dir mehr Slots kaufen.");
 				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getSlots() + " Slots");
-				lore.add(ChatColor.GREEN + "Ein Upgrade auf " + ChatColor.GOLD + upgrade.getValue() + " Slots");
-				lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice());
 				
+				if (upgrade != null) {
+					lore.add(ChatColor.GREEN + "Ein Upgrade auf " + ChatColor.GOLD + upgrade.getValue() + " Slots");
+					lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice());
+				}
+				else
+					lore.add(ChatColor.RED + "Du hast bereits die maximale Anzahl Slots");
+					
 				m.setLore(lore);
 				
 				i.setItemMeta(m);

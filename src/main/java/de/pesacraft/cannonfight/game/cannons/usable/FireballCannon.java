@@ -549,6 +549,8 @@ public class FireballCannon extends Cannon implements Listener {
 				Upgrade<Integer> oldLevel = FireballCannon.COOLDOWN_MAP.get(levelCooldown);
 				Upgrade<Integer> newLevel = FireballCannon.COOLDOWN_MAP.get(levelCooldown + 1);
 				
+				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
+				
 				if (newLevel != null) {
 					// upgradable
 					lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (levelCooldown + 1));
@@ -581,6 +583,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				Upgrade<Integer> oldLevel = FireballCannon.AMMO_MAP.get(levelAmmo);
 				Upgrade<Integer> newLevel = FireballCannon.AMMO_MAP.get(levelAmmo + 1);
+				
+				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
 				
 				if (newLevel != null) {
 					// upgradable
@@ -615,6 +619,8 @@ public class FireballCannon extends Cannon implements Listener {
 				Upgrade<Double> oldLevel = FireballCannon.RADIUS_MAP.get(levelRadius);
 				Upgrade<Double> newLevel = FireballCannon.RADIUS_MAP.get(levelRadius + 1);
 				
+				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
+				
 				if (newLevel != null) {
 					// upgradable
 					lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (levelRadius + 1));
@@ -647,6 +653,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				Upgrade<Integer> oldLevel = FireballCannon.DAMAGE_MAP.get(levelDamage);
 				Upgrade<Integer> newLevel = FireballCannon.DAMAGE_MAP.get(levelDamage + 1);
+				
+				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
 				
 				if (newLevel != null) {
 					// upgradable

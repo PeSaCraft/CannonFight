@@ -55,11 +55,11 @@ public class ForceStartCommand implements CommandExecutor {
 			
 			if (GameManager.getForArena(Arenas.getArena(args[0])).startGame(true)) {
 				// Spiel gestartet
-				sender.sendMessage(Language.get("command.force-specific-successful"));
+				sender.sendMessage(Language.get("command.force-specific-successful").replaceAll("%arena%", args[0]));
 				return true;
 			}
 			// spiel konnte nicht gestartet werden
-			sender.sendMessage(Language.get("command.force-specific-failed"));
+			sender.sendMessage(Language.get("command.force-specific-failed").replaceAll("%arena%", args[0]));
 			return true;
 		}
 		
