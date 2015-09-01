@@ -21,7 +21,7 @@ public class ActivePlayer extends Participant {
 	}
 	
 	public void createCage() throws IllegalStateException {
-		if (cage != null)
+		if (hasCage())
 			throw new IllegalStateException("Only one cage can be created per player at the same time");
 		
 		cage = new Cage(CageForm.PLAYER, getPlayer().getPlayer().getLocation().getBlock());
@@ -30,7 +30,7 @@ public class ActivePlayer extends Participant {
 	}
 	
 	public void destroyCage() throws IllegalStateException {
-		if (cage == null)
+		if (!hasCage())
 			throw new IllegalStateException("No cage created!");
 		
 		cage.destroyCage();
@@ -58,5 +58,9 @@ public class ActivePlayer extends Participant {
 	
 	public int getKills() {
 		return kills;
+	}
+
+	public boolean hasCage() {
+		return cage != null;
 	}
 }

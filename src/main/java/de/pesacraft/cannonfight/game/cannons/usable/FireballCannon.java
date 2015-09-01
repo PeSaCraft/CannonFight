@@ -327,7 +327,6 @@ public class FireballCannon extends Cannon implements Listener {
 			return;
 		
 		player.getCurrentGame().addBlocksToRegenerate(event.getBlock());
-		System.out.println(event.getCause());
 	}
 	
 	@Override
