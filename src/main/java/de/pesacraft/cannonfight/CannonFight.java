@@ -29,6 +29,7 @@ import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
 import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
 import de.pesacraft.cannonfight.lobby.shops.MainShop;
+import de.pesacraft.cannonfight.lobby.signs.JoinSigns;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.money.CraftConomyMoney;
 import de.pesacraft.cannonfight.util.money.DatabaseMoney;
@@ -56,7 +57,11 @@ public class CannonFight extends JavaPlugin implements Listener {
 		loadMoney();
 		
 		lobbyLocation = (Location) this.getConfig().get("lobby");
+		Bukkit.getServer().setSpawnRadius(0);
+		lobbyLocation.getWorld().setSpawnLocation(lobbyLocation.getBlockX(), lobbyLocation.getBlockY(), lobbyLocation.getBlockZ());
+		
 		Bukkit.getPluginManager().registerEvents(this, this);
+		new JoinSigns();
 		
 		setupCommands();
 		//LobbySystem.registerGame(this, Game.class);

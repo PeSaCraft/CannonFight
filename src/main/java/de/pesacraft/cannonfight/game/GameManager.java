@@ -6,8 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
 import org.bukkit.command.defaults.GameRuleCommand;
 
+import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class GameManager {
@@ -42,10 +46,12 @@ public class GameManager {
 	private Arena arena;
 	private Game game;
 	private List<CannonFighter> queue;
+	private Set<Sign> joinSigns;
 	
 	private GameManager(Arena arena) {
 		this.arena = arena;
 		this.queue = new ArrayList<CannonFighter>();
+		this.joinSigns = new HashSet<Sign>();
 	}
 	
 	public boolean addPlayer(CannonFighter c) {
@@ -101,7 +107,7 @@ public class GameManager {
 					it.remove();
 					c.setInQueue(null);
 				}
-				
+				updateSigns();
 				return game.start();
 			}
 		}
@@ -121,5 +127,27 @@ public class GameManager {
 			// that is the game of that gamemanager
 			// remove it and make space for a new one
 			man.game = null;
+	}
+	
+	public int getQueueSize() {
+		return queue.size();
+	}
+
+	public void addJoinSign(Sign sign) {
+		joinSigns.add(sign);
+	}
+
+	public void updateSigns() {
+		// update sign afterwards, something could have changed
+		Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+					
+			@Override
+			public void run() {
+				for (Sign sign : joinSigns) {
+					sign.setLine(3, ChatColor.GREEN + "" + getQueueSize() + " Spieler wartend");
+					sign.update();
+				}
+			}
+		}, 1);
 	}
 }
