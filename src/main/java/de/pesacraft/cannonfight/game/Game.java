@@ -3,6 +3,7 @@ package de.pesacraft.cannonfight.game;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,6 +34,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -89,7 +91,7 @@ public class Game implements Listener {
 	}
 	
 	public boolean addPlayer(CannonFighter p) {
-		if (state != GameState.TELEPORTTOARENA)
+		if (state != GameState.TELEPORTTOARENA && state != GameState.START)
 			return false;
 
 		if (players.size() == getMaxPlayers())
@@ -107,6 +109,8 @@ public class Game implements Listener {
 		ActivePlayer active = new ActivePlayer(p);
 		
 		active.createCage();
+		
+		preparePlayer(p);
 		
 		players.add(active);
 		
@@ -188,9 +192,6 @@ public class Game implements Listener {
 		switch (state) {
 		case TELEPORTTOARENA:
 			if (time == 0) {
-				for (ActivePlayer active : players) {
-					preparePlayer(active.getPlayer());
-				}
 				state = GameState.START;
 				nextCountdown();
 			}
@@ -651,6 +652,10 @@ public class Game implements Listener {
 			// spectators are hidden for normal players
 			for (Spectator s : spectators)
 				c.getPlayer().showPlayer(s.getPlayer().getPlayer());
+
+			ActivePlayer active = players.get(players.indexOf(part));
+			if (active.hasCage())
+				active.destroyCage();
 		}
 		else if (!spectators.contains(part))
 			// not player and not specator: not in game -> cannot leave
@@ -671,7 +676,7 @@ public class Game implements Listener {
 			
 		return true;
 	}
-	
+
 	public void addBlocksToRegenerate(Block... blocks) {
 		for (Block b : blocks) {
 			ModifiedBlock m = new ModifiedBlock(b);
