@@ -40,6 +40,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -568,6 +569,24 @@ public class Game implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
+		CannonFighter sender = CannonFighter.get(event.getPlayer());
+		
+		if (!players.contains(new Participant(sender)) && !spectators.contains(new Participant(sender)))
+			// not a player in that game
+			return;
+		
+		Iterator<Player> recipients = event.getRecipients().iterator();
+		
+		while (recipients.hasNext()) {
+			CannonFighter c = CannonFighter.get(recipients.next());
+			if (c.getCurrentGame() != this)
+				// not in this game, will not receive message
+				recipients.remove();
+		}
+	}
+	
+	@EventHandler
 	public void onGameOver(GameOverEvent event) {
 		if (event.getGame() != this)
 			return;
@@ -675,13 +694,18 @@ public class Game implements Listener {
 			
 			// spectators are hidden for normal players
 			for (Spectator s : spectators)
-				c.getPlayer().showPlayer(s.getPlayer().getPlayer());
+				c.show(s.getPlayer());
 
 			ActivePlayer active = players.get(players.indexOf(part));
 			if (active.hasCage())
 				active.destroyCage();
 		}
-		else if (!spectators.contains(part))
+		else if (spectators.contains(part)) {
+			// spectators are hidden for normal players
+			for (ActivePlayer a : players)
+				a.getPlayer().show(c);
+		}
+		else
 			// not player and not specator: not in game -> cannot leave
 			return false;
 		

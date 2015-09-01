@@ -2,6 +2,7 @@ package de.pesacraft.cannonfight;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
@@ -26,6 +28,7 @@ import de.pesacraft.cannonfight.commands.SetupCommand;
 import de.pesacraft.cannonfight.commands.ShopCommand;
 import de.pesacraft.cannonfight.commands.SpectateCommand;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.data.players.Participant;
 import de.pesacraft.cannonfight.game.Arenas;
 import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.game.cannons.Cannons;
@@ -153,6 +156,24 @@ public class CannonFight extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		event.setQuitMessage(Language.get("info.leave-lobby").replaceAll("%player%", event.getPlayer().getName()));
+	}
+	
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
+		CannonFighter sender = CannonFighter.get(event.getPlayer());
+		
+		if (sender.isInGame())
+			// only lobby chat here
+			return;
+		
+		Iterator<Player> recipients = event.getRecipients().iterator();
+		
+		while (recipients.hasNext()) {
+			CannonFighter c = CannonFighter.get(recipients.next());
+			if (c.isInGame())
+				// not in the lobby, will not receive message
+				recipients.remove();
+		}
 	}
 	
 	public static void setLobbyLocation(Location l) {
