@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -174,6 +175,11 @@ public class CannonFight extends JavaPlugin implements Listener {
 				// not in the lobby, will not receive message
 				recipients.remove();
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
+		event.setFormat(Language.get("general.chat-format").replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));
 	}
 	
 	public static void setLobbyLocation(Location l) {
