@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import de.pesacraft.cannonfight.Language;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
+import de.pesacraft.cannonfight.game.Game;
 import de.pesacraft.cannonfight.game.GameManager;
 
 public class LeaveCommand implements CommandExecutor {
@@ -74,6 +75,7 @@ public class LeaveCommand implements CommandExecutor {
 					sender.sendMessage(Language.get("command.leave-queue-other-failed"));
 			}
 			
+			
 			return true;
 		}
 		
@@ -82,8 +84,11 @@ public class LeaveCommand implements CommandExecutor {
 	}
 	
 	private static boolean leaveGame(CannonFighter c) {
-		if (c.getCurrentGame().leave(c)) {
+		Game g = c.getCurrentGame();
+		if (g.leave(c)) {
 			// spiel verlassen
+			g.removePlayer(c);
+			g.removeSpectator(c);
 			c.sendMessage(Language.get("command.leave-game-successful"));
 			return true;
 		}
@@ -92,7 +97,11 @@ public class LeaveCommand implements CommandExecutor {
 	}
 
 	private static boolean leaveQueue(CannonFighter c) {
-		if (GameManager.getForArena(c.getArenaQueuing()).leaveQueue(c)) {
+		GameManager man = GameManager.getForArena(c.getArenaQueuing());
+		
+		man.updateSigns();
+		
+		if (man.leaveQueue(c)) {
 			// queue verlassen
 			c.sendMessage(Language.get("command.leave-queue-successful"));
 			return true;
