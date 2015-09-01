@@ -39,6 +39,8 @@ import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -546,6 +548,22 @@ public class Game implements Listener {
 		
 		if (players.contains(new Participant(c)) || spectators.contains(new Participant(c)))
 			leave(c);
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		CannonFighter c = CannonFighter.get((Player) event.getWhoClicked());
+		
+		if (players.contains(new Participant(c)) || spectators.contains(new Participant(c)))
+			event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent event) {
+		CannonFighter c = CannonFighter.get(event.getPlayer());
+		
+		if (players.contains(new Participant(c)) || spectators.contains(new Participant(c)))
+			event.setCancelled(true);
 	}
 	
 	@EventHandler

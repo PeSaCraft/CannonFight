@@ -309,6 +309,8 @@ public class FireballCannon extends Cannon implements Listener {
 				blocks.remove();
 			}
 		}
+		// drop nothing
+		event.setYield(0);
 		
 		player.getCurrentGame().addBlocksToRegenerate(event.blockList());
 		
