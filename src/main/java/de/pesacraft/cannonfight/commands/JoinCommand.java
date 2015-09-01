@@ -107,31 +107,27 @@ public class JoinCommand implements CommandExecutor {
 	}
 
 	
-	private static boolean join(CannonFighter c, Arena a) {
+	public static boolean join(CannonFighter c, Arena a) {
 		GameManager g = GameManager.getForArena(a);
 		
-		if (!g.isGameRunning()) {
-			// kein Spiel läuft -> zur queue
-			if (g.addToQueue(c)) {
-				// kann in queue
-				c.sendMessage(Language.get("command.join-queue-succesful"));
+		if (g.isGameRunning()) {
+			// Spiel läuft -> hinzufügen
+			if (g.addPlayer(c)) {
+				// konnte rein
+				c.sendMessage(Language.get("command.join-successful"));
 				return true;
 			}
-			
-			// kann nicht in queue
-			c.sendMessage(Language.get("command.join-queue-failed"));
-			return false;
 		}
 		
-		// Spiel läuft -> hinzufügen
-		if (g.addPlayer(c)) {
-			// konnte rein
-			c.sendMessage(Language.get("command.join-successful"));
+		// kein Spiel läuft oder konnte nicht joinen -> zur queue
+		if (g.addToQueue(c)) {
+			// kann in queue
+			c.sendMessage(Language.get("command.join-queue-succesful"));
 			return true;
 		}
 		
-		// konnte nicht rein
-		c.sendMessage(Language.get("command.join-failed"));
+		// kann nicht in queue
+		c.sendMessage(Language.get("command.join-queue-failed"));
 		return false;
 	}
 }

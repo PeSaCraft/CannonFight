@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import de.pesacraft.cannonfight.CannonFight;
 import de.pesacraft.cannonfight.Language;
+import de.pesacraft.cannonfight.commands.JoinCommand;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 import de.pesacraft.cannonfight.game.Arena;
 import de.pesacraft.cannonfight.game.Arenas;
@@ -95,32 +96,12 @@ public class JoinSigns implements Listener {
 		}
 		
 		// player has enough permission
-		final GameManager g = GameManager.getForArena(Arenas.getArena(ChatColor.stripColor(lines[2])));
+		Arena a = Arenas.getArena(ChatColor.stripColor(lines[2]));
+		GameManager g = GameManager.getForArena(a);
 		
 		g.addJoinSign(sign);
 		g.updateSigns();
 		
-		if (!g.isGameRunning()) {
-			// kein Spiel läuft -> zur queue
-			if (g.addToQueue(c)) {
-				// kann in queue
-				c.sendMessage(Language.get("command.join-queue-succesful"));
-				return;
-			}
-			
-			// kann nicht in queue
-			c.sendMessage(Language.get("command.join-queue-failed"));
-			return;
-		}
-		
-		// Spiel läuft -> hinzufügen
-		if (g.addPlayer(c)) {
-			// konnte rein
-			c.sendMessage(Language.get("command.join-successful"));
-			return;
-		}
-		
-		// konnte nicht rein
-		c.sendMessage(Language.get("command.join-failed"));
+		JoinCommand.join(c, a);
 	}
 }
