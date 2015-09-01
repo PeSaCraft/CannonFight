@@ -133,7 +133,6 @@ public class UpgradeShop {
 							
 							// upgrade done
 							// regenerate shop
-							shop.regenerate(p);
 							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 								
 								@Override

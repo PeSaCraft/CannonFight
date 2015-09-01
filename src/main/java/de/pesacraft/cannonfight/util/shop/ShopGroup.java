@@ -10,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 import de.pesacraft.cannonfight.data.players.CannonFighter;
 
 public class ShopGroup {
-	private Map<UUID, Shop> shops = new HashMap<UUID, Shop>();
 	private ShopMaker maker;
 	
 	public ShopGroup(ShopMaker maker) {
@@ -21,18 +20,7 @@ public class ShopGroup {
 		if (c.getPlayer().getOpenInventory() != null)
 			c.getPlayer().closeInventory();
 		
-		if (shops.containsKey(c.getPlayer().getUniqueId()))
-			shops.get(c.getPlayer().getUniqueId()).openInventory(c);
-		else {
-			Shop s = maker.createShop(c);
-			shops.put(c.getPlayer().getUniqueId(), s);
-			s.openInventory(c);
-		}
-	}
-	
-	public void regenerate(CannonFighter c) {
-		// unregister listener and then recreate the shop
-		shops.get(c.getPlayer().getUniqueId()).unregister();
-		shops.put(c.getPlayer().getUniqueId(), maker.createShop(c));
+		Shop s = maker.createShop(c);
+		s.openInventory(c);
 	}
 }

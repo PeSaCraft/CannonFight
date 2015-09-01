@@ -88,7 +88,6 @@ public class CannonShop {
 									p.addCannon(c);
 									
 									// regenerate this shop, cannon isnt buyable anymore
-									shop.regenerate(p);
 									Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 										
 										@Override

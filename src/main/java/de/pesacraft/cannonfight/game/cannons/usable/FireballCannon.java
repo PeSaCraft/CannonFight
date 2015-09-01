@@ -427,7 +427,6 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setCooldownItem(cooldownItem, cannon.levelCooldown);
 							
-							shop.regenerate(c);
 							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 								
 								@Override
@@ -455,7 +454,6 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setAmmoItem(ammoItem, cannon.levelAmmo);
 							
-							shop.regenerate(c);
 							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 								
 								@Override
@@ -483,7 +481,6 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setRadiusItem(radiusItem, cannon.levelRadius);
 							
-							shop.regenerate(c);
 							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 								
 								@Override
@@ -511,7 +508,6 @@ public class FireballCannon extends Cannon implements Listener {
 							// upgrade done
 							setDamageItem(damageItem, cannon.levelDamage);
 							
-							shop.regenerate(c);
 							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 								
 								@Override

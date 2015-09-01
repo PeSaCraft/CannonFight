@@ -129,7 +129,6 @@ public class SetupShop {
 								
 								// something was changed
 								// regenerate shop
-								shop.regenerate(p);
 								Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 									
 									@Override
@@ -148,7 +147,6 @@ public class SetupShop {
 							
 							// something was changed
 							// regenerate shop
-							shop.regenerate(player);
 							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
 								
 								@Override
