@@ -50,13 +50,14 @@ public class SpectateCommand implements CommandExecutor {
 				return true;
 			}
 			
-			CannonFighter c = CannonFighter.get(Bukkit.getPlayer(args[1]));
+			Player p = Bukkit.getPlayer(args[1]);
 			
-			if (c == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", c.getName()));
+			if (p == null) {
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[1]));
 				return true;
 			}
 			
+			CannonFighter c = CannonFighter.get(p);
 			Arena a;
 			
 			if (c.isInGame() || c.isInQueue()) {

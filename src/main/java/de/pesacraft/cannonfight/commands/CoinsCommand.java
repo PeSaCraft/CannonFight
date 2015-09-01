@@ -41,12 +41,15 @@ public class CoinsCommand implements CommandExecutor {
 				return true;
 			}
 		
-			CannonFighter c = CannonFighter.get(Bukkit.getPlayer(args[0]));
+			Player p = Bukkit.getPlayer(args[0]);
 			
-			if (c == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", c.getName()));
+			if (p == null) {
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[0]));
 				return true;
 			}
+			
+			CannonFighter c = CannonFighter.get(p);
+			
 			
 			sender.sendMessage(Language.get("info.coins-other").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
 			return true;

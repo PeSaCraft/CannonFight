@@ -18,9 +18,6 @@ public class JoinCommand implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {		
-		CannonFighter c = CannonFighter.get((Player) sender);
-		Arena a;
-		
 		if (args.length == 0) {
 			// zufällige Arena
 			
@@ -34,6 +31,9 @@ public class JoinCommand implements CommandExecutor {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
+			
+			CannonFighter c = CannonFighter.get((Player) sender);
+			Arena a;
 			
 			if (c.isInGame() || c.isInQueue()) {
 				c.sendMessage(Language.get("error.has-to-leave-before-join"));
@@ -59,12 +59,14 @@ public class JoinCommand implements CommandExecutor {
 				return true;
 			}
 			
+			CannonFighter c = CannonFighter.get((Player) sender);
+			
 			if (c.isInGame() || c.isInQueue()) {
 				c.sendMessage(Language.get("error.has-to-leave-before-join"));
 				return true;
 			}
 			
-			a = Arenas.getArena(args[0]);
+			Arena a = Arenas.getArena(args[0]);
 			
 			join(c, a);
 			return true;
@@ -77,19 +79,22 @@ public class JoinCommand implements CommandExecutor {
 				return true;
 			}
 			
-			c = CannonFighter.get(Bukkit.getPlayer(args[1]));
+			Player p = Bukkit.getPlayer(args[1]);
 			
-			if (c == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", c.getName()));
+			if (p == null) {
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[1]));
 				return true;
 			}
+			
+			CannonFighter c = CannonFighter.get(p);
+			Arena a = Arenas.getArena(args[0]);
 			
 			if (c.isInGame() || c.isInQueue()) {
 				c.sendMessage(Language.get("error.has-to-leave-before-join-other"));
 				return true;
 			}
 			
-			if (join(c, Arenas.getArena(args[0])))
+			if (join(c, a))
 				sender.sendMessage(Language.get("command.join-successful-other")); 
 			else
 				sender.sendMessage(Language.get("command.join-failed-other")); 
