@@ -549,7 +549,7 @@ public class FireballCannon extends Cannon implements Listener {
 				Upgrade<Integer> oldLevel = FireballCannon.COOLDOWN_MAP.get(levelCooldown);
 				Upgrade<Integer> newLevel = FireballCannon.COOLDOWN_MAP.get(levelCooldown + 1);
 				
-				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
+				lore.add(ChatColor.GOLD + "Cooldownzeit: " + oldLevel.getValue() + " Sekunden");
 				
 				if (newLevel != null) {
 					// upgradable
@@ -558,7 +558,7 @@ public class FireballCannon extends Cannon implements Listener {
 					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
 					int change = newLevel.getValue() - oldLevel.getValue();
-					lore.add(ChatColor.DARK_GREEN + "Cooldownzeit: " + newLevel.getValue() + (change < 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting lower, red if getting higher
+					lore.add(ChatColor.DARK_GREEN + "Cooldownzeit: " + newLevel.getValue() + " Sekunden"+ (change < 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting lower, red if getting higher
 				}
 				else {
 					// not upgradable anymore
@@ -584,7 +584,7 @@ public class FireballCannon extends Cannon implements Listener {
 				Upgrade<Integer> oldLevel = FireballCannon.AMMO_MAP.get(levelAmmo);
 				Upgrade<Integer> newLevel = FireballCannon.AMMO_MAP.get(levelAmmo + 1);
 				
-				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
+				lore.add(ChatColor.GOLD + "Munition: " + oldLevel.getValue() + " Schuß");
 				
 				if (newLevel != null) {
 					// upgradable
@@ -593,7 +593,7 @@ public class FireballCannon extends Cannon implements Listener {
 					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
 					int change = newLevel.getValue() - oldLevel.getValue();
-					lore.add(ChatColor.DARK_GREEN + "Munition: " + newLevel.getValue() + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
+					lore.add(ChatColor.DARK_GREEN + "Neue Munition: " + newLevel.getValue() + " Schuß" + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
@@ -619,7 +619,7 @@ public class FireballCannon extends Cannon implements Listener {
 				Upgrade<Double> oldLevel = FireballCannon.RADIUS_MAP.get(levelRadius);
 				Upgrade<Double> newLevel = FireballCannon.RADIUS_MAP.get(levelRadius + 1);
 				
-				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
+				lore.add(ChatColor.GOLD + "Radius: " + oldLevel.getValue() + " Blöcke");
 				
 				if (newLevel != null) {
 					// upgradable
@@ -628,7 +628,7 @@ public class FireballCannon extends Cannon implements Listener {
 					lore.add(ChatColor.AQUA + "Preis: " + newLevel.getPrice());
 				
 					double change = newLevel.getValue() - oldLevel.getValue();
-					lore.add(ChatColor.DARK_GREEN + "Radius: " + newLevel.getValue() + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
+					lore.add(ChatColor.DARK_GREEN + "Neuer Radius: " + newLevel.getValue() + " Blöcke" + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
@@ -654,7 +654,16 @@ public class FireballCannon extends Cannon implements Listener {
 				Upgrade<Integer> oldLevel = FireballCannon.DAMAGE_MAP.get(levelDamage);
 				Upgrade<Integer> newLevel = FireballCannon.DAMAGE_MAP.get(levelDamage + 1);
 				
-				lore.add(ChatColor.GOLD + "Momentan " + oldLevel.getValue());
+				
+				String hearts = "";
+				
+				for (int i = 0; i < oldLevel.getValue() / 2; i++)
+					hearts += "\u2764";
+				
+				if (oldLevel.getValue() % 2 == 1)
+					hearts += "\u2765";
+				
+				lore.add(ChatColor.GOLD + "Schaden: " + hearts);
 				
 				if (newLevel != null) {
 					// upgradable
@@ -664,7 +673,7 @@ public class FireballCannon extends Cannon implements Listener {
 				
 					double change = newLevel.getValue() - oldLevel.getValue();
 					
-					String hearts = "";
+					hearts = "";
 					
 					for (int i = 0; i < newLevel.getValue() / 2; i++)
 						hearts += "\u2764";
@@ -672,7 +681,7 @@ public class FireballCannon extends Cannon implements Listener {
 					if (newLevel.getValue() % 2 == 1)
 						hearts += "\u2765";
 					
-					lore.add(ChatColor.DARK_GREEN + "Schaden: " + newLevel.getValue() + hearts + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format(change) + ")"); // green if getting higher, red if getting lower
+					lore.add(ChatColor.DARK_GREEN + "Neuer Schaden: " + hearts + (change > 0 ? ChatColor.GREEN : ChatColor.RED) + " (" + new DecimalFormat("+#.##;-#.##").format((double) change / 2) + ")"); // green if getting higher, red if getting lower
 				}
 				else {
 					// not upgradable anymore
