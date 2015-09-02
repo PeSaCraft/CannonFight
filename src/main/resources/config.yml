@@ -1,17 +1,30 @@
 language: de_DE
 
 database:
-  host: "127.0.0.1"
-  port: 3308
-  database: "minecraft"
-  prefix: "cannonfight_"
+  host: 127.0.0.1
+  port: 27017
+  database: CannonFight
+  prefix: ''
   auth:
-    username: "minecraft"
-    password: "password"
-    db: "auth"
+    username: CannonFight
+    password: CannonFight
+    db: auth_db
+    
 game:
   time:
     start: 10
     play: 300
     gameover: 10
   reward: 20
+  lives:
+    perLive: 40 
+    amount: 3
+    
+lobby:
+  ==: org.bukkit.Location
+  yaw: 0
+  pitch: 0
+  z: 0
+  y: 64
+  world: world
+  x: 0
