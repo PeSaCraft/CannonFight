@@ -263,7 +263,7 @@ public class Game implements Listener {
 				sendMessageToAll(Language.get("info.game-over-teleport-back-in").replaceAll("%time%", time + ""));
 			
 			if (time == 0) {
-				sendMessageToAll("info.game-over-teleport-back-now");
+				sendMessageToAll(Language.get("info.game-over-teleport-back-now"));
 				
 				state = GameState.TELEPORTBACK;
 				countdownTask.cancel();
