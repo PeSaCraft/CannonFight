@@ -114,7 +114,7 @@ public class JoinCommand implements CommandExecutor {
 			// Spiel läuft -> hinzufügen
 			if (g.addPlayer(c)) {
 				// konnte rein
-				c.sendMessage(Language.get("command.join-successful"));
+				c.sendMessage(Language.get("command.join-successful").replaceAll("%game%", a.getName()));
 				return true;
 			}
 		}
@@ -122,7 +122,7 @@ public class JoinCommand implements CommandExecutor {
 		// kein Spiel läuft oder konnte nicht joinen -> zur queue
 		if (g.addToQueue(c)) {
 			// kann in queue
-			c.sendMessage(Language.get("command.join-queue-succesful"));
+			c.sendMessage(Language.get("command.join-queue-succesful").replaceAll("%arena%", a.getName()));
 			return true;
 		}
 		

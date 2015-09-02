@@ -71,6 +71,10 @@ public class Arena {
 		setSpawns = new HashMap<CannonFighter, Location>();
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	public int getMaxPlayers() {
 		return this.freeSpawns.size() + this.setSpawns.size();
 	}
