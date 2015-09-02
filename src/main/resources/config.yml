@@ -16,10 +16,8 @@ game:
     play: 300
     gameover: 10
   reward: 20
-  lives:
-    perLive: 40 
-    amount: 3
-    
+  livesPerLive: 40
+  
 lobby:
   ==: org.bukkit.Location
   yaw: 0

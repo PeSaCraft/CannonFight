@@ -1,6 +1,6 @@
 name: CannonFight
 main: de.pesacraft.cannonfight.CannonFight
-version: 0.0.1
+version: 0.0.2
 author: FroznMine
 commands:
   cannonfight:

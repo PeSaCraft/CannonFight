@@ -302,7 +302,7 @@ public class Game implements Listener {
 		
 		p.setGameMode(GameMode.ADVENTURE);
 		
-		p.setMaxHealth(config.getDouble("game.lives.perLive"));
+		p.setMaxHealth(config.getDouble("game.livesPerLive"));
 		p.setHealth(p.getMaxHealth());
 		p.setFoodLevel(20);
 		
