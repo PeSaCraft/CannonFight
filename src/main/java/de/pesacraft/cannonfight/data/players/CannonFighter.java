@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.bson.Document;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,6 +43,9 @@ public class CannonFighter {
 	private int slotsLevel;
 	private int slots;
 	
+	private int livesLevel;
+	private int lives;
+	
 	private Game currentGame;
 	private Arena inQueue;
 	
@@ -63,6 +67,9 @@ public class CannonFighter {
 			
 			slotsLevel = ((Number) doc.get("slotsLevel")).intValue();
 			slots = UpgradeShop.getSlotsUpgradeForLevel(slotsLevel).getValue();
+			
+			livesLevel = ((Number) doc.get("livesLevel")).intValue();
+			lives = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
 			
 			cannons = new HashMap<String, Cannon>();
 			Document cannons = (Document) doc.get("cannons");
@@ -90,11 +97,15 @@ public class CannonFighter {
 			slotsLevel = 1;
 			slots = UpgradeShop.getSlotsUpgradeForLevel(slotsLevel).getValue();
 			
+			livesLevel = 1;
+			slots = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
+			
 			cannons = new HashMap<String, Cannon>();
 			
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
 			doc = doc.append("slotsLevel", slotsLevel);
+			doc = doc.append("livesLevel", livesLevel);
 			
 			List<String> activeStrings = new ArrayList<String>();
 			for (Cannon c : getActiveItems()) {
@@ -293,6 +304,31 @@ public class CannonFighter {
 		slots = upgrade.getValue();
 		
 		takeCoins(upgrade.getPrice(), UpgradeShop.NAME_SLOTS + "-Upgrade auf Level " + slotsLevel);
+		
+		return true;
+	}
+	
+	public int getLivesLevel() {
+		return livesLevel;
+	}
+	
+	public int getLives() {
+		return lives;
+	}
+	
+	public boolean upgradeLives() {
+		Upgrade<Integer> upgrade = UpgradeShop.getLivesUpgradeForLevel(livesLevel + 1);
+		
+		if (!hasEnoughCoins(upgrade.getPrice()))
+			return false;
+		
+		livesLevel++;
+		
+		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("livesLevel", livesLevel)));
+		
+		lives = upgrade.getValue();
+		
+		takeCoins(upgrade.getPrice(), UpgradeShop.NAME_LIVES + "-Upgrade auf Level " + livesLevel);
 		
 		return true;
 	}

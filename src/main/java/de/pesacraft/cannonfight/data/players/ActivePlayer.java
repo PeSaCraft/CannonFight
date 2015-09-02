@@ -16,7 +16,7 @@ public class ActivePlayer extends Participant {
 	public ActivePlayer(CannonFighter player) {
 		super(player);
 		
-		lives = CannonFight.PLUGIN.getConfig().getInt("game.lives.amount");
+		lives = player.getLives();
 		kills = 0;
 	}
 	

@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -50,6 +51,17 @@ public class UpgradeShop {
 	public static final String NAME_SLOTS = "Slots";
 	
 	protected static final Map<Integer, Upgrade<Integer>> SLOT_UPGRADES = new HashMap<Integer, Upgrade<Integer>>();
+	
+	/**
+	 * ItemStack representing the slot upgrade
+	 */
+	protected static final ItemStack ITEM_LIVES;
+	/**
+	 * The slot upgrade name in the database
+	 */
+	public static final String NAME_LIVES = "Lives";
+	
+	protected static final Map<Integer, Upgrade<Integer>> LIFE_UPGRADES = new HashMap<Integer, Upgrade<Integer>>();
 	
 	private static final ShopGroup shop;
 		
@@ -93,6 +105,43 @@ public class UpgradeShop {
 			COLLECTION.insertOne(doc);
 		}
 		
+		doc = COLLECTION.find(eq("name", NAME_LIVES)).first();
+		
+		if (doc != null) {
+			// Cannon in database
+			
+			ITEM_LIVES = ItemSerializer.deserialize((Document) doc.get("item"));
+			
+			Document upgrades = (Document) doc.get("upgrades");
+			for (Entry<String, Object> upgrade : upgrades.entrySet())
+				LIFE_UPGRADES.put(Integer.parseInt(upgrade.getKey()), new Upgrade<Integer>((Document) upgrade.getValue()));
+			
+		}
+		else {
+			// Cannon not in database
+			ITEM_LIVES = new ItemStack(Material.INK_SACK, 1, DyeColor.RED.getData());
+			
+			ItemMeta m = ITEM_LIVES.getItemMeta();
+			m.setDisplayName(NAME_LIVES);
+			ITEM_LIVES.setItemMeta(m);
+			
+			Map<String, Object> upgrades = new HashMap<String, Object>();
+			for (int i = 1; i <= 5; i++) {
+				Upgrade<Integer> u = new Upgrade<Integer>(i * 10000, i);
+				LIFE_UPGRADES.put(i, u);
+				upgrades.put(i + "", u);
+			}
+			
+			doc = new Document("name", NAME_LIVES);
+			
+			
+			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_LIVES)));
+			
+			doc = doc.append("upgrades", new Document(upgrades));
+			
+			COLLECTION.insertOne(doc);
+		}
+		
 		shop = new ShopGroup(new ShopMaker() {
 			@SuppressWarnings("deprecation")
 			@Override
@@ -103,6 +152,7 @@ public class UpgradeShop {
 				fill.setItemMeta(meta);
 				
 				final ItemStack slotItem = setupSlotItem(c);
+				final ItemStack lifeItem = setupLifeItem(c);
 				
 				Shop s = new Shop("Upgrade Shop", new ClickHandler() {
 					
@@ -142,6 +192,32 @@ public class UpgradeShop {
 							}, 1);
 							return;
 						}
+						
+						if (item.isSimilar(lifeItem)) {
+							// upgrade slots
+							if (!LIFE_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
+								// max reached
+								p.sendMessage(Language.get("error.max-upgraded"));
+								return;
+							}
+							
+							if (!p.upgradeLives()) {
+								// not enough coins for upgrade
+								p.sendMessage(Language.get("error.not-enough-coins"));
+								return;
+							}
+							
+							// upgrade done
+							// regenerate shop
+							Bukkit.getScheduler().runTaskLater(CannonFight.PLUGIN, new Runnable() {
+								
+								@Override
+								public void run() {
+									openShopPage(p);
+								}
+							}, 1);
+							return;
+						}
 					}
 
 					@Override
@@ -150,7 +226,8 @@ public class UpgradeShop {
 				
 				s.fill(fill);
 				
-				s.set(1 * 9 + 4, slotItem); // (1, 4) Slots
+				s.set(1 * 9 + 3, slotItem); // (1, 3) Slots
+				s.set(1 * 9 + 5, lifeItem); // (1, 5) Lives
 				
 				return s;
 			}
@@ -179,6 +256,31 @@ public class UpgradeShop {
 				
 				return i;
 			}
+			
+			private ItemStack setupLifeItem(CannonFighter p) {
+				ItemStack i = ITEM_LIVES.clone();
+				ItemMeta m = i.getItemMeta();
+				
+				List<String> lore = new ArrayList<String>();
+				
+				Upgrade<Integer> upgrade = getLivesUpgradeForLevel(p.getLivesLevel() + 1);
+				
+				lore.add(ChatColor.GREEN + "Hier kannst du dir mehr Leben kaufen.");
+				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getLives() + " Leben");
+				
+				if (upgrade != null) {
+					lore.add(ChatColor.GREEN + "Ein Upgrade auf " + ChatColor.GOLD + upgrade.getValue() + " Leben");
+					lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice());
+				}
+				else
+					lore.add(ChatColor.RED + "Du hast bereits die maximale Anzahl LEben");
+					
+				m.setLore(lore);
+				
+				i.setItemMeta(m);
+				
+				return i;
+			}
 		});
 	}
 	
@@ -188,5 +290,9 @@ public class UpgradeShop {
 
 	public static Upgrade<Integer> getSlotsUpgradeForLevel(int level) {
 		return SLOT_UPGRADES.get(level);
+	}
+	
+	public static Upgrade<Integer> getLivesUpgradeForLevel(int level) {
+		return LIFE_UPGRADES.get(level);
 	}
 }
