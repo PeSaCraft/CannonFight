@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.froznmine</groupId>
-  <artifactId>CannonFightGame</artifactId>
+  <artifactId>CannonFightUtil</artifactId>
   <version>0.1.0-8</version>
-  <name>CannonFight Game</name>
-  <description>The game plugin for the CannonFight game plugin for Minecraft Bukkit Servers</description>
+  <name>CannonFight Util</name>
+  <description>The utilities part for the CannonFight game plugin for Minecraft Bukkit Servers. This contains code that is used in both parts.</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,7 +17,6 @@
     
     <craftconomy.version>3.3</craftconomy.version>
     
-    <cannonfightutil.version>0.1.0</cannonfightutil.version>
 <!-- 
     <vault.version>1.2.27</vault.version>
 
@@ -90,13 +89,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.pesacraft.cannonfight</groupId>
-      <artifactId>CannonFightUtil</artifactId>
-      <version>${cannonfightutil.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>me.greatman.Craftconomy</groupId>
       <artifactId>Craftconomy</artifactId>
       <version>${craftconomy.version}</version>
@@ -155,7 +147,7 @@
 
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
-    <defaultGoal>clean package</defaultGoal>
+    <defaultGoal>clean install</defaultGoal>
     
     <resources>
       <resource>

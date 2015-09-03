@@ -17,6 +17,7 @@
     
     <craftconomy.version>3.3</craftconomy.version>
     
+    <cannonfightutil.version>0.1.0</cannonfightutil.version>
 <!-- 
     <vault.version>1.2.27</vault.version>
 
@@ -85,6 +86,13 @@
       <groupId>de.pesacraft</groupId>
       <artifactId>LobbySystem</artifactId>
       <version>${lobbysystem.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.pesacraft.cannonfight</groupId>
+      <artifactId>CannonFightUtil</artifactId>
+      <version>${cannonfightutil.version}</version>
       <scope>provided</scope>
     </dependency>
 

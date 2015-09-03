@@ -10,6 +10,7 @@
   <modules>
     <module>CannonFight_Hub</module>
     <module>CannonFight_Game</module>
+    <module>CannonFight_Util</module>
   </modules>
 	
   <pluginRepositories>
