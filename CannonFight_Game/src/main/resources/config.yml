@@ -9,7 +9,8 @@ database:
     username: CannonFight
     password: CannonFight
     db: auth_db
-    
+
+arena: arena
 game:
   time:
     start: 10
@@ -18,11 +19,3 @@ game:
   reward: 20
   livesPerLive: 40
   
-lobby:
-  ==: org.bukkit.Location
-  yaw: 0
-  pitch: 0
-  z: 0
-  y: 64
-  world: world
-  x: 0

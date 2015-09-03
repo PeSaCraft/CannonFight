@@ -1,6 +1,6 @@
 name: CannonFight
 main: de.pesacraft.cannonfight.CannonFight
-version: 0.0.2
+version: 0.1.0
 author: FroznMine
 commands:
   cannonfight:
@@ -10,10 +10,6 @@ commands:
     description: Get the coins a player has
     aliases: [cannonfightcoins, cfcoins, ccoins]
     usage: /coins [player]
-  force:
-    description: Force the start of the specified game
-    aliases: [cannonfightforce, cfforce, cforce, cannonfightstart, start, cfstart, cstart]
-    usage: /force [arena]
   join:
     description: Join a game in the specified arena
     aliases: [cannonfightjoin, cfjoin, cjoin]
@@ -39,7 +35,6 @@ permissions:
   cannonfight.command.*:
     children:
       cannonfight.command.coins.*: true
-      cannonfight.command.force.*: true
       cannonfight.command.join.*: true
       cannonfight.command.leave.*: true
       cannonfight.command.setup: true
@@ -56,15 +51,6 @@ permissions:
   cannonfight.command.coins.other:
     default: op
   
-  cannonfight.command.force.*:
-    children:
-      cannonfight.command.force: true
-      cannonfight.command.force.specific: true
-  cannonfight.command.force:
-    default: op
-  cannonfight.command.force.specific:
-    default: op
-
   cannonfight.command.join.*:
     children:
       cannonfight.command.join: true
