@@ -7,9 +7,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.pesacraft.cannonfight.game.Game;
-import de.pesacraft.cannonfight.game.Language;
-import de.pesacraft.cannonfight.game.players.CannonFighter;
+import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.game.Game;
+import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class LeaveCommand implements CommandExecutor {
 

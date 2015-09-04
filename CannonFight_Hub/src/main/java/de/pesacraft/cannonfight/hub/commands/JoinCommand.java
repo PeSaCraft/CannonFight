@@ -7,12 +7,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.pesacraft.cannonfight.game.Arena;
-import de.pesacraft.cannonfight.game.Arenas;
-import de.pesacraft.cannonfight.game.GameManager;
-import de.pesacraft.cannonfight.hub.Language;
-import de.pesacraft.cannonfight.hub.data.players.CannonFighter;
-
+import de.pesacraft.cannonfight.hub.CannonFightHub;
+import de.pesacraft.cannonfight.hub.GameManager;
+import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.game.Arena;
+/*
+import de.pesacraft.cannonfight.util.game.Arenas;
+import de.pesacraft.cannonfight.util.game.GameManager;
+*/
 public class JoinCommand implements CommandExecutor {
 
 	@SuppressWarnings("deprecation")
@@ -39,9 +42,9 @@ public class JoinCommand implements CommandExecutor {
 				c.sendMessage(Language.get("error.has-to-leave-before-join"));
 				return true;
 			}
-			a = Arenas.random();
+			//a = Arenas.random();
 			
-			join(c, a);
+			//join(c, a);
 			return true;
 		}
 		
@@ -66,9 +69,11 @@ public class JoinCommand implements CommandExecutor {
 				return true;
 			}
 			
-			Arena a = Arenas.getArena(args[0]);
+			//Arena a = Arenas.getArena(args[0]);
 			
-			join(c, a);
+			//join(c, a);
+			
+			CannonFightHub.getGameManager().startNewServer(args[0]);
 			return true;
 		}
 		
@@ -87,18 +92,18 @@ public class JoinCommand implements CommandExecutor {
 			}
 			
 			CannonFighter c = CannonFighter.get(p);
-			Arena a = Arenas.getArena(args[0]);
+			//Arena a = Arenas.getArena(args[0]);
 			
 			if (c.isInGame() || c.isInQueue()) {
 				c.sendMessage(Language.get("error.has-to-leave-before-join-other"));
 				return true;
 			}
 			
-			if (join(c, a))
+			/*if (join(c, a))
 				sender.sendMessage(Language.get("command.join-successful-other")); 
 			else
 				sender.sendMessage(Language.get("command.join-failed-other")); 
-			
+			*/
 			return true;
 		}
 		
@@ -108,7 +113,7 @@ public class JoinCommand implements CommandExecutor {
 
 	
 	public static boolean join(CannonFighter c, Arena a) {
-		GameManager g = GameManager.getForArena(a);
+		/*GameManager g = GameManager.getForArena(a);
 		
 		if (g.isGameRunning()) {
 			// Spiel läuft -> hinzufügen
@@ -125,7 +130,7 @@ public class JoinCommand implements CommandExecutor {
 			c.sendMessage(Language.get("command.join-queue-succesful").replaceAll("%arena%", a.getName()));
 			return true;
 		}
-		
+		*/
 		// kann nicht in queue
 		c.sendMessage(Language.get("command.join-queue-failed"));
 		return false;

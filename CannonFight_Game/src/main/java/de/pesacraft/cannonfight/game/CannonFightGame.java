@@ -23,21 +23,25 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.pesacraft.cannonfight.game.api.CannonFighterDeathEvent;
-import de.pesacraft.cannonfight.game.commands.CoinsCommand;
 import de.pesacraft.cannonfight.game.commands.LeaveCommand;
-import de.pesacraft.cannonfight.game.commands.ShopCommand;
-import de.pesacraft.cannonfight.game.util.MongoDatabase;
-import de.pesacraft.cannonfight.game.Language;
-import de.pesacraft.cannonfight.game.players.CannonFighter;
-import de.pesacraft.cannonfight.game.util.money.DatabaseMoney;
-import de.pesacraft.cannonfight.game.util.money.Money;
+import de.pesacraft.cannonfight.game.communication.Messenger;
+import de.pesacraft.cannonfight.util.CannonFightUtil;
+import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.MongoDatabase;
+import de.pesacraft.cannonfight.util.commands.CoinsCommand;
+import de.pesacraft.cannonfight.util.commands.ShopCommand;
+import de.pesacraft.cannonfight.util.game.Arena;
+import de.pesacraft.cannonfight.util.game.Game;
+import de.pesacraft.cannonfight.util.game.GameState;
+import de.pesacraft.cannonfight.util.game.api.CannonFighterDeathEvent;
+import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.money.DatabaseMoney;
+import de.pesacraft.cannonfight.util.money.Money;
 
 public class CannonFightGame extends JavaPlugin implements Listener {
 
 	public static Logger LOGGER;
 	public static CannonFightGame PLUGIN;
-	public static Money MONEY;
 	
 	private static World WORLD_LOBBY;
 	private static World WORLD_GAME;
@@ -52,13 +56,10 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
 		
-		Language.loadLanguage(this.getConfig().getString("language"));
+		CannonFightUtil.use(this);
 		
-		MongoDatabase.setup();
+		Language.loadLanguage(this, this.getConfig().getString("language"));
 		
-		MONEY = new DatabaseMoney();
-		LOGGER.info(Language.get("info.using-buildinmoney"));
-	
 		Bukkit.getPluginManager().registerEvents(this, this);
 		
 		Iterator<World> worlds = Bukkit.getWorlds().iterator();
@@ -74,6 +75,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		WORLD_GAME = Bukkit.getServer().createWorld(new WorldCreator(arenaName));
 		
 		ARENA = new Arena(arenaName);
+		
+		new Messenger();
+		
 		
 		setupCommands();
 		

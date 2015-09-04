@@ -8,8 +8,8 @@ import org.bukkit.Location;
 
 import com.mongodb.client.MongoCollection;
 
-import de.pesacraft.cannonfight.game.util.Collection;
-import de.pesacraft.cannonfight.game.util.MongoDatabase;
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
 
 public class Setup {
@@ -113,7 +113,6 @@ public class Setup {
 		
 		Document doc = new Document("name", name);
 		doc = doc.append("requiredPlayers", reqPlayers);
-		doc = doc.append("world", loc1.getWorld().getName());
 		
 		// loc1 has lower, loc2 upper bounds
 		int x1 = Math.min(loc1.getBlockX(), loc2.getBlockX());

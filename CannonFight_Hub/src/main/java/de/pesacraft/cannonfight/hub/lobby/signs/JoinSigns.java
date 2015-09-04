@@ -15,19 +15,19 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import de.pesacraft.cannonfight.game.Arena;
-import de.pesacraft.cannonfight.game.commands.JoinCommand;
-import de.pesacraft.cannonfight.game.lobby.shops.CannonShop;
 import de.pesacraft.cannonfight.hub.CannonFightHub;
-import de.pesacraft.cannonfight.hub.Language;
-import de.pesacraft.cannonfight.hub.data.players.CannonFighter;
+import de.pesacraft.cannonfight.hub.GameManager;
+import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.game.Arena;
+import de.pesacraft.cannonfight.util.shop.implemented.CannonShop;
 
 public class JoinSigns implements Listener {
 	public JoinSigns() {
 		Bukkit.getPluginManager().registerEvents(this, CannonFightHub.PLUGIN);
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		
@@ -101,5 +101,5 @@ public class JoinSigns implements Listener {
 		g.updateSigns();
 		
 		JoinCommand.join(c, a);
-	}
+	}*/
 }

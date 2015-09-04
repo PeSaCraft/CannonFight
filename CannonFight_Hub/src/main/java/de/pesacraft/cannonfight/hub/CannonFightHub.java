@@ -11,40 +11,34 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.pesacraft.cannonfight.game.cannons.CannonConstructor;
-import de.pesacraft.cannonfight.game.cannons.Cannons;
-import de.pesacraft.cannonfight.game.cannons.usable.FireballCannon;
-import de.pesacraft.cannonfight.hub.commands.CoinsCommand;
+import de.pesacraft.cannonfight.hub.GameManager;
 import de.pesacraft.cannonfight.hub.commands.JoinCommand;
 import de.pesacraft.cannonfight.hub.commands.LeaveCommand;
 import de.pesacraft.cannonfight.hub.commands.SetupCommand;
-import de.pesacraft.cannonfight.hub.commands.ShopCommand;
 import de.pesacraft.cannonfight.hub.commands.SpectateCommand;
-import de.pesacraft.cannonfight.game.lobby.shops.MainShop;
-import de.pesacraft.cannonfight.game.util.MongoDatabase;
-import de.pesacraft.cannonfight.hub.data.players.CannonFighter;
-import de.pesacraft.cannonfight.hub.data.players.Participant;
 import de.pesacraft.cannonfight.hub.lobby.signs.JoinSigns;
-import de.pesacraft.cannonfight.hub.util.money.CraftConomyMoney;
-import de.pesacraft.cannonfight.hub.util.money.DatabaseMoney;
-import de.pesacraft.cannonfight.hub.util.money.Money;
+import de.pesacraft.cannonfight.util.commands.CoinsCommand;
+import de.pesacraft.cannonfight.util.commands.ShopCommand;
+import de.pesacraft.cannonfight.util.money.DatabaseMoney;
+import de.pesacraft.cannonfight.util.money.Money;
+import de.pesacraft.cannonfight.util.CannonFightUtil;
+import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.MongoDatabase;
 
 public class CannonFightHub extends JavaPlugin implements Listener {
 	public static Logger LOGGER;
 	public static CannonFightHub PLUGIN;
-	public static Money MONEY;
 	
 	private static Location lobbyLocation;
+	private static GameManager gameManager;
 	
 	public void onEnable() { 
 		PLUGIN = this;
@@ -53,12 +47,12 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		if (!new File(this.getDataFolder() + "config.yml").exists())
 			this.saveDefaultConfig();
 		
-		Language.loadLanguage(this.getConfig().getString("language"));
+		CannonFightUtil.use(this);
+		Language.loadLanguage(this, this.getConfig().getString("language"));
 		
-		MongoDatabase.setup();
-		
-		MONEY = new DatabaseMoney();
 		LOGGER.info(Language.get("info.using-buildinmoney"));
+		
+		gameManager = new GameManager();
 		
 		lobbyLocation = (Location) this.getConfig().get("lobby");
 		Bukkit.getServer().setSpawnRadius(0);
@@ -89,7 +83,6 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		PluginCommand spectate = this.getCommand("spectate");
 		spectate.setExecutor(new SpectateCommand());
-		
 	}
 	
 	@Override
@@ -139,24 +132,6 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		event.setQuitMessage(Language.get("info.leave-lobby").replaceAll("%player%", event.getPlayer().getName()));
 	}
 	
-	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		CannonFighter sender = CannonFighter.get(event.getPlayer());
-		
-		if (sender.isInGame())
-			// only lobby chat here
-			return;
-		
-		Iterator<Player> recipients = event.getRecipients().iterator();
-		
-		while (recipients.hasNext()) {
-			CannonFighter c = CannonFighter.get(recipients.next());
-			if (c.isInGame())
-				// not in the lobby, will not receive message
-				recipients.remove();
-		}
-	}
-	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
 		event.setFormat(Language.get("general.chat-format").replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));
@@ -171,5 +146,9 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		lobbyLocation.setYaw(l.getYaw());
 		lobbyLocation.setPitch(l.getPitch());
+	}
+	
+	public static GameManager getGameManager() {
+		return gameManager;
 	}
 }

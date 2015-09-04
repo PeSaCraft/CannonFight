@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.froznmine</groupId>
+  <groupId>de.pesacraft.cannonfight</groupId>
   <artifactId>CannonFightHub</artifactId>
-  <version>0.1.0-2</version>
+  <version>0.1.0-10</version>
   <name>CannonFight Hub</name>
   <description>The hub plugin for the CannonFight game plugin for Minecraft Bukkit Servers</description>
   
@@ -17,7 +17,7 @@
     
     <craftconomy.version>3.3</craftconomy.version>
     
-    <cannonfightutil.version>0.1.0</cannonfightutil.version>
+    <cannonfightutil.version>0.1.2</cannonfightutil.version>
 <!-- 
     <vault.version>1.2.27</vault.version>
 
@@ -34,7 +34,12 @@
     <repository>
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>   
+    </repository>
+    
+    <repository>
+      <id>bungeecord-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
 <!-- 
     <repository>
       <id>vault-repo</id>
@@ -93,7 +98,6 @@
       <groupId>de.pesacraft.cannonfight</groupId>
       <artifactId>CannonFightUtil</artifactId>
       <version>${cannonfightutil.version}</version>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -104,6 +108,13 @@
       <systemPath>${project.basedir}/../repo/Craftconomy.jar</systemPath>
     </dependency>
 
+    <dependency>
+      <groupId>net.md-5</groupId>
+      <artifactId>bungeecord-api</artifactId>
+      <version>1.8-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
 <!--
     <dependency>
       <groupId>org.bukkit</groupId>
@@ -174,8 +185,7 @@
           <target>1.6</target>
         </configuration>
       </plugin>
-      
-<!--  
+        
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -190,23 +200,14 @@
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <artifactSet>
                 <includes>
-                  <include>org.mcstats.bukkit:metrics:*</include>
-                  <include>commons-io:commons-io:*</include
-                  <include>org.apache.commons:commons-lang3:*</include>
-                  <include>Ancient:AncientUtil:*</include>
+                  <include>de.pesacraft.cannonfight:CannonFightUtil:*</include>    
                 </includes>
               </artifactSet>   
-            <relocations>
-              <relocation>
-                <pattern>org.mcstats</pattern>
-                <shadedPattern>com.ancient.util.metrics</shadedPattern>
-              </relocation>
-            </relocations>
            </configuration>
           </execution>
         </executions>
       </plugin>
--->
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>autoincrement-versions-maven-plugin</artifactId>

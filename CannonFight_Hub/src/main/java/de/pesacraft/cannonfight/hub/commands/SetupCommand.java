@@ -9,11 +9,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.pesacraft.cannonfight.game.Arena;
-import de.pesacraft.cannonfight.game.Arenas;
-import de.pesacraft.cannonfight.game.CannonFight;
-import de.pesacraft.cannonfight.game.Setup;
-import de.pesacraft.cannonfight.hub.Language;
+import de.pesacraft.cannonfight.hub.CannonFightHub;
+import de.pesacraft.cannonfight.hub.game.Setup;
+//import de.pesacraft.cannonfight.proxy.game.Setup;
+import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.game.Arena;
+//import de.pesacraft.cannonfight.util.game.Arenas;
 
 public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();
@@ -75,14 +76,14 @@ public class SetupCommand implements CommandExecutor {
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("done")) {
-				Arenas.put(s.getName(), new Arena(s.getName()));
+				//Arenas.put(s.getName(), new Arena(s.getName()));
 				activeSetups.remove(p);
 				sender.sendMessage(Language.get("command.setup-done"));
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("lobby")) {
-				CannonFightHub.setLobbyLocation(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-lobby"));
+				CannonFightHub.setLobbyLocation(((Player) sender).getLocation());
+				sender.sendMessage(Language.get("command.setup-set-lobby"));
 				return true;
 			}
 		}

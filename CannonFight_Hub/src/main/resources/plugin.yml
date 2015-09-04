@@ -1,5 +1,5 @@
-name: CannonFight
-main: de.pesacraft.cannonfight.CannonFight
+name: CannonFightHub
+main: de.pesacraft.cannonfight.hub.CannonFightHub
 version: 0.1.0
 author: FroznMine
 commands:
