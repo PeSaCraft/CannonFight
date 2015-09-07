@@ -2,7 +2,6 @@ package de.pesacraft.cannonfight.hub;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -24,11 +23,10 @@ import de.pesacraft.cannonfight.hub.commands.JoinCommand;
 import de.pesacraft.cannonfight.hub.commands.LeaveCommand;
 import de.pesacraft.cannonfight.hub.commands.SetupCommand;
 import de.pesacraft.cannonfight.hub.commands.SpectateCommand;
+import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
 import de.pesacraft.cannonfight.hub.lobby.signs.JoinSigns;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
-import de.pesacraft.cannonfight.util.money.DatabaseMoney;
-import de.pesacraft.cannonfight.util.money.Money;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.MongoDatabase;
@@ -62,6 +60,8 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		new JoinSigns();
 		
 		setupCommands();
+		
+		new CommunicationHubClient().start();
 		//LobbySystem.registerGame(this, Game.class);
 	}
 	 
@@ -150,5 +150,10 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	
 	public static GameManager getGameManager() {
 		return gameManager;
+	}
+
+	public static void updateSign(String arena, int amount) {
+		// TODO Auto-generated method stub
+		
 	}
 }

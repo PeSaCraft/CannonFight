@@ -1,4 +1,4 @@
-package de.pesacraft.cannonfight.util.game;
+package de.pesacraft.cannonfight.game;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;

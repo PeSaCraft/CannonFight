@@ -13,8 +13,6 @@ import de.pesacraft.cannonfight.hub.CannonFightHub;
 import de.pesacraft.cannonfight.hub.game.Setup;
 //import de.pesacraft.cannonfight.proxy.game.Setup;
 import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.game.Arena;
-//import de.pesacraft.cannonfight.util.game.Arenas;
 
 public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();

@@ -1,26 +1,8 @@
 package de.pesacraft.cannonfight.hub.lobby.signs;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-
 import de.pesacraft.cannonfight.hub.CannonFightHub;
-import de.pesacraft.cannonfight.hub.GameManager;
-import de.pesacraft.cannonfight.util.CannonFighter;
-import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.game.Arena;
-import de.pesacraft.cannonfight.util.shop.implemented.CannonShop;
 
 public class JoinSigns implements Listener {
 	public JoinSigns() {

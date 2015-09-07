@@ -1,16 +1,26 @@
-package de.pesacraft.cannonfight.util.game.players;
+package de.pesacraft.cannonfight.game.players;
 
 import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class Participant {
 	private final CannonFighter player;
+	private final String server;
 	
-	public Participant(CannonFighter player) {
+	public Participant(CannonFighter player, String server) {
 		this.player = player;
+		this.server = server;
 	}
 	
+	public Participant(CannonFighter player) {
+		this(player, null);
+	}
+
 	public CannonFighter getPlayer() {
 		return player;
+	}
+	
+	public String getServer() {
+		return server;
 	}
 	
 	@Override

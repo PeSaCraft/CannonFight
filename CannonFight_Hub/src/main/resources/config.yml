@@ -1,5 +1,8 @@
 language: de_DE
 
+bungeecord:
+  servername: "CannonFight-Hub#1"
+
 database:
   host: 127.0.0.1
   port: 27017

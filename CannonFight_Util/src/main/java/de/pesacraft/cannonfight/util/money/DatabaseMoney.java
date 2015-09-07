@@ -2,19 +2,11 @@ package de.pesacraft.cannonfight.util.money;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bson.Document;
-import org.bukkit.inventory.ItemStack;
-
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Collection;
-import de.pesacraft.cannonfight.util.shop.Upgrade;
 
 public class DatabaseMoney implements Money {
 

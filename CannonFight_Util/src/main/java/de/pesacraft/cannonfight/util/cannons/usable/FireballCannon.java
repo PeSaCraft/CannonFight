@@ -2,13 +2,9 @@ package de.pesacraft.cannonfight.util.cannons.usable;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,35 +13,17 @@ import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
-import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.util.CannonFightUtil;
@@ -301,19 +279,8 @@ public class FireballCannon extends Cannon implements Listener {
 		if (!shoot.contains(event.getEntity().getEntityId()))
 			return;
 		
-		Iterator<Block> blocks = event.blockList().iterator();
-		
-		while (blocks.hasNext()) {
-			Block b = blocks.next();
-			if (!player.getCurrentGame().locIsInArena(b.getLocation())) {
-				// block not part of map -> won't be destroyed
-				blocks.remove();
-			}
-		}
 		// drop nothing
 		event.setYield(0);
-		
-		player.getCurrentGame().addBlocksToRegenerate(event.blockList());
 		
 		// thats the last called event, remove the entity from the list
 		new BukkitRunnable() {
@@ -322,14 +289,6 @@ public class FireballCannon extends Cannon implements Listener {
 				shoot.remove(new Integer(event.getEntity().getEntityId()));
 			}
 		}.runTaskLater(CannonFightUtil.PLUGIN, 1);
-	}
-
-	@EventHandler
-	public void onBlockIgnite(BlockIgniteEvent event) {
-		if (!shoot.contains(event.getIgnitingEntity()))
-			return;
-		
-		player.getCurrentGame().addBlocksToRegenerate(event.getBlock());
 	}
 	
 	@Override

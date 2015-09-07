@@ -1,14 +1,9 @@
 package de.pesacraft.cannonfight.util;
 
-import org.bson.Document;
 import org.bukkit.configuration.Configuration;
 
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoCollection;
 
 
 public class MongoDatabase {

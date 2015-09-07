@@ -1,11 +1,12 @@
-package de.pesacraft.cannonfight.util.game.players;
+package de.pesacraft.cannonfight.game.players;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import de.pesacraft.cannonfight.game.Cage;
+import de.pesacraft.cannonfight.game.CageForm;
 import de.pesacraft.cannonfight.util.CannonFighter;
-import de.pesacraft.cannonfight.util.game.Cage;
-import de.pesacraft.cannonfight.util.game.CageForm;
 
 public class ActivePlayer extends Participant {
 	private int lives;
@@ -13,8 +14,8 @@ public class ActivePlayer extends Participant {
 	
 	private Cage cage;
 	
-	public ActivePlayer(CannonFighter player) {
-		super(player);
+	public ActivePlayer(CannonFighter player, String server) {
+		super(player, server);
 		
 		lives = player.getLives();
 		kills = 0;
@@ -36,6 +37,10 @@ public class ActivePlayer extends Participant {
 		cage.destroyCage();
 		
 		cage = null;
+	}
+	
+	public boolean teleportToGame(Location loc) {
+		return getPlayer().teleport(loc);
 	}
 	
 	public void looseLife() {

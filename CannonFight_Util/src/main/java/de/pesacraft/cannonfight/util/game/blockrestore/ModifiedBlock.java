@@ -5,8 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import de.pesacraft.cannonfight.util.CannonFighter;
-
 public class ModifiedBlock {
 	private final Material mat;
 	private final byte data;

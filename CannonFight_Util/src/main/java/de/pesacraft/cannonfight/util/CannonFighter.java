@@ -1,40 +1,32 @@
 package de.pesacraft.cannonfight.util;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.UUID;
 
 import org.bson.Document;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.game.Arena;
-import de.pesacraft.cannonfight.util.game.Game;
 import de.pesacraft.cannonfight.util.shop.Upgrade;
 import de.pesacraft.cannonfight.util.shop.implemented.UpgradeShop;
-import de.pesacraft.lobbysystem.user.User;
-import de.pesacraft.lobbysystem.user.Users;
 import static com.mongodb.client.model.Filters.*;
 
 public class CannonFighter {
 	private static final MongoCollection<Document> COLLECTION;
-	private final User user;
+	
+	private final UUID uuid;
+	
 	private int xp;
 	
 	private int slotsLevel;
@@ -42,9 +34,6 @@ public class CannonFighter {
 	
 	private int livesLevel;
 	private int lives;
-	
-	private Game currentGame;
-	private Arena inQueue;
 	
 	private List<Cannon> activeItems = new ArrayList<Cannon>();
 	
@@ -56,6 +45,8 @@ public class CannonFighter {
 	
 	@SuppressWarnings("unchecked")
 	private CannonFighter(Player p) {
+		this.uuid = p.getUniqueId();
+		
 		Document doc = COLLECTION.find(eq("uuid", p.getUniqueId().toString())).first();
 		
 		if (doc != null) {
@@ -117,8 +108,6 @@ public class CannonFighter {
 			
 			COLLECTION.insertOne(doc);
 		}
-		
-		this.user = Users.getByUUID(p.getUniqueId());
 	}
 	
 	public int getCoins() {
@@ -137,36 +126,20 @@ public class CannonFighter {
 		return CannonFightUtil.MONEY.hasEnoughMoney(this, amount);
 	}
 	
-	public User getUser() {
-		return this.user;
-	}
-
-	public boolean teleportToGame(Location loc, Game game) {
-		if (currentGame != null && currentGame != game)
-			return false;
-		
-		if (user.teleport(loc)) { 
-			this.currentGame = game;
-			this.inQueue = null;
-			return true;
-		}
-		return false;
-	}
-	
 	public void show(CannonFighter c) {
-		user.getPlayer().showPlayer(c.user.getPlayer());
+		getPlayer().showPlayer(c.getPlayer());
 	}
 	
 	public void hide(CannonFighter c) {
-		user.getPlayer().hidePlayer(c.user.getPlayer());
+		getPlayer().hidePlayer(c.getPlayer());
 	}
 	
 	public void sendMessage(String msg) {
-		user.sendMessage(msg);
+		getPlayer().sendMessage(msg);
 	}
 	
 	public String getName() {
-		return user.getPlayer().getName();
+		return getPlayer().getName();
 	}
 	
 	public boolean use(ItemStack item) {
@@ -183,32 +156,9 @@ public class CannonFighter {
 		
 		return false;
 	}
-
-	public boolean leaveGame() {
-		if (isInGame()) {
-			currentGame = null;
-			user.leave();
-			return true;
-		}
-		// in keinem spiel
-		return false;
-	}
-
-	public boolean leaveQueue() {
-		if (isInQueue()) {
-			inQueue = null;
-			return true;
-		}
-		// in keiner queue
-		return false;
-	}
-	
-	public Game getCurrentGame() {
-		return this.currentGame;
-	}
 	
 	public Player getPlayer() {
-		return user.getPlayer();
+		return Bukkit.getPlayer(uuid);
 	}
 	
 	private static Map<String, CannonFighter> online = new HashMap<String, CannonFighter>();
@@ -229,31 +179,6 @@ public class CannonFighter {
 
 	public boolean hasPermission(String perm) {
 		return getPlayer().hasPermission(perm);
-	}
-
-	public boolean setInQueue(Arena a) {
-		if (inQueue != null)
-			return false;
-		
-		inQueue = a;
-		return true;
-		
-	}
-	
-	public boolean isInQueue() {
-		return inQueue != null;
-	}
-
-	public boolean isInGame() {
-		return currentGame != null;
-	}
-
-	public void setCurrentGame(Game game) {
-		this.currentGame = game;
-	}
-
-	public Arena getArenaQueuing() {
-		return inQueue;
 	}
 
 	public List<Cannon> getActiveItems() {
@@ -382,5 +307,9 @@ public class CannonFighter {
 				continue;
 			c.reset();
 		}
+	}
+
+	public boolean teleport(Location loc) {
+		return getPlayer().teleport(loc);
 	}
 }

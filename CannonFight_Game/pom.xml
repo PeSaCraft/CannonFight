@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.pesacraft.cannonfight</groupId>
   <artifactId>CannonFightGame</artifactId>
-  <version>0.1.0-11</version>
+  <version>0.1.3-6</version>
   <name>CannonFight Game</name>
   <description>The game plugin for the CannonFight game plugin for Minecraft Bukkit Servers</description>
   
@@ -17,7 +17,7 @@
     
     <craftconomy.version>3.3</craftconomy.version>
     
-    <cannonfightutil.version>0.1.2</cannonfightutil.version>
+    <cannonfightutil.version>0.1.5</cannonfightutil.version>
 <!-- 
     <vault.version>1.2.27</vault.version>
 
@@ -32,9 +32,9 @@
     </repository>
     
     <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>   
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository> 
 <!-- 
     <repository>
       <id>vault-repo</id>
@@ -67,12 +67,18 @@
  
   <dependencies>
     <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>${minecraft.version}-${bukkit.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
       <version>${minecraft.version}-${bukkit.version}</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/../repo/bukkit-${minecraft.version}-${bukkit.version}.jar</systemPath>
-   </dependency>
+      <scope>provided</scope>
+    </dependency>
     
     <dependency>
       <groupId>org.bukkit</groupId>

@@ -1,9 +1,7 @@
-package de.pesacraft.cannonfight.util.game;
+package de.pesacraft.cannonfight.game;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +16,7 @@ import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.MongoDatabase;
-import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.CannonFighter;
-import de.pesacraft.lobbysystem.user.User;
 
 public class Arena {
 	private static final MongoCollection<Document> COLLECTION;
@@ -87,21 +82,21 @@ public class Arena {
 		setSpawns.clear();
 	}
 	
-	public boolean teleport(CannonFighter c, Game game) {
+	public boolean teleport(CannonFighter c) {
 		if (freeSpawns.isEmpty())
 			return false;
 		
 		Location loc = freeSpawns.get(0);
-		if (!c.teleportToGame(loc, game)) {
+		if (!c.teleport(loc))
 			return false;
-		}
+		
 		freeSpawns.remove(0);
 		setSpawns.put(c, loc);
 		return true;
 	}
 	
-	public boolean teleportSpectator(CannonFighter c, Game game) {
-		return c.teleportToGame(spectatorSpawn, game);
+	public boolean teleportSpectator(CannonFighter c) {
+		return c.teleport(spectatorSpawn);
 	}
 
 	public int getRequiredPlayers() {

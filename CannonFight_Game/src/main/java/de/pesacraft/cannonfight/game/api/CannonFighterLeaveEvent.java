@@ -1,25 +1,18 @@
-package de.pesacraft.cannonfight.util.game.api;
+package de.pesacraft.cannonfight.game.api;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import de.pesacraft.cannonfight.util.game.Game;
 import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class CannonFighterLeaveEvent extends Event {
 
-	private final Game game;
 	private final CannonFighter fighter;
 	
-	public CannonFighterLeaveEvent(Game game, CannonFighter fighter) {
-		this.game = game;
+	public CannonFighterLeaveEvent(CannonFighter fighter) {
 		this.fighter = fighter;
 	}
-	
-	public Game getGame() {
-		return this.game;
-	}
-	
+
 	public CannonFighter getFighter() {
 		return this.fighter;
 	}

@@ -1,14 +1,12 @@
 package de.pesacraft.cannonfight.game.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.game.Game;
 import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class LeaveCommand implements CommandExecutor {

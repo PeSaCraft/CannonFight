@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -71,9 +72,32 @@ public class GameManager implements PluginMessageListener {
 		System.out.println("Sende anfrage!");
 		out.writeUTF("Start");
 		out.writeUTF(arena);
-		Bukkit.getServer().sendPluginMessage(CannonFightHub.PLUGIN, "CannonFight", out.toByteArray());
+		
+		sendMessage("CannonFight", out.toByteArray(), true);
 	}
 	
+	private void sendMessage(final String channel, final byte[] data, boolean retry) {
+		if (retry) {
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
+					for (Player p : Bukkit.getOnlinePlayers()) {
+						p.sendPluginMessage(CannonFightHub.PLUGIN, channel, data);
+						cancel();
+						return;
+					}
+				}
+			}.runTaskTimer(CannonFightHub.PLUGIN, 0, 20);
+		}
+		else {
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				p.sendPluginMessage(CannonFightHub.PLUGIN, channel, data);
+				return;
+			}
+		}
+	}
+
 	@Override
 	public void onPluginMessageReceived(String channel, Player p, byte[] message) {
 		System.out.println("Nachricht im " + channel + " von " + p.getName() + " nachricht: " + message.toString());

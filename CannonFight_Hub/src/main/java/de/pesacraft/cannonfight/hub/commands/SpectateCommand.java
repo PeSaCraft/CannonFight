@@ -1,20 +1,14 @@
 package de.pesacraft.cannonfight.hub.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.pesacraft.cannonfight.hub.GameManager;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.game.Arena;
-/*
-import de.pesacraft.cannonfight.util.game.Arenas;
-import de.pesacraft.cannonfight.util.game.GameManager;
-*/
+
 public class SpectateCommand implements CommandExecutor {
 
 	@SuppressWarnings("deprecation")
@@ -28,15 +22,10 @@ public class SpectateCommand implements CommandExecutor {
 			}
 			
 			CannonFighter c = CannonFighter.get((Player) sender);
-			Arena a;
+			//Arena a;
 			
 			if (!sender.hasPermission("cannonfight.command.spectate")) {
 				sender.sendMessage(Language.get("error.no-permission"));
-				return true;
-			}
-			
-			if (c.isInGame() || c.isInQueue()) {
-				c.sendMessage(Language.get("error.has-to-leave-before-join"));
 				return true;
 			}
 			
@@ -60,12 +49,7 @@ public class SpectateCommand implements CommandExecutor {
 			}
 			
 			CannonFighter c = CannonFighter.get(p);
-			Arena a;
-			
-			if (c.isInGame() || c.isInQueue()) {
-				c.sendMessage(Language.get("error.has-to-leave-before-join-other"));
-				return true;
-			}
+			//Arena a;
 			
 			//a = Arenas.getArena(args[0]);
 			
@@ -81,20 +65,20 @@ public class SpectateCommand implements CommandExecutor {
 		return true;
 	}
 
-	private static boolean spectate(CannonFighter c, Arena a) {
-		/*GameManager g = GameManager.getForArena(a);
-		
-		if (g.isGameRunning()) {
-			// Spiel läuft -> hinzufügen
-			if (g.addSpectator(c)) {
-				// konnte rein
-				c.sendMessage(Language.get("command.join-spectate-successful"));
-				return true;
-			}	
-			// konnte nicht rein
-		}
-		*/// kein Spiel -> kann nicht zugucken
-		c.sendMessage(Language.get("command.join-spectate-failed"));
-		return false;
-	}
+//	private static boolean spectate(CannonFighter c, Arena a) {
+//		/*GameManager g = GameManager.getForArena(a);
+//		
+//		if (g.isGameRunning()) {
+//			// Spiel läuft -> hinzufügen
+//			if (g.addSpectator(c)) {
+//				// konnte rein
+//				c.sendMessage(Language.get("command.join-spectate-successful"));
+//				return true;
+//			}	
+//			// konnte nicht rein
+//		}
+//		*/// kein Spiel -> kann nicht zugucken
+//		c.sendMessage(Language.get("command.join-spectate-failed"));
+//		return false;
+//	}
 }

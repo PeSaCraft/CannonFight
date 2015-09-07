@@ -1,15 +1,11 @@
 package de.pesacraft.cannonfight.hub.game;
 
-import java.sql.SQLException;
-import java.util.Map;
-
 import org.bson.Document;
 import org.bukkit.Location;
 
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.util.Collection;
-import de.pesacraft.cannonfight.util.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
 
 public class Setup {

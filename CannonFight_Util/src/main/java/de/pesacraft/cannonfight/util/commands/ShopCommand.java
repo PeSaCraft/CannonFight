@@ -1,14 +1,12 @@
 package de.pesacraft.cannonfight.util.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.game.Arena;
 import de.pesacraft.cannonfight.util.shop.implemented.MainShop;
 import de.pesacraft.cannonfight.util.CannonFighter;
 

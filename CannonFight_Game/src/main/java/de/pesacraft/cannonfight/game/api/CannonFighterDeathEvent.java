@@ -1,29 +1,22 @@
-package de.pesacraft.cannonfight.util.game.api;
+package de.pesacraft.cannonfight.game.api;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import de.pesacraft.cannonfight.util.game.Game;
 import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class CannonFighterDeathEvent extends Event {
 
-	private final Game game;
 	private final CannonFighter victim;
 	private final CannonFighter killer;
 	private final boolean outOfGame;
 	
-	public CannonFighterDeathEvent(Game game, CannonFighter victim, CannonFighter killer, boolean outOfGame) {
-		this.game = game;
+	public CannonFighterDeathEvent(CannonFighter victim, CannonFighter killer, boolean outOfGame) {
 		this.victim = victim;
 		this.killer = killer;
 		this.outOfGame = outOfGame;
 	}
 
-	public Game getGame() {
-		return this.game;
-	}
-	
 	public CannonFighter getVictim() {
 		return this.victim;
 	}

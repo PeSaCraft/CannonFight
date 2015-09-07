@@ -2,7 +2,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.pesacraft.cannonfight</groupId>
   <artifactId>CannonFight</artifactId>
-  <version>0.1.0-3</version>
   <packaging>pom</packaging>
   <name>CannonFight</name>
   <description>A game plugin for Minecraft Bukkit Servers</description>
@@ -82,4 +81,5 @@
     	</plugins>
     </pluginManagement>
   </build>
+  <version>0.1.8</version>
 </project>

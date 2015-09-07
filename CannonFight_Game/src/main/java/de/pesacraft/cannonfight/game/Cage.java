@@ -1,16 +1,12 @@
-package de.pesacraft.cannonfight.util.game;
+package de.pesacraft.cannonfight.game;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Triple;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
-import org.h2.command.ddl.AlterIndexRename;
-
-import de.pesacraft.cannonfight.util.game.CageForm;
+import de.pesacraft.cannonfight.game.CageForm;
 import de.pesacraft.cannonfight.util.game.blockrestore.ModifiedBlock;
 
 public class Cage {

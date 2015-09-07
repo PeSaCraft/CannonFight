@@ -3,10 +3,8 @@ package de.pesacraft.cannonfight.util;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bson.Document;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemSerializer {

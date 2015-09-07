@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.pesacraft.cannonfight</groupId>
   <artifactId>CannonFightProxy</artifactId>
-  <version>0.1.0-17</version>
+  <version>0.1.3-6</version>
   <name>CannonFight Proxy</name>
   <description>The BungeeCord proxy plugin for the CannonFight game plugin for Minecraft Bukkit Servers. This handles the creation of new servers if required.</description>
   
@@ -11,7 +11,7 @@
 
     <lobbysystem.version>0.0.6</lobbysystem.version>
         
-    <cannonfightutil.version>0.1.2</cannonfightutil.version>
+    <cannonfightutil.version>0.1.5</cannonfightutil.version>
     
 	<bungeecord.version>1.8-SNAPSHOT</bungeecord.version>
   </properties>
