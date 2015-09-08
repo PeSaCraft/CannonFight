@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 
 public class GameHandler extends Thread {
 	private String server;
@@ -44,6 +45,9 @@ public class GameHandler extends Thread {
 					this.playerJoinable = false;
 				}
 				else if (input.equals("PlayerLeave")) {
+					String player = in.readUTF();
+					String server = in.readUTF();
+					ProxyServer.getInstance().getPlayer(player).connect(ProxyServer.getInstance().getServerInfo(server));
 					this.players--;
 					if (!playerJoinable)
 						playerJoinable = true;

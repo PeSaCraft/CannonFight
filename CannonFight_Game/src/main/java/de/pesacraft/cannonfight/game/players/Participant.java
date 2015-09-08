@@ -24,6 +24,11 @@ public class Participant {
 	}
 	
 	@Override
+	public int hashCode() {
+		return player.hashCode();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof Participant))
 			return false;

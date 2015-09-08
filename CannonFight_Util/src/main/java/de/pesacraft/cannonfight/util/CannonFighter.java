@@ -294,6 +294,12 @@ public class CannonFighter {
 		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("activeItems", strings)));	
 	}
 	
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof CannonFighter))

@@ -16,6 +16,7 @@ database:
 arena: arena
 game:
   time:
+    untilStart: 10
     start: 10
     play: 300
     gameover: 10

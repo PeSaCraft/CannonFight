@@ -10,8 +10,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.game.CannonFightGame;
+import de.pesacraft.cannonfight.game.players.Participant;
 
 
 public class CommunicationGameClient extends Thread {
@@ -51,9 +53,17 @@ public class CommunicationGameClient extends Thread {
 			
 			while ((input = in.readUTF()) != null) {
 				if (input.equals("Arena")) {
-					String arena = in.readUTF();
+					final String arena = in.readUTF();
 					
-					CannonFightGame.setArena(arena);
+					
+					new BukkitRunnable() {
+						
+						@Override
+						public void run() {
+							CannonFightGame.setArena(arena);
+						}
+					}.runTask(CannonFightGame.PLUGIN);
+					
 				}
 				else if (input.equals("Player")) {
 					String name = in.readUTF();
@@ -99,6 +109,16 @@ public class CommunicationGameClient extends Thread {
 	public void sendGameStarted() {
 		try {
 			out.writeUTF("GameStarted");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void sendBackToHub(Participant part) {
+		try {
+			out.writeUTF("PlayerLeave");
+			out.writeUTF(part.getPlayer().getName());
+			out.writeUTF(part.getServer());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

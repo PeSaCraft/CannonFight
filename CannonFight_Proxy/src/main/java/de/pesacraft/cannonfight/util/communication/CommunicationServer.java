@@ -10,8 +10,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -27,6 +29,9 @@ public class CommunicationServer extends Thread {
 	
 	public CommunicationServer() {
 		instance = this;
+		
+		hubs = new HashMap<String, HubHandler>();
+		games = new HashMap<String, GameHandler>();
 	}
 	
 	@Override
@@ -42,11 +47,15 @@ public class CommunicationServer extends Thread {
 				
 				String type = in.readUTF();
 				
+				// if request coming from this machine use 127.0.0.1 instead of the connected address to make servers not visible from outside the machine compatible
+				InetAddress address = NetworkInterface.getByInetAddress(client.getInetAddress()) == null ? client.getInetAddress() : InetAddress.getLoopbackAddress();
+				System.out.println(address);
+				
 				if (type.equals("HubReady")) {
 					String serverName = in.readUTF();
 					int port = in.readInt();
 					
-					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(client.getInetAddress(), port), "NIX LOS IM HUB!", false);
+					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM HUB!", false);
 					
 					ProxyServer.getInstance().getServers().put(serverName, info);
 					
@@ -58,7 +67,7 @@ public class CommunicationServer extends Thread {
 					String serverName = in.readUTF();
 					int port = in.readInt();
 					
-					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(client.getInetAddress(), port), "NIX LOS IM GAME!", false);
+					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM GAME!", false);
 					
 					ProxyServer.getInstance().getServers().put(serverName, info);
 					

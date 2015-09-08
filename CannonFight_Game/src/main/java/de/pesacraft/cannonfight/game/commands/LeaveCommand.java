@@ -5,7 +5,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerQuitEvent;
 
+import de.pesacraft.cannonfight.game.CannonFightGame;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.CannonFighter;
 
@@ -27,7 +29,8 @@ public class LeaveCommand implements CommandExecutor {
 				return true;
 			}
 			
-			((Player) sender).kickPlayer("Leave");
+			// fake player leave, triggers teleport back
+			Bukkit.getPluginManager().callEvent(new PlayerQuitEvent((Player) sender, null));
 			
 			return true;
 		}
@@ -45,10 +48,8 @@ public class LeaveCommand implements CommandExecutor {
 				return true;
 			}
 			
-			CannonFighter c = CannonFighter.get(p);
-			
-			
-			p.kickPlayer("Leave");
+			// fake player leave, triggers teleport back
+			Bukkit.getPluginManager().callEvent(new PlayerQuitEvent(p, null));
 			
 			sender.sendMessage(Language.get("command.leave-game-other-successful"));	
 			
