@@ -38,9 +38,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-
 import de.pesacraft.cannonfight.game.api.CannonFighterDeathEvent;
 import de.pesacraft.cannonfight.game.api.CannonFighterJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.CannonFighterLeaveEvent;
@@ -110,28 +107,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		upcomingPlayers = new HashSet<FuturePlayer>();
 		upcomingSpectators = new HashSet<FuturePlayer>();
 		
-		playerCheck = new BukkitRunnable() {
-			
-			@Override
-			public void run() {
-				if (CannonFightGame.ARENA == null)
-					return;
-				
-				if (players.size() >= ARENA.getRequiredPlayers()) {
-					// start countdown
-					System.out.println("Start!");
-					cancel();
-					
-					tryToStart();
-				}
-				else {
-					// not enough: no countdown
-					System.out.println("noch nicht genug!");
-				}
-			}
-		};
-
-		playerCheck.runTaskTimer(this, 0, 30 * 20); // check all 30 sec
+		// check players all 30 sec
+		playerCheck = new PlayerCheck();
+		playerCheck.runTaskTimer(this, 0, 30 * 20); 
 		
 		gameState = GameState.WAITING;
 		
@@ -188,8 +166,10 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 					// to less players again
 					this.cancel();
 					
-					playerCheck.runTaskTimer(CannonFightGame.PLUGIN, 0, 30 * 20); // check again all 30 sec
-					
+					// check players again all 30 sec
+					playerCheck = new PlayerCheck();
+					playerCheck.runTaskTimer(CannonFightGame.PLUGIN, 0, 30 * 20); 
+				
 					return;
 				}
 				
@@ -826,7 +806,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				leave(a);
 				players.remove(a);
 				
-				CommunicationGameClient.getInstance().sendPlayerLeave();
 				return;
 			}
 		}
@@ -838,6 +817,8 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				return;
 			}
 		}
+		
+		event.setQuitMessage(null);
 	}
 	
 	@EventHandler
@@ -925,7 +906,8 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			for (ActivePlayer p : players) {
 				if (p.getPlayer().equals(event.getFighter())) {
 					try {
-						p.destroyCage();
+						if (p.hasCage())
+							p.destroyCage();
 					}
 					catch (IllegalStateException ex) {
 						// no cage existing: ignore error
@@ -933,15 +915,36 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				}
 			}
 		}
-		if (gameState == GameState.INGAME) {
-			String msg = Language.get("info.player-left-game"); // event.getFighter().getName() + " hat das Spiel verlassen.";	
-			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", players.size() + "");
+		if (gameState == GameState.INGAME || gameState == GameState.STARTING) {
+			String msg = Language.get("info.player-left-game").replaceAll("%player%", event.getFighter().getName());
+			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", (players.size() - 1) + "");
 		
 			Bukkit.broadcastMessage(msg);
 			Bukkit.broadcastMessage(msg2);
 		}
-		else if (gameState == GameState.WAITING || gameState == GameState.STARTING) {
+		else if (gameState == GameState.WAITING) {
 			Bukkit.broadcastMessage(Language.get("info.player-left-lobby"));
+		}
+	}
+	
+	private class PlayerCheck extends BukkitRunnable {
+
+		@Override
+		public void run() {
+			if (CannonFightGame.ARENA == null)
+				return;
+			
+			if (players.size() >= ARENA.getRequiredPlayers()) {
+				// start countdown
+				this.cancel();
+				
+				Bukkit.broadcastMessage(Language.get("info.enough-players-game-starts"));
+				tryToStart();
+			}
+			else {
+				// not enough: no countdown
+				Bukkit.broadcastMessage(Language.get("info.not-enough-players"));
+			}
 		}
 	}
 }

@@ -97,14 +97,6 @@ public class CommunicationGameClient extends Thread {
 			ex.printStackTrace();
 		}
 	}
-	
-	public void sendPlayerLeave() {
-		try {
-			out.writeUTF("PlayerLeave");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
 
 	public void sendGameStarted() {
 		try {
