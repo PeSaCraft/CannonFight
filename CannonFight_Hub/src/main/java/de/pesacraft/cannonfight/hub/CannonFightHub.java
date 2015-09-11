@@ -2,6 +2,8 @@ package de.pesacraft.cannonfight.hub;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -18,13 +20,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.pesacraft.cannonfight.hub.GameManager;
 import de.pesacraft.cannonfight.hub.commands.JoinCommand;
 import de.pesacraft.cannonfight.hub.commands.LeaveCommand;
 import de.pesacraft.cannonfight.hub.commands.SetupCommand;
 import de.pesacraft.cannonfight.hub.commands.SpectateCommand;
 import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
 import de.pesacraft.cannonfight.hub.lobby.signs.JoinSigns;
+import de.pesacraft.cannonfight.hub.lobby.signs.SignHandler;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
@@ -36,7 +38,8 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	public static CannonFightHub PLUGIN;
 	
 	private static Location lobbyLocation;
-	private static GameManager gameManager;
+	
+	private static Map<String, Set<Location>> signs;
 	
 	public void onEnable() { 
 		PLUGIN = this;
@@ -50,14 +53,13 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		LOGGER.info(Language.get("info.using-buildinmoney"));
 		
-		gameManager = new GameManager();
-		
 		lobbyLocation = (Location) this.getConfig().get("lobby");
 		Bukkit.getServer().setSpawnRadius(0);
 		lobbyLocation.getWorld().setSpawnLocation(lobbyLocation.getBlockX(), lobbyLocation.getBlockY(), lobbyLocation.getBlockZ());
 		
 		Bukkit.getPluginManager().registerEvents(this, this);
-		new JoinSigns();
+		
+		new SignHandler();
 		
 		setupCommands();
 		
@@ -117,6 +119,8 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		this.getConfig().set("lobby", lobbyLocation);
 		this.saveConfig();
+		
+		SignHandler.getInstance().save();
 	}
 	
 	@EventHandler
@@ -146,14 +150,5 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		lobbyLocation.setYaw(l.getYaw());
 		lobbyLocation.setPitch(l.getPitch());
-	}
-	
-	public static GameManager getGameManager() {
-		return gameManager;
-	}
-
-	public static void updateSign(String arena, int amount) {
-		// TODO Auto-generated method stub
-		
 	}
 }

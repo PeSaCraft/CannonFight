@@ -12,10 +12,11 @@ import java.net.UnknownHostException;
 import org.bukkit.Bukkit;
 
 import de.pesacraft.cannonfight.hub.CannonFightHub;
+import de.pesacraft.cannonfight.hub.lobby.signs.SignHandler;
 import de.pesacraft.cannonfight.util.Language;
 
 public class CommunicationHubClient extends Thread {
-private static CommunicationHubClient instance;
+	private static CommunicationHubClient instance;
 	
 	private Socket socket;
 	private DataInput in;
@@ -53,7 +54,7 @@ private static CommunicationHubClient instance;
 				if (input.equals("PlayerCount")) {
 					String arena = in.readUTF();
 					int amount = in.readInt();
-					CannonFightHub.updateSign(arena, amount);
+					SignHandler.getInstance().updateSign(arena, amount);
 				}
 				else if (input.equals("PlayerDenied")) {
 					String player = in.readUTF();
@@ -92,9 +93,19 @@ private static CommunicationHubClient instance;
 		}
 	}
 	
-	public void sendSpectator(String arena, String player) {
+	public void sendSpectator(String player, String whoToSpectate) {
 		try {
 			out.writeUTF("Spectator");
+			out.writeUTF(player);
+			out.writeUTF(whoToSpectate);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void sendSpectatorToArena(String arena, String player) {
+		try {
+			out.writeUTF("SpectatorArena");
 			out.writeUTF(arena);
 			out.writeUTF(player);
 		} catch (IOException ex) {
@@ -104,5 +115,5 @@ private static CommunicationHubClient instance;
 	
 	public static CommunicationHubClient getInstance() {
 		return instance;
-	}	
+	}
 }
