@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 
@@ -21,18 +22,12 @@ public class SpectateCommand implements CommandExecutor {
 				return true;
 			}
 			
-			CannonFighter c = CannonFighter.get((Player) sender);
-			//Arena a;
-			
 			if (!sender.hasPermission("cannonfight.command.spectate")) {
 				sender.sendMessage(Language.get("error.no-permission"));
 				return true;
 			}
 			
-			//a = Arenas.getArena(args[0]);
-		
-			//spectate(c, a);
-			
+			CommunicationHubClient.getInstance().sendSpectator(sender.getName(), args[0]);
 			return true;	
 		}
 		else if (args.length == 2) {
@@ -48,37 +43,13 @@ public class SpectateCommand implements CommandExecutor {
 				return true;
 			}
 			
-			CannonFighter c = CannonFighter.get(p);
-			//Arena a;
+			CommunicationHubClient.getInstance().sendSpectator(p.getName(), args[0]);
 			
-			//a = Arenas.getArena(args[0]);
-			
-			/*if (spectate(c, a))
-				sender.sendMessage(Language.get("command.spectate-other-successful"));
-			else
-				sender.sendMessage(Language.get("command.spectate-other-failed"));
-			*/
+			sender.sendMessage(Language.get("command.spectate-tried-other-successful"));
 			return true;
 		}
 		
 		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [arena] [player]"));
 		return true;
 	}
-
-//	private static boolean spectate(CannonFighter c, Arena a) {
-//		/*GameManager g = GameManager.getForArena(a);
-//		
-//		if (g.isGameRunning()) {
-//			// Spiel läuft -> hinzufügen
-//			if (g.addSpectator(c)) {
-//				// konnte rein
-//				c.sendMessage(Language.get("command.join-spectate-successful"));
-//				return true;
-//			}	
-//			// konnte nicht rein
-//		}
-//		*/// kein Spiel -> kann nicht zugucken
-//		c.sendMessage(Language.get("command.join-spectate-failed"));
-//		return false;
-//	}
 }

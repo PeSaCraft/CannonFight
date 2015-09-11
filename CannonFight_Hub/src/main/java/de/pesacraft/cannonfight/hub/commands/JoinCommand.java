@@ -19,29 +19,6 @@ public class JoinCommand implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {		
-		if (args.length == 0) {
-			// zufällige Arena
-			
-			if (!(sender instanceof Player)) {
-				// only players can join
-				sender.sendMessage(Language.get("command.join-only-players")); 
-				return true;
-			}
-			
-			if (!sender.hasPermission("cannonfight.command.join.random")) {
-				sender.sendMessage(Language.get("error.no-permission"));
-				return true;
-			}
-			
-			CannonFighter c = CannonFighter.get((Player) sender);
-			//Arena a;
-			
-			//a = Arenas.random();
-			
-			//join(c, a);
-			return true;
-		}
-		
 		if (args.length == 1) {
 			// angegebene Arena
 			
@@ -74,14 +51,9 @@ public class JoinCommand implements CommandExecutor {
 				return true;
 			}
 			
-			CannonFighter c = CannonFighter.get(p);
-			//Arena a = Arenas.getArena(args[0]);
+			CommunicationHubClient.getInstance().sendPlayer(args[0], p.getName());
 			
-			/*if (join(c, a))
-				sender.sendMessage(Language.get("command.join-successful-other")); 
-			else
-				sender.sendMessage(Language.get("command.join-failed-other")); 
-			*/
+			sender.sendMessage(Language.get("command.join-tried-other")); 
 			return true;
 		}
 		

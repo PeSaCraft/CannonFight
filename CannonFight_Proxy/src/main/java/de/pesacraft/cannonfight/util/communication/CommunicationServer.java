@@ -49,7 +49,6 @@ public class CommunicationServer extends Thread {
 				
 				// if request coming from this machine use 127.0.0.1 instead of the connected address to make servers not visible from outside the machine compatible
 				InetAddress address = NetworkInterface.getByInetAddress(client.getInetAddress()) == null ? client.getInetAddress() : InetAddress.getLoopbackAddress();
-				System.out.println(address);
 				
 				if (type.equals("HubReady")) {
 					String serverName = in.readUTF();
@@ -131,6 +130,8 @@ public class CommunicationServer extends Thread {
 		int amount = 0;
 		
 		for (GameHandler g : games.values()) {
+			if (g.getArena() == null)
+				continue;
 			if (!g.getArena().equals(arena))
 				continue;
 			if (g.hasStarted())
