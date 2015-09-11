@@ -324,11 +324,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	}
 	
 	private static void leave(Participant part) {
-		System.out.println("1 " + part.getPlayer().getName());
 		CannonFighter c = part.getPlayer();
 		
 		if (part instanceof ActivePlayer) {
-			System.out.println(2);
 			// normal player: leave event
 			Bukkit.getServer().getPluginManager().callEvent(new CannonFighterLeaveEvent(c));
 			
@@ -342,7 +340,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				active.destroyCage();
 		}
 		else if (part instanceof Spectator) {
-			System.out.println(3);
 			// spectators are hidden for normal players
 			for (ActivePlayer a : players)
 				a.getPlayer().show(c);
@@ -351,7 +348,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			// not player and not specator: not in game -> cannot leave
 			return;
 		
-		System.out.println(4);
 		// normal player or spectator
 		c.resetCannons();
 		
@@ -367,7 +363,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		p.getInventory().clear();
 		
 		CommunicationGameClient.getInstance().sendBackToHub(part);
-		System.out.println(5);
 	}
 	
 	public static boolean locIsInArena(Location loc) {
@@ -462,13 +457,11 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	public static void addFuturePlayer(String name, String server) {
 		FuturePlayer f = new FuturePlayer(name, server);
-		System.out.println("Da kommt ein Spieler " + name + " von " + server);
 		upcomingPlayers.add(f);
 	}
 	
 	public static void addFutureSpectator(String name, String server) {
 		FuturePlayer f = new FuturePlayer(name, server);
-		System.out.println("Da kommt ein Zuschauer " + name + " von " + server);
 		upcomingSpectators.add(f);
 	}
 	
@@ -522,19 +515,15 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		// no join message, gets handled somewhere else
 		event.setJoinMessage(null);
 		
-		System.out.println("1 name: " + player.getName());
 		FuturePlayer futurePlayer = null;
 		for (FuturePlayer f : upcomingPlayers) {
-			System.out.println("2 name:" + f.getName());
 			if (f.getName().equals(player.getName())) {
-				System.out.println(3);
 				futurePlayer = f;
 				break;
 			}
 		}
 		
 		if (futurePlayer != null) {
-			System.out.println(4);
 			CannonFighterJoinGameEvent joinEvent = new CannonFighterJoinGameEvent(player);
 			Bukkit.getPluginManager().callEvent(joinEvent);
 			
@@ -546,16 +535,13 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		// not a player, is spectator
 		futurePlayer = null;
 		for (FuturePlayer f : upcomingSpectators) {
-			System.out.println("5 name:" + f.getName());
 			if (f.getName().equals(player.getName())) {
-				System.out.println(6);
 				futurePlayer = f;
 				break;
 			}
 		}
 		
 		if (futurePlayer != null) {
-			System.out.println(7);
 			CannonFighterSpectatorJoinGameEvent joinEvent = new CannonFighterSpectatorJoinGameEvent(player);
 			Bukkit.getPluginManager().callEvent(joinEvent);
 			
