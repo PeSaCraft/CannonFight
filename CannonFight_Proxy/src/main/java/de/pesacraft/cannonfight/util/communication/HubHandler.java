@@ -5,7 +5,11 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.net.Socket;
+
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 
 public class HubHandler extends Thread {
 	private String server;
@@ -59,6 +63,21 @@ public class HubHandler extends Thread {
 					}
 				}
 				else if (input.equals("Spectator")) {
+					String player = in.readUTF();
+					String whoToSpectate = in.readUTF();
+					
+					ServerInfo info = ProxyServer.getInstance().getPlayer(whoToSpectate).getServer().getInfo();
+					GameHandler handler = CommunicationServer.getInstance().getGame(info.getName());
+					
+					if (handler == null) {
+						out.writeUTF("SpectatorDenied");
+						out.writeUTF(player);
+					}
+					else {
+						handler.sendSpectator(player, this.server);
+					}
+				}
+				else if (input.equals("SpectatorArena")) {
 					String arena = in.readUTF();
 					String player = in.readUTF();
 					
