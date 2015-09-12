@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -853,6 +854,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		if (gameState != GameState.INGAME)
 			// cancel all damage if not ingame
 			event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onFoodLevelChange(FoodLevelChangeEvent event) {
+		// nobody looses food!
+		event.setFoodLevel(20);
 	}
 	
 	@EventHandler
