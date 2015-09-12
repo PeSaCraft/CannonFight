@@ -632,15 +632,15 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		}
 		
 		Player p = c.getPlayer();
-		if (gameState == GameState.STARTING) {
-			ARENA.teleportSpectator(c);
-			
-			p.setGameMode(GameMode.SPECTATOR);
-		}
-		else {
+		if (gameState == GameState.WAITING) {
 			p.teleport(WORLD_LOBBY.getSpawnLocation());
 			
 			p.setGameMode(GameMode.ADVENTURE);
+		}
+		else {
+			ARENA.teleportSpectator(c);
+			
+			p.setGameMode(GameMode.SPECTATOR);	
 		}
 	}
 	
