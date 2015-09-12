@@ -36,9 +36,7 @@ public class CommunicationServer extends Thread {
 	
 	@Override
 	public void run() {
-		try {
-			ServerSocket server = new ServerSocket(26665);
-		
+		try (ServerSocket server = new ServerSocket(26665)) {
 			while (true) {
 				Socket client = server.accept();
 				
