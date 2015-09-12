@@ -31,3 +31,4 @@ build.number
 
 # Build storage
 */builds
+/bin/

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.pesacraft.cannonfight</groupId>
   <artifactId>CannonFightUtil</artifactId>
-  <version>0.1.6</version>
+  <version>0.1.7</version>
   <name>CannonFight Util</name>
   <description>The utilities part for the CannonFight game plugin for Minecraft Bukkit Servers. This contains code that is used in both parts.</description>
   
@@ -162,8 +162,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
       
