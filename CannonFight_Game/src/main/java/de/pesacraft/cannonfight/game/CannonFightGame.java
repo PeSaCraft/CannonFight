@@ -529,6 +529,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			
 			upcomingPlayers.remove(futurePlayer);
 			players.add(new ActivePlayer(player, futurePlayer.getServer()));
+			
+			if (players.size() == ARENA.getMaxPlayers())
+				CommunicationGameClient.getInstance().sendGameFull();
 			return;
 		}
 		

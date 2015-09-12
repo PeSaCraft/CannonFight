@@ -49,7 +49,7 @@ public class GameHandler extends Thread {
 					String server = in.readUTF();
 					ProxyServer.getInstance().getPlayer(player).connect(ProxyServer.getInstance().getServerInfo(server));
 					this.players--;
-					if (!playerJoinable)
+					if (!isPlayerJoinable())
 						playerJoinable = true;
 				}
 				else if (input.equals("GameStarted")) {
@@ -77,7 +77,7 @@ public class GameHandler extends Thread {
 	}
 	
 	public boolean sendPlayer(String player, String server) throws IOException {
-		if (!arenaSet() || !playerJoinable)
+		if (!arenaSet() || !isPlayerJoinable())
 			return false;
 		
 		out.writeUTF("Player");
