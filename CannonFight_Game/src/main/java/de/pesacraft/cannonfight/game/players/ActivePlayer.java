@@ -3,10 +3,13 @@ package de.pesacraft.cannonfight.game.players;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.game.Cage;
 import de.pesacraft.cannonfight.game.CageForm;
+import de.pesacraft.cannonfight.game.CannonFightGame;
 import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.Language;
 
 public class ActivePlayer extends Participant {
 	private int lives;
@@ -37,6 +40,30 @@ public class ActivePlayer extends Participant {
 		cage.destroyCage();
 		
 		cage = null;
+	}
+	
+	public void createPlatform() throws IllegalStateException {
+		final Cage platform = new Cage(CageForm.PLATFORM, getPlayer().getPlayer().getLocation().getBlock());
+		
+		platform.createCage(new ItemStack(Material.BARRIER));
+		
+		final ActivePlayer a = this;
+		
+		new BukkitRunnable() {
+			int time = CannonFightGame.PLUGIN.getConfig().getInt("game.time.platform");
+			
+			@Override
+			public void run() {
+				if (time == 0) {
+					a.getPlayer().sendMessage(Language.get("info.platform.dissapears-now"));
+					platform.destroyCage();
+					this.cancel();
+					return;
+				}
+				a.getPlayer().sendMessage(Language.get("info.platform.dissapears-in-sec").replaceAll("%time%", time + ""));
+				time--;
+			}
+		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20);
 	}
 	
 	public boolean teleportToGame(Location loc) {

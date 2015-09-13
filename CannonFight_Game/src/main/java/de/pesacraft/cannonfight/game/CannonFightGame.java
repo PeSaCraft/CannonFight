@@ -235,9 +235,11 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 						gameState = GameState.INGAME;
 						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.play");
 						
-						for (ActivePlayer player : players)
+						for (ActivePlayer player : players) {
 							player.destroyCage();
-						
+							
+							player.createPlatform();
+						}
 						Bukkit.broadcastMessage(Language.get("info.game-start"));
 						
 						break;	
@@ -448,6 +450,8 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		Player p = c.getPlayer();
 		
 		ARENA.randomRespawn(p);
+		
+		a.createPlatform();
 		
 		p.setHealth(p.getMaxHealth());
 		p.setFoodLevel(20);
