@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
 
@@ -31,5 +32,9 @@ public class Cannons {
 
 	public static Set<String> getCannonSet() {
 		return cannons.keySet();
+	}
+
+	public static String getDefaultCannon() {
+		return FireballCannon.NAME;
 	}
 }

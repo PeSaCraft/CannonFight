@@ -65,7 +65,7 @@ public class CannonFighter {
 			for (Entry<String, Object> entry : cannons.entrySet()) {
 				CannonConstructor constructor = Cannons.getConstructorByName(entry.getKey());
 				
-				this.cannons.put(entry.getKey(), constructor.construct(this, (Document) entry.getValue()));
+				this.addCannon(constructor.construct(this, (Document) entry.getValue()));
 			}
 			
 			List<String> activeItems = (List<String>) doc.get("activeItems");
@@ -88,8 +88,6 @@ public class CannonFighter {
 			livesLevel = 1;
 			slots = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
 			
-			cannons = new HashMap<String, Cannon>();
-			
 			doc = new Document("uuid", p.getUniqueId().toString());
 			doc = doc.append("xp", 0);
 			doc = doc.append("slotsLevel", slotsLevel);
@@ -104,9 +102,15 @@ public class CannonFighter {
 			}
 			
 			doc = doc.append("activeItems", activeStrings);
-			doc = doc.append("cannons", cannons);
 			
+			// cannons doesn't have to be written into the db here
+			// it will be added when a new cannon is bought.
 			COLLECTION.insertOne(doc);
+			
+			cannons = new HashMap<String, Cannon>();
+			CannonConstructor constructor = Cannons.getConstructorByName(Cannons.getDefaultCannon());
+			Cannon defaultCannon = constructor.buyNew(this);
+			this.addCannon(defaultCannon);
 		}
 	}
 	
