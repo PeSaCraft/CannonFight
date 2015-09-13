@@ -447,7 +447,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		CannonFighter c = a.getPlayer();
 		Player p = c.getPlayer();
 		
-		p.teleport(ARENA.getSpawn(c));
+		ARENA.randomRespawn(p);
 		
 		p.setHealth(p.getMaxHealth());
 		p.setFoodLevel(20);

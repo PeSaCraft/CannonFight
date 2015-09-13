@@ -4,6 +4,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import com.mongodb.client.MongoCollection;
 
@@ -131,5 +133,27 @@ public class Arena {
 
 	public Location getSpectatorLocation() {
 		return spectatorSpawn;
+	}
+
+	public void randomRespawn(Player p) {
+		int i = (int) (Math.random() * getMaxPlayers());
+		
+		int free = freeSpawns.size();
+		if (i < free)
+			p.teleport(freeSpawns.get(i));
+		else {
+			i -= free;
+			Iterator<Location> locs = setSpawns.values().iterator();
+			
+			Location loc = null;
+		
+			while (i >= 0) {
+				loc = locs.next();
+				i--;
+			}
+			
+			if (loc != null)
+				p.teleport(loc);
+		}
 	}
 }
