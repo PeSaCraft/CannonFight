@@ -673,6 +673,13 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				return;
 			}
 			
+			// player will be outside arena
+			if (!locIsInArena(from)) {
+				// if player comes from outside the arena
+				// he has to be pushed inside
+				p.setVelocity(p.getVelocity().normalize());
+				return;
+			}
 			Vector direction = from.toVector().subtract(to.toVector()).normalize();
 
 			direction.setX(direction.getX() * 2);
@@ -696,7 +703,23 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				return;
 			}
 			
-			event.setTo(event.getFrom());	
+			// player will be outside arena
+			if (!locIsInArena(event.getFrom())) {
+				// if player comes from outside the arena
+				// he has to be pushed inside
+				p.setVelocity(p.getVelocity().normalize());
+				return;
+			}
+						
+			Vector direction = event.getFrom().toVector().subtract(event.getTo().toVector()).normalize();
+
+			direction.setX(direction.getX() * 2);
+			direction.setY(direction.getY() * 2);
+			direction.setZ(direction.getZ() * 2);
+ 			
+ 			p.setVelocity(direction);
+			
+			event.setTo(event.getFrom());
 			p.sendMessage(Language.get("error.cannot-leave-arena-bounds"));
 		}
 	}
