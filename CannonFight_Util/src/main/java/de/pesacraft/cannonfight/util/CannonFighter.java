@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -44,10 +45,10 @@ public class CannonFighter {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private CannonFighter(Player p) {
-		this.uuid = p.getUniqueId();
+	private CannonFighter(UUID uuid) {
+		this.uuid = uuid;
 		
-		Document doc = COLLECTION.find(eq("uuid", p.getUniqueId().toString())).first();
+		Document doc = COLLECTION.find(eq("uuid", uuid.toString())).first();
 		
 		if (doc != null) {
 			// Player in database
@@ -88,7 +89,7 @@ public class CannonFighter {
 			livesLevel = 1;
 			slots = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
 			
-			doc = new Document("uuid", p.getUniqueId().toString());
+			doc = new Document("uuid", uuid.toString());
 			doc = doc.append("xp", 0);
 			doc = doc.append("slotsLevel", slotsLevel);
 			doc = doc.append("livesLevel", livesLevel);
@@ -111,24 +112,28 @@ public class CannonFighter {
 					activeStrings.add(c.getName());
 			}
 			
-			COLLECTION.updateOne(eq("uuid", p.getUniqueId().toString()), new Document("$set", new Document("activeItems", activeStrings)));
+			COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("activeItems", activeStrings)));
 		}
 	}
 	
 	public int getCoins() {
-		return CannonFightUtil.MONEY.getMoney(this);
+		return CannonFightUtil.MONEY.getMoney(uuid);
 	}
 
-	public void giveCoins(int amount) {
-		CannonFightUtil.MONEY.giveMoney(this, amount);
+	public boolean setCoins(int amount, String... reason) {
+		return CannonFightUtil.MONEY.setMoney(uuid, amount, reason);
+	}
+
+	public boolean giveCoins(int amount, String... reason) {
+		return CannonFightUtil.MONEY.giveMoney(uuid, amount, reason);
 	}
 	
 	public boolean takeCoins(int amount, String... reason) {
-		return CannonFightUtil.MONEY.takeMoney(this, amount, reason);
+		return CannonFightUtil.MONEY.takeMoney(uuid, amount, reason);
 	}
 	
 	public boolean hasEnoughCoins(int amount) {
-		return CannonFightUtil.MONEY.hasEnoughMoney(this, amount);
+		return CannonFightUtil.MONEY.hasEnoughMoney(uuid, amount);
 	}
 	
 	public void show(CannonFighter c) {
@@ -163,23 +168,40 @@ public class CannonFighter {
 	}
 	
 	public Player getPlayer() {
-		return Bukkit.getPlayer(uuid);
+		return Bukkit.getPlayer(getUUID());
 	}
 	
-	private static Map<String, CannonFighter> online = new HashMap<String, CannonFighter>();
+	public OfflinePlayer getOfflinePlayer() {
+		return Bukkit.getOfflinePlayer(getUUID());
+	}
 	
-	public static CannonFighter get(Player p) {
-		if (online.containsKey(p.getName()))
-			return online.get(p.getName());
+	public UUID getUUID() {
+		return uuid;
+	}
+	
+	private static Map<String, CannonFighter> players = new HashMap<String, CannonFighter>();
+	
+	public static CannonFighter get(OfflinePlayer p) {
+		if (players.containsKey(p.getName()))
+			return players.get(p.getName());
 		
-		CannonFighter c = new CannonFighter(p);
-		online.put(p.getName(), c);
+		CannonFighter c = new CannonFighter(p.getUniqueId());
+		players.put(p.getName(), c);
 		
 		return c;
 	}
 	
+	@Deprecated
+	public static CannonFighter get(Player p) {
+		return get((OfflinePlayer) p);
+	}
+	
+	public static CannonFighter remove(OfflinePlayer p) {
+		return players.remove(p.getName());
+	}
+	@Deprecated
 	public static CannonFighter remove(Player p) {
-		return online.remove(p.getName());
+		return remove((OfflinePlayer) p);
 	}
 
 	public boolean hasPermission(String perm) {
