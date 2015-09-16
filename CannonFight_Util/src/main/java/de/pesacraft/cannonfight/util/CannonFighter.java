@@ -93,6 +93,16 @@ public class CannonFighter {
 			doc = doc.append("slotsLevel", slotsLevel);
 			doc = doc.append("livesLevel", livesLevel);
 			
+			// cannons don't have to be written into the db here
+			// they will be added when a new cannon is bought.
+			COLLECTION.insertOne(doc);
+			
+			cannons = new HashMap<String, Cannon>();
+			CannonConstructor constructor = Cannons.getConstructorByName(Cannons.getDefaultCannon());
+			Cannon defaultCannon = constructor.buyNew(this);
+			this.addCannon(defaultCannon);
+			
+			// now the active items can be stored
 			List<String> activeStrings = new ArrayList<String>();
 			for (Cannon c : getActiveItems()) {
 				if (c == null)
@@ -101,16 +111,7 @@ public class CannonFighter {
 					activeStrings.add(c.getName());
 			}
 			
-			doc = doc.append("activeItems", activeStrings);
-			
-			// cannons doesn't have to be written into the db here
-			// it will be added when a new cannon is bought.
-			COLLECTION.insertOne(doc);
-			
-			cannons = new HashMap<String, Cannon>();
-			CannonConstructor constructor = Cannons.getConstructorByName(Cannons.getDefaultCannon());
-			Cannon defaultCannon = constructor.buyNew(this);
-			this.addCannon(defaultCannon);
+			COLLECTION.updateOne(eq("uuid", p.getUniqueId().toString()), new Document("$set", new Document("activeItems", activeStrings)));
 		}
 	}
 	
