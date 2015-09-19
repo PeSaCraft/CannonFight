@@ -1,169 +1,118 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.pesacraft.cannonfight</groupId>
-  <artifactId>CannonFightProxy</artifactId>
-  <version>0.1.3-17</version>
-  <name>CannonFight Proxy</name>
-  <description>The BungeeCord proxy plugin for the CannonFight game plugin for Minecraft Bukkit Servers. This handles the creation of new servers if required.</description>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+         <groupId>de.pesacraft</groupId>
+            <artifactId>CannonFight</artifactId>
+            <version>${cannonfight.version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-    <lobbysystem.version>0.0.6</lobbysystem.version>
+    <groupId>de.pesacraft.cannonfight</groupId>
+    <artifactId>CannonFightProxy</artifactId>
+    <version>0.1.4${cannonfight.snapshot}</version>
+    <name>CannonFight Proxy</name>
+    <description>The BungeeCord proxy plugin for the CannonFight game plugin for Minecraft Bukkit Servers. This handles the creation of new servers if required.</description>
+    
+    <distributionManagement>
+        <repository>
+            <id>pesacraft-releases</id>
+            <url>http://pesacraft.de:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>pesacraft-snapshots</id>
+            <url>http://pesacraft.de:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>lobbyutil-repo</id>
+            <url>${parent.project.baseUri}/repo</url>
+        </repository>
         
-    <cannonfightutil.version>0.1.6</cannonfightutil.version>
-    
-	<bungeecord.version>1.8-SNAPSHOT</bungeecord.version>
-  </properties>
+        <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>     
+    </repositories>
 
-  <repositories>
-    <repository>
-      <id>lobbyutil-repo</id>
-      <url>${project.baseUri}/../repo</url>
-    </repository>
-    
-    <repository>
-      <id>bungeecord-repo</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>   
-  </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>de.pesacraft</groupId>
+            <artifactId>LobbySystem</artifactId>
+            <version>${lobbysystem.version}</version>
+        </dependency>
 
-  <pluginRepositories>
-      <pluginRepository>
-          <id>autoincrement-versions-maven-plugin</id>
-          <name>autoincrement-versions-maven-plugin</name>
-          <url>http://autoincrement-versions-maven-plugin.googlecode.com/svn/repo</url>
-          <snapshots>
-              <enabled>true</enabled>
-          </snapshots>
-      </pluginRepository>
-  </pluginRepositories>
- 
-  <dependencies>
-    <dependency>
-      <groupId>de.pesacraft</groupId>
-      <artifactId>LobbySystem</artifactId>
-      <version>${lobbysystem.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>de.pesacraft.cannonfight</groupId>
+            <artifactId>CannonFightUtil</artifactId>
+            <version>${cannonfightutil.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.pesacraft.cannonfight</groupId>
-      <artifactId>CannonFightUtil</artifactId>
-      <version>${cannonfightutil.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>${bungeecord.version}</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-event</artifactId>
+            <version>${bungeecord.version}</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 
-    <dependency>
-      <groupId>net.md-5</groupId>
-      <artifactId>bungeecord-api</artifactId>
-      <version>${bungeecord.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-    <dependency>
-      <groupId>net.md-5</groupId>
-      <artifactId>bungeecord-event</artifactId>
-      <version>${bungeecord.version}</version>
-      <type>jar</type>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <defaultGoal>clean package</defaultGoal>
-    
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <createDependencyReducedPom>false</createDependencyReducedPom>
-              <artifactSet>
-                <includes>
-                  <include>org.mongodb:mongo-java-driver</include>
-                  <include>de.pesacraft.cannonfight:CannonFightUtil</include>
-                </includes>
-              </artifactSet>
-           </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>autoincrement-versions-maven-plugin</artifactId>
-        <version>2.0-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <id>update-pom-versions</id>
-            <goals>
-              <goal>increment</goal>
-            </goals>  
-            <phase>compile</phase>
-            <configuration>
-              <allowSnapshots>true</allowSnapshots>
-              <autoIncrementVersion>true</autoIncrementVersion>
-            </configuration>
-           </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.codehaus.mojo</groupId>
-    								<artifactId>
-    									autoincrement-versions-maven-plugin
-    								</artifactId>
-    								<versionRange>
-    									[2.0-SNAPSHOT,)
-    								</versionRange>
-    								<goals>
-    									<goal>commit</goal>
-    									<goal>increment</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
-    </pluginManagement>
-  </build>
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <defaultGoal>install</defaultGoal>
+        
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.mongodb:mongo-java-driver</include>
+                                    <include>de.pesacraft.cannonfight:CannonFightUtil</include>
+                                </includes>
+                            </artifactSet>
+                     </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
