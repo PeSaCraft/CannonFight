@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <name>CannonFight</name>
     <description>A game plugin for Minecraft Bukkit Servers</description>
-    <version>dev${cannonfight.snapshot}</version>
+    <version>dev-SNAPSHOT</version>
     
     <modules>
         <module>CannonFight_Util</module>
@@ -23,6 +23,7 @@
         <bukkit.version>R0.1-SNAPSHOT</bukkit.version>
         <lobbysystem.version>0.0.6</lobbysystem.version>
         <craftconomy.version>3.3</craftconomy.version>
+        <bungeecord.version>1.8-SNAPSHOT</bungeecord.version>
     </properties>
 
     <repositories>

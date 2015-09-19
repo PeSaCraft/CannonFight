@@ -2,9 +2,9 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-         <groupId>de.pesacraft</groupId>
-            <artifactId>CannonFight</artifactId>
-            <version>${cannonfight.version}</version>
+        <groupId>de.pesacraft</groupId>
+        <artifactId>CannonFight</artifactId>
+        <version>dev-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
