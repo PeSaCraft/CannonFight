@@ -21,7 +21,7 @@
         <cannonfightutil.version>0.1.8${cannonfight.snapshot}</cannonfightutil.version>
         <minecraft.version>1.8.8</minecraft.version>
         <bukkit.version>R0.1-SNAPSHOT</bukkit.version>
-        <lobbysystem.version>0.0.6</lobbysystem.version>
+        <lobbysystem.version>0.0.7</lobbysystem.version>
         <craftconomy.version>3.3</craftconomy.version>
         <bungeecord.version>1.8-SNAPSHOT</bungeecord.version>
     </properties>
