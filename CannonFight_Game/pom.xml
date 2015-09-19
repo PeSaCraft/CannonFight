@@ -29,13 +29,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>lobbyutil-repo</id>
-            <url>${parent.project.baseUri}/repo</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -76,7 +69,7 @@
             <artifactId>Craftconomy</artifactId>
             <version>${craftconomy.version}</version>
             <scope>system</scope>
-            <systemPath>${parent.project.basedir}/repo/Craftconomy.jar</systemPath>
+            <systemPath>${project.basedir}/../repo/Craftconomy.jar</systemPath>
         </dependency>
     </dependencies>
 
