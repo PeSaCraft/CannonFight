@@ -34,14 +34,15 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>${minecraft.version}-${bukkit.version}</version>
-            <scope>jar</scope>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
             <version>${minecraft.version}-${bukkit.version}</version>
-            <scope>jar</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../repo/craftbukkit-${minecraft.version}-${bukkit.version}.jar</systemPath>
         </dependency>
         
         <dependency>
