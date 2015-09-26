@@ -424,7 +424,8 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				return relatives;
 			}
 			
-			if (!locIsInArena((relative = base.getRelative(BlockFace.DOWN, i)).getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.UP, i)).getLocation())) {
+			// players head is 2 above the given location
+			if (!locIsInArena((relative = base.getRelative(BlockFace.DOWN, i)).getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.UP, i + 2)).getLocation())) {
 				// block nearby outside arena:
 				// show particle wall
 				relatives.add(relative);
@@ -663,7 +664,54 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			Location to = event.getTo();
 			Location from = event.getFrom();
 			
-			if (locIsInArena(to)) {
+			ifbreak: if (locIsInArena(to)) {
+				if (!locIsInArena(to.add(0, 2, 0))) {
+					// head not in arena
+					break ifbreak;
+				}
+				// work with feet location again
+				to.subtract(0, 2, 0);
+				Set<Block> relatives = getBlocksForWall(to.getBlock());
+				
+				for (Block rel : relatives) {
+					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.BARRIER, false, rel.getX(), rel.getY() + 0.5f, rel.getZ(), 0, 0, 0, 0, 1);
+					((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+				}
+				return;
+			}
+			
+			// player will be outside arena
+			
+			if (!locIsInArena(from)) {
+				// if player comes from outside the arena
+				// he has to be pushed inside
+				p.setVelocity(p.getVelocity().normalize().multiply(2));
+				return;
+			}
+			
+			Vector direction = from.toVector().subtract(to.toVector()).normalize();
+
+			direction.setX(direction.getX() * 2);
+			direction.setY(direction.getY() * 2);
+			direction.setZ(direction.getZ() * 2);
+ 			
+ 			p.setVelocity(direction);
+			
+			event.setTo(from);
+			return;
+		}
+		
+		if (spectators.contains(par)) {
+			Location to = event.getTo();
+			Location from = event.getFrom();
+			
+			ifbreak: if (locIsInArena(to)) {
+				if (!locIsInArena(to.add(0, 2, 0))) {
+					// head not in arena
+					break ifbreak;
+				}
+				// work with feet location again
+				to.subtract(0, 2, 0);
 				Set<Block> relatives = getBlocksForWall(to.getBlock());
 				
 				for (Block rel : relatives) {
@@ -680,6 +728,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				p.setVelocity(p.getVelocity().normalize());
 				return;
 			}
+						
 			Vector direction = from.toVector().subtract(to.toVector()).normalize();
 
 			direction.setX(direction.getX() * 2);
@@ -689,37 +738,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
  			p.setVelocity(direction);
 			
 			event.setTo(from);
-			return;
-		}
-		
-		if (spectators.contains(par)) {
-			if (locIsInArena(event.getTo())) {
-				Set<Block> relatives = getBlocksForWall(event.getTo().getBlock());
-				
-				for (Block rel : relatives) {
-					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.BARRIER, false, rel.getX(), rel.getY() + 0.5f, rel.getZ(), 0, 0, 0, 0, 1);
-					((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-				}
-				return;
-			}
-			
-			// player will be outside arena
-			if (!locIsInArena(event.getFrom())) {
-				// if player comes from outside the arena
-				// he has to be pushed inside
-				p.setVelocity(p.getVelocity().normalize());
-				return;
-			}
-						
-			Vector direction = event.getFrom().toVector().subtract(event.getTo().toVector()).normalize();
-
-			direction.setX(direction.getX() * 2);
-			direction.setY(direction.getY() * 2);
-			direction.setZ(direction.getZ() * 2);
- 			
- 			p.setVelocity(direction);
-			
-			event.setTo(event.getFrom());
 			p.sendMessage(Language.get("error.cannot-leave-arena-bounds"));
 		}
 	}
