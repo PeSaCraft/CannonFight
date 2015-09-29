@@ -19,7 +19,7 @@ public class Upgrade<T> extends BasicDBObject {
 		put("price", map.get("price"));
 		put("value", map.get("value"));
 	}
-	
+
 	public int getPrice() {
 		return getInt("price");
 	}
@@ -27,5 +27,18 @@ public class Upgrade<T> extends BasicDBObject {
 	@SuppressWarnings("unchecked")
 	public T getValue() {
 		return (T) get("value");
+	}
+	
+	public void setPrice(int price) {
+		put("price", price);
+	}
+	
+	public void setValue(T value) {
+		put("value", value);
+	}
+	
+	@Override
+	public Upgrade<T> clone() {
+		return new Upgrade<T>(getPrice(), getValue());
 	}
 }
