@@ -53,14 +53,14 @@ public abstract class Cannon extends Cooldown {
 		
 		try {
 			// try to register with default beeing new instance of type
-			registerUpgrade(cannonName, upgradeName, type, type.newInstance());
+			registerUpgrade(cannonName, upgradeName, type.newInstance(), type);
 		} catch (InstantiationException | IllegalAccessException ex) {
 			// cannot instantiate type, default is null
-			registerUpgrade(cannonName, upgradeName, type, null);
+			registerUpgrade(cannonName, upgradeName, null, type);
 		}
 	}
 
-	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type, T defaultValue) {
+	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, T defaultValue, Class<T> type) {
 		UpgradeMap upgrades;
 		
 		if (UPGRADE_MAP.containsKey(cannonName))
