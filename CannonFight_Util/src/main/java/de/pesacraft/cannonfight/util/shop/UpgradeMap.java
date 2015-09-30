@@ -53,24 +53,30 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	}
 
 	public <T> Upgrade<T> getUpgrade(String name, int level, Class<T> type) {
+		try {
+			// no default value given, try to create new instance
+			return getUpgrade(name, level, type.newInstance(), type);
+		} catch (InstantiationException | IllegalAccessException e) {
+			// couldn't create new instance, default will be null
+			return getUpgrade(name, level, null, type);
+		}
+	}
+	
+	public <T> Upgrade<T> getUpgrade(String name, int level, T defaultValue, Class<T> type) {
 		if (this.containsKey(name))
 			return (Upgrade<T>) this.get(name).getForLevel(level);
 	
 		UpgradeList<T> upgrades = new UpgradeList<T>();
 	
-		Upgrade<T> upgrade;
-		try {
-			upgrade = new Upgrade<T>(100, type.newInstance());
-		} catch (InstantiationException | IllegalAccessException ex) {
-			// cannot instantiate it, initialize with null
-			upgrade = new Upgrade<T>(100, null);
-		} 
+		// new upgrade has to be created
+		Upgrade<T> upgrade = new Upgrade<T>(100, defaultValue);
+		
 		upgrades.setLevel(level, upgrade);
 		this.put(name, upgrades);
 		
 		return upgrade;
 	}
-
+	
 	public int getLevels(String name) {
 		if (this.containsKey(name))
 			return this.get(name).getLevels();

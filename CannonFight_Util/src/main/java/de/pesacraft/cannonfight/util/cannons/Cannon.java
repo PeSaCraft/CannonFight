@@ -1,7 +1,5 @@
 package de.pesacraft.cannonfight.util.cannons;
 
-import static com.mongodb.client.model.Filters.eq;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,7 +7,6 @@ import java.util.Map.Entry;
 import org.bson.Document;
 import org.bukkit.inventory.ItemStack;
 
-import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
 import de.pesacraft.cannonfight.util.shop.Upgrade;
@@ -53,6 +50,17 @@ public abstract class Cannon extends Cooldown {
 	}
 	
 	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type) {
+		
+		try {
+			// try to register with default beeing new instance of type
+			registerUpgrade(cannonName, upgradeName, type, type.newInstance());
+		} catch (InstantiationException | IllegalAccessException ex) {
+			// cannot instantiate type, default is null
+			registerUpgrade(cannonName, upgradeName, type, null);
+		}
+	}
+
+	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type, T defaultValue) {
 		UpgradeMap upgrades;
 		
 		if (UPGRADE_MAP.containsKey(cannonName))
@@ -62,15 +70,10 @@ public abstract class Cannon extends Cooldown {
 			UPGRADE_MAP.put(cannonName, upgrades);
 		}
 		
-		try {
-			// try to add 2 default levels
-			upgrades.setUpgrade(upgradeName, 2, 100, type.newInstance(), type);
-		} catch (InstantiationException | IllegalAccessException ex) {
-			// cannot instantiate it, initialize with null
-			upgrades.setUpgrade(upgradeName, 2, 100, null, type);
-		}
+		// try add 2 default levels
+		upgrades.setUpgrade(upgradeName, 2, 100, defaultValue, type);
 	}
-
+	
 	public final static <T> Upgrade<T> getUpgrade(String cannonName, String upgradeName, int level, Class<T> type) {
 		if (!UPGRADE_MAP.containsKey(cannonName))
 			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");

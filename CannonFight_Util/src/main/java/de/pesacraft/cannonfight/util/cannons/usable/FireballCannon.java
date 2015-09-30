@@ -80,10 +80,10 @@ public class FireballCannon extends Cannon implements Listener {
 			m.setDisplayName(NAME);
 			ITEM.setItemMeta(m);
 			
-			registerUpgrade(NAME, "cooldown", Integer.class);
-			registerUpgrade(NAME, "ammo", Integer.class);
-			registerUpgrade(NAME, "radius", Double.class);
-			registerUpgrade(NAME, "damage", Integer.class);
+			registerUpgrade(NAME, "cooldown", Integer.class, 10);
+			registerUpgrade(NAME, "ammo", Integer.class, 1);
+			registerUpgrade(NAME, "radius", Double.class, 1.0);
+			registerUpgrade(NAME, "damage", Integer.class, 2);
 			
 			doc = new Document("name", NAME);	
 			
