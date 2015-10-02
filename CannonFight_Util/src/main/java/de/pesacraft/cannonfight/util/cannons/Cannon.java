@@ -5,10 +5,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
+import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
+import de.pesacraft.cannonfight.util.CannonFightUtil;
+import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
+import de.pesacraft.cannonfight.util.shop.ClickHandler;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
+import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.Upgrade;
 import de.pesacraft.cannonfight.util.shop.UpgradeMap;
 
@@ -49,8 +58,8 @@ public abstract class Cannon extends Cooldown {
 			upgrades.setUpgrade(upgradeName, entry, type);
 	}
 	
+	@Deprecated
 	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type) {
-		
 		try {
 			// try to register with default beeing new instance of type
 			registerUpgrade(cannonName, upgradeName, type.newInstance(), type);
@@ -74,6 +83,20 @@ public abstract class Cannon extends Cooldown {
 		upgrades.setUpgrade(upgradeName, 2, 100, defaultValue, type);
 	}
 	
+	public final static void setUpgradeItem(String cannonName, String upgradeName, ItemStack item) {
+		if (!UPGRADE_MAP.containsKey(cannonName))
+			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
+		
+		((UpgradeMap) UPGRADE_MAP.get(cannonName)).setItemStack(upgradeName, item);
+	}
+	
+	public final static ItemStack getUpgradeItem(String cannonName, String upgradeName) {
+		if (!UPGRADE_MAP.containsKey(cannonName))
+			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
+		
+		return ((UpgradeMap) UPGRADE_MAP.get(cannonName)).getItemStack(upgradeName);
+	}
+	
 	public final static <T> Upgrade<T> getUpgrade(String cannonName, String upgradeName, int level, Class<T> type) {
 		if (!UPGRADE_MAP.containsKey(cannonName))
 			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
@@ -92,5 +115,50 @@ public abstract class Cannon extends Cooldown {
 			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
 		
 		return UPGRADE_MAP.get(cannonName).serialize();
+	}
+
+	public static Shop getUpgradeShop(String cannon) {
+		if (!UPGRADE_MAP.containsKey(cannon))
+			throw new IllegalArgumentException("Cannon \"" + cannon + "\" isn't registered!");
+		
+		final UpgradeMap upgrades = UPGRADE_MAP.get(cannon);
+		
+		int rows = (int) Math.ceil((double) upgrades.size() / 9);
+		
+		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
+		
+		Shop s = new Shop(cannon + "-Setup", new ClickHandler() {
+			
+			@Override
+			public void onItemInteract(ItemInteractEvent event) {
+				if (!event.isPickUpAction())
+					return;
+				
+				ItemStack item = event.getItemInSlot();
+				
+				if (item.isSimilar(fill))
+					return;
+				
+				for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
+					if (item.isSimilar(entry.getValue())) {
+						event.setNextShop(upgrades.getUpgradeShop(entry.getKey()));
+						return;
+					}
+				}
+			}
+
+			@Override
+			public void onInventoryClose(InventoryCloseEvent event) {}
+		}, rows);
+		
+		s.fill(fill);
+		
+		int i = 0;
+		
+		for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
+			s.set(i++, entry.getValue());
+		}
+		
+		return s;
 	}
 }
