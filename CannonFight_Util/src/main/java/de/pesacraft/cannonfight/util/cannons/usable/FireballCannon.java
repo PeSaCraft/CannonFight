@@ -66,10 +66,10 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			ITEM = ItemSerializer.deserialize((Document) doc.get("item"));
 			
-			registerUpgrade(NAME, "cooldown", Integer.class, (Document) doc.get("cooldown"), new IntegerUpgradeChanger(1, 3));
-			registerUpgrade(NAME, "ammo", Integer.class, (Document) doc.get("ammo"), new IntegerUpgradeChanger(1, 5));
-			registerUpgrade(NAME, "radius", Double.class, (Document) doc.get("radius"), new DoubleUpgradeChanger(0.1, 0.5));
-			registerUpgrade(NAME, "damage", Integer.class, (Document) doc.get("damage"), new IntegerUpgradeChanger(1, 3));
+			registerUpgrade(NAME, "cooldown", Integer.class, (Document) doc.get("cooldown"), new IntegerUpgradeChanger(25, 100, 1, 5, 250, 10));
+			registerUpgrade(NAME, "ammo", Integer.class, (Document) doc.get("ammo"), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 1));
+			registerUpgrade(NAME, "radius", Double.class, (Document) doc.get("radius"), new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
+			registerUpgrade(NAME, "damage", Integer.class, (Document) doc.get("damage"), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
 		}
 		else {
 			// Cannon not in database
@@ -79,10 +79,10 @@ public class FireballCannon extends Cannon implements Listener {
 			m.setDisplayName(NAME);
 			ITEM.setItemMeta(m);
 			
-			registerUpgrade(NAME, "cooldown", 10, Integer.class, new IntegerUpgradeChanger(1, 3));
-			registerUpgrade(NAME, "ammo", 1, Integer.class, new IntegerUpgradeChanger(1, 5));
-			registerUpgrade(NAME, "radius", 1.0, Double.class, new DoubleUpgradeChanger(0.1, 0.5));
-			registerUpgrade(NAME, "damage", 2, Integer.class, new IntegerUpgradeChanger(1, 3));
+			registerUpgrade(NAME, "cooldown", 10, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 5, 250, 10));
+			registerUpgrade(NAME, "ammo", 1, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 1));
+			registerUpgrade(NAME, "radius", 1.0, Double.class, new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
+			registerUpgrade(NAME, "damage", 2, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
 			
 			doc = new Document("name", NAME);	
 			

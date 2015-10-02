@@ -2,32 +2,102 @@ package de.pesacraft.cannonfight.util.shop.upgrade;
 
 public class DoubleUpgradeChanger implements UpgradeChanger<Double> {
 
-	private double slow;
-	private double fast;
+	private int priceSlow;
+	private int priceFast;
+
+	private double valueSlow;
+	private double valueFast;
+
+	private int initialPrice;
+	private double initialValue;
 	
-	public DoubleUpgradeChanger(double slow, double fast) {
-		this.slow = Math.abs(slow);
-		this.fast = Math.abs(fast);
+	public DoubleUpgradeChanger() {
+		this(10, 100, 0.1, 1);
 	}
 	
-	@Override
-	public void increaseFast(Upgrade<Double> upgrade) {
-		upgrade.setValue(upgrade.getValue() + fast);
+	public DoubleUpgradeChanger(int priceSlow, int priceFast, double valueSlow, double valueFast) {
+		this(priceSlow, priceFast, valueSlow, valueFast, 100, 2.5);
+	}
+	
+	public DoubleUpgradeChanger(int priceSlow, int priceFast, double valueSlow, double valueFast, int initialPrice, double initialValue) {
+		this.priceSlow = Math.abs(priceSlow);
+		this.priceFast = Math.abs(priceFast);
+		
+		this.valueSlow = Math.abs(valueSlow);
+		this.valueFast = Math.abs(valueFast);
+		
+		this.initialPrice = initialPrice;
+		this.initialValue = initialValue;
 	}
 
 	@Override
-	public void increaseSlow(Upgrade<Double> upgrade) {
-		upgrade.setValue(upgrade.getValue() + slow);
+	public int getInitialPrice() {
+		return initialPrice;
 	}
 
 	@Override
-	public void decreaseSlow(Upgrade<Double> upgrade) {
-		upgrade.setValue(upgrade.getValue() - slow);
+	public int getSlowPriceChange() {
+		return priceSlow;
 	}
 
 	@Override
-	public void decreaseFast(Upgrade<Double> upgrade) {
-		upgrade.setValue(upgrade.getValue() - fast);
+	public int getFastPriceChange() {
+		return priceFast;
+	}
+
+	@Override
+	public void increasePriceFast(Upgrade<Double> upgrade) {
+		upgrade.setPrice(upgrade.getPrice() + priceFast);
+	}
+
+	@Override
+	public void increasePriceSlow(Upgrade<Double> upgrade) {
+		upgrade.setPrice(upgrade.getPrice() + priceSlow);
+	}
+
+	@Override
+	public void decreasePriceSlow(Upgrade<Double> upgrade) {
+		upgrade.setPrice(upgrade.getPrice() - priceSlow);
+	}
+
+	@Override
+	public void decreasePriceFast(Upgrade<Double> upgrade) {
+		upgrade.setPrice(upgrade.getPrice() - priceFast);
+	}
+
+	@Override
+	public Double getInitialValue() {
+		return initialValue;
+	}
+
+	@Override
+	public Double getSlowValueChange() {
+		return valueSlow;
+	}
+
+	@Override
+	public Double getFastValueChange() {
+		return valueFast;
+	}
+
+	@Override
+	public void increaseValueFast(Upgrade<Double> upgrade) {
+		upgrade.setValue(upgrade.getValue() + valueFast);
+	}
+
+	@Override
+	public void increaseValueSlow(Upgrade<Double> upgrade) {
+		upgrade.setValue(upgrade.getValue() + valueSlow);
+	}
+
+	@Override
+	public void decreaseValueSlow(Upgrade<Double> upgrade) {
+		upgrade.setValue(upgrade.getValue() - valueSlow);
+	}
+
+	@Override
+	public void decreaseValueFast(Upgrade<Double> upgrade) {
+		upgrade.setValue(upgrade.getValue() - valueFast);
 	}
 
 }
