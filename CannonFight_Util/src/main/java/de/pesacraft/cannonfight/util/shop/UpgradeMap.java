@@ -6,6 +6,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+
+import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 
 public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	
@@ -77,6 +81,20 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		return upgrade;
 	}
 	
+	public void setItemStack(String name, ItemStack item) {
+		if (!this.containsKey(name))
+			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!");
+		
+		this.get(name).setItemStack(item);
+	}
+	
+	public ItemStack getItemStack(String name) {
+		if (!this.containsKey(name))
+			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!");
+		
+		return this.get(name).getItemStack();
+	}
+	
 	public int getLevels(String name) {
 		if (this.containsKey(name))
 			return this.get(name).getLevels();
@@ -84,12 +102,22 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		// upgrade not existant: no levels for that upgrade
 		return 0;
 	}
+	
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		for (Entry<String, UpgradeList<?>> entry : this.entrySet())
 			map.put(entry.getKey(), entry.getValue().serialize());
 
+		return map;
+	}
+
+	public Map<String, ItemStack> getItemMap() {
+		Map<String, ItemStack> map = new HashMap<String, ItemStack>();
+		
+		for (Entry<String, UpgradeList<?>> upgrade : this.entrySet())
+			map.put(upgrade.getKey(), upgrade.getValue().getItemStack());	
+		
 		return map;
 	}
 }

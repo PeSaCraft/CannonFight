@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.inventory.ItemStack;
+
 public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 
 	private static final long serialVersionUID = 4648166422002372523L;
 
+	private ItemStack item;
+	
 	/**
 	 * Sets the Upgrade available at the specific level.
 	 * If the list hasn't enough entries they will be filled.
@@ -51,5 +55,12 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 
 		return map;
 	}
+
+	public void setItemStack(ItemStack item) {
+		this.item = item.clone();
+	}
 	
+	public ItemStack getItemStack() {
+		return item;
+	}
 }
