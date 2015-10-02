@@ -20,6 +20,9 @@ public class Shop implements Listener {
 	protected ItemStack[] items;
 	protected ClickHandler handler;
 	
+	private boolean unregistered = false;
+	private CannonFighter viewer;
+	
 	public Shop(String name, ClickHandler handler, int rows) {
 		this.name = name;
 		this.handler = handler;
@@ -33,7 +36,7 @@ public class Shop implements Listener {
 			items = new ItemStack[0];
 		
 		if (items.length % 9 != 0)
-			throw new IllegalArgumentException("Array for inventory has to have a length dividable with 9");
+			throw new IllegalArgumentException("Array for inventory has to have a length dividable by 9");
 		
 		this.name = name;
 		this.handler = handler;
@@ -43,7 +46,15 @@ public class Shop implements Listener {
 	}
 	
 	public void unregister() {
+		if (isUnregistered())
+			throw new IllegalStateException("Shop already unregistered. It can only be used once!");
+		
 		HandlerList.unregisterAll(this);
+		unregistered = true;
+	}
+	
+	public boolean isUnregistered() {
+		return unregistered;
 	}
 	
 	public void set(int i, ItemStack item) {
@@ -56,16 +67,20 @@ public class Shop implements Listener {
 	}
 	
 	public void openInventory(CannonFighter c) {
+		if (isUnregistered())
+			throw new IllegalStateException("Shop already unregistered. It can only be used once!");
+		
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
 		
 		inv.setContents(items);
 		
+		this.viewer = c;
 		c.getPlayer().openInventory(inv);
 	}
 		
 	@EventHandler
 	public void onInventoryClick(final InventoryClickEvent event) {
-		if (!event.getInventory().getName().equals(name))
+		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getWhoClicked()) == viewer)
 			return;
 		
 		final ItemInteractEvent e = new ItemInteractEvent(event);
@@ -88,9 +103,12 @@ public class Shop implements Listener {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if (!event.getInventory().getName().equals(name))
+		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getPlayer()) == viewer)
 			return;
 		
 		handler.onInventoryClose(event);
+		
+		// unregister self when inventory is closing
+		unregister();
 	}
 }
