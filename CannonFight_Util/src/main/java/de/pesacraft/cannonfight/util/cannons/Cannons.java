@@ -2,9 +2,16 @@ package de.pesacraft.cannonfight.util.cannons;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bson.Document;
+
+import com.mongodb.client.model.Filters;
+
 import de.pesacraft.cannonfight.util.CannonFightUtil;
+import de.pesacraft.cannonfight.util.Collection;
+import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
 
@@ -34,6 +41,19 @@ public class Cannons {
 		return cannons.keySet();
 	}
 
+	public static void storeCannons() {	
+		for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
+			String name = entry.getKey();
+			Document doc = new Document("name", name);	
+			
+			doc = doc.append("item", new Document(ItemSerializer.serialize(entry.getValue().getItem())));
+			
+			doc.putAll(Cannon.serializeUpgrades(name));
+			
+			Collection.ITEMS().replaceOne(Filters.eq("name", name), doc);	 
+		}
+	}
+	
 	public static String getDefaultCannon() {
 		return FireballCannon.NAME;
 	}

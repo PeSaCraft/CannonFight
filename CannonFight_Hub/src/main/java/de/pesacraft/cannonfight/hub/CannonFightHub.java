@@ -28,6 +28,7 @@ import de.pesacraft.cannonfight.hub.commands.SpectateCommand;
 import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
 import de.pesacraft.cannonfight.hub.lobby.signs.JoinSigns;
 import de.pesacraft.cannonfight.hub.lobby.signs.SignHandler;
+import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
@@ -116,6 +117,7 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() { 
+		Cannons.storeCannons();
 		MongoDatabase.close();
 		
 		this.getConfig().set("lobby", lobbyLocation);
