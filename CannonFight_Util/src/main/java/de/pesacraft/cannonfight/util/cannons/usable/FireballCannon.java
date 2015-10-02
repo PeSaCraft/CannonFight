@@ -39,6 +39,8 @@ import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.ShopGroup;
 import de.pesacraft.cannonfight.util.shop.ShopMaker;
+import de.pesacraft.cannonfight.util.shop.upgrade.DoubleUpgradeChanger;
+import de.pesacraft.cannonfight.util.shop.upgrade.IntegerUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
 public class FireballCannon extends Cannon implements Listener {
@@ -64,10 +66,10 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			ITEM = ItemSerializer.deserialize((Document) doc.get("item"));
 			
-			registerUpgrade(NAME, "cooldown", Integer.class, (Document) doc.get("cooldown"));
-			registerUpgrade(NAME, "ammo", Integer.class, (Document) doc.get("ammo"));
-			registerUpgrade(NAME, "radius", Double.class, (Document) doc.get("radius"));
-			registerUpgrade(NAME, "damage", Integer.class, (Document) doc.get("damage"));
+			registerUpgrade(NAME, "cooldown", Integer.class, (Document) doc.get("cooldown"), new IntegerUpgradeChanger(1, 3));
+			registerUpgrade(NAME, "ammo", Integer.class, (Document) doc.get("ammo"), new IntegerUpgradeChanger(1, 5));
+			registerUpgrade(NAME, "radius", Double.class, (Document) doc.get("radius"), new DoubleUpgradeChanger(0.1, 0.5));
+			registerUpgrade(NAME, "damage", Integer.class, (Document) doc.get("damage"), new IntegerUpgradeChanger(1, 3));
 		}
 		else {
 			// Cannon not in database
@@ -77,10 +79,10 @@ public class FireballCannon extends Cannon implements Listener {
 			m.setDisplayName(NAME);
 			ITEM.setItemMeta(m);
 			
-			registerUpgrade(NAME, "cooldown", 10, Integer.class);
-			registerUpgrade(NAME, "ammo", 1, Integer.class);
-			registerUpgrade(NAME, "radius", 1.0, Double.class);
-			registerUpgrade(NAME, "damage", 2, Integer.class);
+			registerUpgrade(NAME, "cooldown", 10, Integer.class, new IntegerUpgradeChanger(1, 3));
+			registerUpgrade(NAME, "ammo", 1, Integer.class, new IntegerUpgradeChanger(1, 5));
+			registerUpgrade(NAME, "radius", 1.0, Double.class, new DoubleUpgradeChanger(0.1, 0.5));
+			registerUpgrade(NAME, "damage", 2, Integer.class, new IntegerUpgradeChanger(1, 3));
 			
 			doc = new Document("name", NAME);	
 			
