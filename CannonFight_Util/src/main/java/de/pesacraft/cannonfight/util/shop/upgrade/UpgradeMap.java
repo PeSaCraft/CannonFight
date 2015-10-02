@@ -6,10 +6,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
+import de.pesacraft.cannonfight.util.shop.ClickHandler;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
+import de.pesacraft.cannonfight.util.shop.Shop;
 
 public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	
@@ -19,7 +26,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		super(1);
 	}
 	
-	public <T> void setUpgrade(String name, Entry<String, Object> entry, Class<T> type) {
+	public <T> void setUpgrade(String name, Entry<String, Object> entry, Class<T> type, UpgradeChanger<T> upgradeChanger) {
 		UpgradeList<T> upgrades;
 		
 		if (this.containsKey(name))
@@ -32,9 +39,11 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		int level = Integer.parseInt(entry.getKey());
 		Upgrade<T> upgrade = new Upgrade<T>((Document) entry.getValue());
 		upgrades.setLevel(level, upgrade);
+	
+		upgrades.setUpgradeChanger(upgradeChanger);
 	}
 	
-	public <T> void setUpgrade(String name, int level, int price, T value, Class<T> type) {
+	public <T> void setUpgrade(String name, int level, int price, T value, Class<T> type, UpgradeChanger<T> upgradeChanger) {
 		UpgradeList<T> upgrades;
 		
 		if (this.containsKey(name))
@@ -46,6 +55,8 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		
 		Upgrade<T> upgrade = new Upgrade<T>(price, value);
 		upgrades.setLevel(level, upgrade);
+		
+		upgrades.setUpgradeChanger(upgradeChanger);
 	}
 	
 	public <T> void setPrice(String name, int level, int price, Class<T> type) {
@@ -119,5 +130,71 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 			map.put(upgrade.getKey(), upgrade.getValue().getItemStack());	
 		
 		return map;
+	}
+	
+	public Shop getUpgradeShop(String name) {
+		if (!this.containsKey(name))
+			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!");
+		
+		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.SILVER.getData());
+		
+		final UpgradeList upgrades = this.get(name);
+		
+		final Map<ItemStack, Integer> items = new HashMap<ItemStack, Integer>();
+		
+		int i;
+		
+		for (i = 1; i <= upgrades.getLevels(); i++) {
+			ItemStack item = new ItemStack(Material.WOOL, i, DyeColor.WHITE.getWoolData());
+			
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(ChatColor.AQUA + "Level " + i + "einstellen");
+			item.setItemMeta(meta);
+			
+			items.put(item, i);
+		}
+		
+		ItemStack newLevelItem = new ItemStack(Material.WOOL, i, DyeColor.GRAY.getWoolData());
+		
+		ItemMeta meta = newLevelItem.getItemMeta();
+		meta.setDisplayName(ChatColor.AQUA + "Level " + i + "erstellen");
+		newLevelItem.setItemMeta(meta);
+		
+		items.put(newLevelItem, i);
+		
+		// space for one new level
+		int rows = (int) Math.ceil((double) (upgrades.getLevels() + 1) / 9);
+		
+		Shop s = new Shop(name + "-Setup", new ClickHandler() {
+		
+			@Override
+			public void onItemInteract(ItemInteractEvent event) {
+				if (!event.isPickUpAction())
+					return;
+				
+				ItemStack item = event.getItemInSlot();
+				
+				if (item.isSimilar(fill))
+					return;
+				
+				for (Entry<ItemStack, Integer> entry : items.entrySet()) {
+					if (item.isSimilar(entry.getKey())) {
+						event.setNextShop(upgrades.getUpgradeShop(entry.getValue()));
+						return;
+					}
+				}
+			}
+
+			@Override
+			public void onInventoryClose(InventoryCloseEvent event) {}
+		}, rows);
+		
+		s.fill(fill);
+		
+		i = 0;
+		for (ItemStack item : items.keySet())
+			s.set(i++, item);
+
+		return s;
 	}
 }

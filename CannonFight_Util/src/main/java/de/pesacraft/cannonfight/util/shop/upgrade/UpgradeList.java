@@ -13,6 +13,8 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 
 	private ItemStack item;
 	
+	private UpgradeChanger<T> upgradeChanger;
+	
 	/**
 	 * Sets the Upgrade available at the specific level.
 	 * If the list hasn't enough entries they will be filled.
@@ -62,5 +64,13 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 	
 	public ItemStack getItemStack() {
 		return item;
+	}
+	
+	public void setUpgradeChanger(UpgradeChanger<T> upgradeChanger) {
+		this.upgradeChanger = upgradeChanger;
+	}
+	
+	public UpgradeChanger<T> getUpgradeChanger() {
+		return upgradeChanger;
 	}
 }

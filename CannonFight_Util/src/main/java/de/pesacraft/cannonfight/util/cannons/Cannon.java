@@ -19,6 +19,7 @@ import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
+import de.pesacraft.cannonfight.util.shop.upgrade.UpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.UpgradeMap;
 
 public abstract class Cannon extends Cooldown {
@@ -44,7 +45,7 @@ public abstract class Cannon extends Cooldown {
 
 	public abstract void reset();
 	
-	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type, Document upgradeDoc) {
+	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type, Document upgradeDoc, UpgradeChanger<T> upgradeChanger) {
 		UpgradeMap upgrades;
 		
 		if (UPGRADE_MAP.containsKey(cannonName))
@@ -55,21 +56,21 @@ public abstract class Cannon extends Cooldown {
 		}
 		
 		for (Entry<String, Object> entry : upgradeDoc.entrySet())
-			upgrades.setUpgrade(upgradeName, entry, type);
+			upgrades.setUpgrade(upgradeName, entry, type, upgradeChanger);
 	}
 	
 	@Deprecated
 	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type) {
 		try {
 			// try to register with default beeing new instance of type
-			registerUpgrade(cannonName, upgradeName, type.newInstance(), type);
+			registerUpgrade(cannonName, upgradeName, type.newInstance(), type, null);
 		} catch (InstantiationException | IllegalAccessException ex) {
 			// cannot instantiate type, default is null
-			registerUpgrade(cannonName, upgradeName, null, type);
+			registerUpgrade(cannonName, upgradeName, null, type, null);
 		}
 	}
 
-	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, T defaultValue, Class<T> type) {
+	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, T defaultValue, Class<T> type, UpgradeChanger<T> upgradeChanger) {
 		UpgradeMap upgrades;
 		
 		if (UPGRADE_MAP.containsKey(cannonName))
@@ -80,7 +81,7 @@ public abstract class Cannon extends Cooldown {
 		}
 		
 		// try add 2 default levels
-		upgrades.setUpgrade(upgradeName, 2, 100, defaultValue, type);
+		upgrades.setUpgrade(upgradeName, 2, 100, defaultValue, type, upgradeChanger);
 	}
 	
 	public final static void setUpgradeItem(String cannonName, String upgradeName, ItemStack item) {
