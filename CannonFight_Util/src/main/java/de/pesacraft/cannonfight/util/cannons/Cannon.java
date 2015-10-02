@@ -18,8 +18,8 @@ import de.pesacraft.cannonfight.util.cannons.Cooldown;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
-import de.pesacraft.cannonfight.util.shop.Upgrade;
-import de.pesacraft.cannonfight.util.shop.UpgradeMap;
+import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
+import de.pesacraft.cannonfight.util.shop.upgrade.UpgradeMap;
 
 public abstract class Cannon extends Cooldown {
 	private static final Map<String, UpgradeMap> UPGRADE_MAP = new HashMap<String, UpgradeMap>();

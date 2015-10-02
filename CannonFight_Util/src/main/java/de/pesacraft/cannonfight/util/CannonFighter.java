@@ -19,8 +19,8 @@ import com.mongodb.client.MongoCollection;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.shop.Upgrade;
 import de.pesacraft.cannonfight.util.shop.implemented.UpgradeShop;
+import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 import static com.mongodb.client.model.Filters.*;
 
 public class CannonFighter {

@@ -1,4 +1,4 @@
-package de.pesacraft.cannonfight.util.shop;
+package de.pesacraft.cannonfight.util.shop.upgrade;
 
 import java.util.ArrayList;
 import java.util.HashMap;

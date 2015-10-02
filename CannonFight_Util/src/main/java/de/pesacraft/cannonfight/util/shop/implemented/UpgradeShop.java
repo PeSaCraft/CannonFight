@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +29,7 @@ import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
 import de.pesacraft.cannonfight.util.shop.ShopGroup;
 import de.pesacraft.cannonfight.util.shop.ShopMaker;
-import de.pesacraft.cannonfight.util.shop.Upgrade;
+import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
 public class UpgradeShop {
 	

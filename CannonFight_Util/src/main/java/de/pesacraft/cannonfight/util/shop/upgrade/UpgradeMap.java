@@ -1,4 +1,4 @@
-package de.pesacraft.cannonfight.util.shop;
+package de.pesacraft.cannonfight.util.shop.upgrade;
 
 import java.io.Serializable;
 import java.util.HashMap;
