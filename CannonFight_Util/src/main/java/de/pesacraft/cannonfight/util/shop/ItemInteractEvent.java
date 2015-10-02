@@ -10,16 +10,24 @@ import org.bukkit.inventory.ItemStack;
 import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class ItemInteractEvent {
+	
 	private InventoryView view;
+	
 	private CannonFighter fighter;
+	
 	private ItemStack slotItem;
 	private ItemStack cursorItem;
+	
 	private boolean closeInv;
 	private boolean cancelAction;
+	
 	private InventoryAction action;
 	private ClickType clickType;
+	
 	private int hotbarKey;
 	private int rawSlot;
+	
+	private Shop nextShop;
 	
 	public ItemInteractEvent(InventoryClickEvent event) {
 		this.view = event.getView();
@@ -88,5 +96,17 @@ public class ItemInteractEvent {
 
 	public boolean isPlaceAction() {
 		return getAction() == InventoryAction.PLACE_ALL || getAction() == InventoryAction.PLACE_ONE || getAction() == InventoryAction.PLACE_SOME;
+	}
+
+	public void setNextShop(Shop shop) {
+		this.nextShop = shop;
+	}
+	
+	public Shop getNextShop() {
+		return nextShop;
+	}
+	
+	public boolean nextShopSet() {
+		return nextShop != null;
 	}
 }

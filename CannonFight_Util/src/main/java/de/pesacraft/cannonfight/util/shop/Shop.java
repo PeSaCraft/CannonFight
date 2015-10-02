@@ -1,6 +1,8 @@
 package de.pesacraft.cannonfight.util.shop;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -8,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
@@ -53,9 +56,6 @@ public class Shop implements Listener {
 	}
 	
 	public void openInventory(CannonFighter c) {
-		if (c.getPlayer().getOpenInventory() != null)
-			c.getPlayer().closeInventory();
-		
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
 		
 		inv.setContents(items);
@@ -64,18 +64,26 @@ public class Shop implements Listener {
 	}
 		
 	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
+	public void onInventoryClick(final InventoryClickEvent event) {
 		if (!event.getInventory().getName().equals(name))
 			return;
 		
-		ItemInteractEvent e = new ItemInteractEvent(event);
+		final ItemInteractEvent e = new ItemInteractEvent(event);
 		
 		handler.onItemInteract(e);
 		
 		event.setCancelled(e.cancelAction());
 		
-		if (e.closeInventory())
-			event.getWhoClicked().closeInventory();
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				if (e.closeInventory())
+					event.getWhoClicked().closeInventory();
+				if (e.nextShopSet())
+					e.getNextShop().openInventory(CannonFighter.get(((OfflinePlayer) event.getWhoClicked())));
+			}
+		}.runTaskLater(CannonFightUtil.PLUGIN, 1);
 	}
 	
 	@EventHandler
