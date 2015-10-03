@@ -114,6 +114,9 @@ public class CannonFighter {
 			
 			COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("activeItems", activeStrings)));
 		}
+		
+		// update players name
+		COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("name", getName())));
 	}
 	
 	public int getCoins() {
@@ -149,7 +152,7 @@ public class CannonFighter {
 	}
 	
 	public String getName() {
-		return getPlayer().getName();
+		return getOfflinePlayer().getName();
 	}
 	
 	public boolean use(ItemStack item) {
