@@ -45,6 +45,10 @@ import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
 public class FireballCannon extends Cannon implements Listener {
 
+
+	
+	
+	
 	private static final MongoCollection<Document> COLLECTION;
 	
 	/**
@@ -56,6 +60,11 @@ public class FireballCannon extends Cannon implements Listener {
 	 */
 	public static final String NAME = "FireballCannon";
 	
+	private static final String UPGRADE_COOLDOWN = "cooldown";
+	private static final String UPGRADE_AMMO = "ammo";
+	private static final String UPGRADE_RADIUS = "radius";
+	private static final String UPGRADE_DAMAGE = "damage";
+
 	static {
 		COLLECTION = Collection.ITEMS();
 		
@@ -66,10 +75,10 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			ITEM = ItemSerializer.deserialize((Document) doc.get("item"));
 			
-			registerUpgrade(NAME, "cooldown", Integer.class, (Document) doc.get("cooldown"), new IntegerUpgradeChanger(25, 100, 1, 5, 250, 10));
-			registerUpgrade(NAME, "ammo", Integer.class, (Document) doc.get("ammo"), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 1));
-			registerUpgrade(NAME, "radius", Double.class, (Document) doc.get("radius"), new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
-			registerUpgrade(NAME, "damage", Integer.class, (Document) doc.get("damage"), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
+			registerUpgrade(NAME, UPGRADE_COOLDOWN, Integer.class, (Document) doc.get(UPGRADE_COOLDOWN), new IntegerUpgradeChanger(25, 100, 1, 5, 250, 10));
+			registerUpgrade(NAME, UPGRADE_AMMO, Integer.class, (Document) doc.get(UPGRADE_AMMO), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 1));
+			registerUpgrade(NAME, UPGRADE_RADIUS, Double.class, (Document) doc.get(UPGRADE_RADIUS), new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
+			registerUpgrade(NAME, UPGRADE_DAMAGE, Integer.class, (Document) doc.get(UPGRADE_DAMAGE), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
 		}
 		else {
 			// Cannon not in database
@@ -79,10 +88,10 @@ public class FireballCannon extends Cannon implements Listener {
 			m.setDisplayName(NAME);
 			ITEM.setItemMeta(m);
 			
-			registerUpgrade(NAME, "cooldown", 10, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 5, 250, 10));
-			registerUpgrade(NAME, "ammo", 1, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 1));
-			registerUpgrade(NAME, "radius", 1.0, Double.class, new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
-			registerUpgrade(NAME, "damage", 2, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
+			registerUpgrade(NAME, UPGRADE_COOLDOWN, 10, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 5, 250, 10));
+			registerUpgrade(NAME, UPGRADE_AMMO, 1, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 1));
+			registerUpgrade(NAME, UPGRADE_RADIUS, 1.0, Double.class, new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
+			registerUpgrade(NAME, UPGRADE_DAMAGE, 2, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
 			
 			doc = new Document("name", NAME);	
 			
@@ -92,6 +101,30 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			COLLECTION.insertOne(doc);
 		}
+		
+		ItemStack cooldownItem = new ItemStack(Material.WATCH);
+		ItemMeta meta = cooldownItem.getItemMeta();
+		meta.setDisplayName("Cooldown Upgrade");
+		cooldownItem.setItemMeta(meta);
+		setUpgradeItem(NAME, UPGRADE_COOLDOWN, cooldownItem);
+		
+		ItemStack ammoItem = new ItemStack(Material.MELON_SEEDS);
+		meta = ammoItem.getItemMeta();
+		meta.setDisplayName("Ammo Upgrade");
+		ammoItem.setItemMeta(meta);
+		setUpgradeItem(NAME, UPGRADE_AMMO, ammoItem);
+		
+		ItemStack radiusItem = new ItemStack(Material.COMPASS);
+		meta = radiusItem.getItemMeta();
+		meta.setDisplayName("Radius Upgrade");
+		radiusItem.setItemMeta(meta);
+		setUpgradeItem(NAME, UPGRADE_RADIUS, radiusItem);
+		
+		ItemStack damageItem = new ItemStack(Material.REDSTONE);
+		meta = damageItem.getItemMeta();
+		meta.setDisplayName("Damage Upgrade");
+		damageItem.setItemMeta(meta);
+		setUpgradeItem(NAME, UPGRADE_DAMAGE, damageItem);
 	}
 	
 	private static CannonConstructor constructor;
@@ -101,10 +134,10 @@ public class FireballCannon extends Cannon implements Listener {
 			
 			@Override
 			public Cannon construct(CannonFighter fighter, Map<String, Object> map) {
-				int ammo = ((Number) map.get("ammo")).intValue();
-				int cooldown = ((Number) map.get("cooldown")).intValue();
-				int radius = ((Number) map.get("radius")).intValue();
-				int damage = ((Number) map.get("damage")).intValue();
+				int ammo = ((Number) map.get(UPGRADE_AMMO)).intValue();
+				int cooldown = ((Number) map.get(UPGRADE_COOLDOWN)).intValue();
+				int radius = ((Number) map.get(UPGRADE_RADIUS)).intValue();
+				int damage = ((Number) map.get(UPGRADE_DAMAGE)).intValue();
 				
 				return new FireballCannon(fighter, ammo, cooldown, radius, damage);
 			}
@@ -121,10 +154,10 @@ public class FireballCannon extends Cannon implements Listener {
 
 			@Override
 			public int getPrice() {
-				return getUpgrade(NAME, "ammo", 1, Integer.class).getPrice()
-						+ getUpgrade(NAME, "cooldown", 1, Integer.class).getPrice()
-						+ getUpgrade(NAME, "radius", 1, Double.class).getPrice()
-						+ getUpgrade(NAME, "damage", 1, Integer.class).getPrice();
+				return getUpgrade(NAME, UPGRADE_AMMO, 1, Integer.class).getPrice()
+						+ getUpgrade(NAME, UPGRADE_COOLDOWN, 1, Integer.class).getPrice()
+						+ getUpgrade(NAME, UPGRADE_RADIUS, 1, Double.class).getPrice()
+						+ getUpgrade(NAME, UPGRADE_DAMAGE, 1, Integer.class).getPrice();
 			}
 
 			@Override
@@ -161,7 +194,7 @@ public class FireballCannon extends Cannon implements Listener {
 	private int levelDamage;
 	
 	public FireballCannon(CannonFighter player, int levelAmmo, int levelCooldown, int levelRadius, int levelDamage) {
-		super(getUpgrade(NAME, "cooldown", levelCooldown, Integer.class).getValue());
+		super(getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown, Integer.class).getValue());
 		
 		this.levelAmmo = levelAmmo;
 		this.levelCooldown = levelCooldown;
@@ -170,10 +203,10 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		this.player = player;
 		
-		currentAmmo = maxAmmo = getUpgrade(NAME, "ammo", levelAmmo, Integer.class).getValue();
+		currentAmmo = maxAmmo = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo, Integer.class).getValue();
 			
-		radius = getUpgrade(NAME, "radius", levelRadius, Double.class).getValue().floatValue();
-		damage = getUpgrade(NAME, "damage", levelDamage, Integer.class).getValue();
+		radius = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius, Double.class).getValue().floatValue();
+		damage = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage, Integer.class).getValue();
 	
 		item = ITEM.clone();
 		item.setAmount(currentAmmo);
@@ -185,10 +218,10 @@ public class FireballCannon extends Cannon implements Listener {
 	public FireballCannon(CannonFighter player) {
 		this(player, 1, 1, 1, 1);
 		
-		Document doc = new Document("ammo", levelAmmo);
-		doc = doc.append("cooldown", levelCooldown);
-		doc = doc.append("radius", levelRadius);
-		doc = doc.append("damage", levelDamage);
+		Document doc = new Document(UPGRADE_AMMO, levelAmmo);
+		doc = doc.append(UPGRADE_COOLDOWN, levelCooldown);
+		doc = doc.append(UPGRADE_RADIUS, levelRadius);
+		doc = doc.append(UPGRADE_DAMAGE, levelDamage);
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME, doc)));
 	}
@@ -327,7 +360,7 @@ public class FireballCannon extends Cannon implements Listener {
 						
 						if (item.isSimilar(cooldownItem)) {
 							// upgrade cooldown
-							if (getLevelsForUpgrade(NAME, "cooldown") < cannon.levelCooldown + 1) {
+							if (getLevelsForUpgrade(NAME, UPGRADE_COOLDOWN) < cannon.levelCooldown + 1) {
 								// max reached
 								c.sendMessage(Language.get("error.max-upgraded"));
 								return;
@@ -354,7 +387,7 @@ public class FireballCannon extends Cannon implements Listener {
 						
 						if (item.isSimilar(ammoItem)) {
 							// upgrade ammo
-							if (getLevelsForUpgrade(NAME, "ammo") < cannon.levelAmmo + 1) {
+							if (getLevelsForUpgrade(NAME, UPGRADE_AMMO) < cannon.levelAmmo + 1) {
 								// max reached
 								c.sendMessage(Language.get("error.max-upgraded"));
 								return;
@@ -381,7 +414,7 @@ public class FireballCannon extends Cannon implements Listener {
 						
 						if (item.isSimilar(radiusItem)) {
 							// upgrade radius
-							if (getLevelsForUpgrade(NAME, "radius") < cannon.levelRadius + 1) {
+							if (getLevelsForUpgrade(NAME, UPGRADE_RADIUS) < cannon.levelRadius + 1) {
 								// max reached
 								c.sendMessage(Language.get("error.max-upgraded"));
 								return;
@@ -408,7 +441,7 @@ public class FireballCannon extends Cannon implements Listener {
 						
 						if (item.isSimilar(damageItem)) {
 							// upgrade damage
-							if (getLevelsForUpgrade(NAME, "damage") < cannon.levelDamage + 1) {
+							if (getLevelsForUpgrade(NAME, UPGRADE_DAMAGE) < cannon.levelDamage + 1) {
 								// max reached
 								c.sendMessage(Language.get("error.max-upgraded"));
 								return;
@@ -461,8 +494,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Integer> oldLevel = getUpgrade(NAME, "cooldown", levelCooldown, Integer.class);
-				Upgrade<Integer> newLevel = getUpgrade(NAME, "cooldown", levelCooldown + 1, Integer.class);
+				Upgrade<Integer> oldLevel = getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown, Integer.class);
+				Upgrade<Integer> newLevel = getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown + 1, Integer.class);
 				
 				lore.add(ChatColor.GOLD + "Cooldownzeit: " + oldLevel.getValue() + " Sekunden");
 				
@@ -496,8 +529,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Integer> oldLevel = getUpgrade(NAME, "ammo", levelAmmo, Integer.class);
-				Upgrade<Integer> newLevel = getUpgrade(NAME, "ammo", levelAmmo + 1, Integer.class);
+				Upgrade<Integer> oldLevel = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo, Integer.class);
+				Upgrade<Integer> newLevel = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo + 1, Integer.class);
 				
 				lore.add(ChatColor.GOLD + "Munition: " + oldLevel.getValue() + " Schuß");
 				
@@ -531,8 +564,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Double> oldLevel = getUpgrade(NAME, "radius", levelRadius, Double.class);
-				Upgrade<Double> newLevel = getUpgrade(NAME, "radius", levelRadius + 1, Double.class);
+				Upgrade<Double> oldLevel = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius, Double.class);
+				Upgrade<Double> newLevel = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius + 1, Double.class);
 				
 				lore.add(ChatColor.GOLD + "Radius: " + oldLevel.getValue() + " Blöcke");
 				
@@ -566,8 +599,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Integer> oldLevel = getUpgrade(NAME, "damage", levelDamage, Integer.class);
-				Upgrade<Integer> newLevel = getUpgrade(NAME, "damage", levelDamage + 1, Integer.class);
+				Upgrade<Integer> oldLevel = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage, Integer.class);
+				Upgrade<Integer> newLevel = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage + 1, Integer.class);
 				
 				String hearts = "";
 				
@@ -619,7 +652,7 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 
 	public boolean upgradeCooldown() {
-		Upgrade<Integer> upgrade = getUpgrade(NAME, "cooldown", levelCooldown + 1, Integer.class);
+		Upgrade<Integer> upgrade = getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown + 1, Integer.class);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
@@ -635,7 +668,7 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 
 	public boolean upgradeAmmo() {
-		Upgrade<Integer> upgrade = getUpgrade(NAME, "ammo", levelAmmo + 1, Integer.class);
+		Upgrade<Integer> upgrade = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo + 1, Integer.class);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
@@ -652,7 +685,7 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 
 	public boolean upgradeRadius() {
-		Upgrade<Double> upgrade = getUpgrade(NAME, "radius", levelRadius + 1, Double.class);
+		Upgrade<Double> upgrade = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius + 1, Double.class);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
@@ -669,7 +702,7 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 	
 	public boolean upgradeDamage() {
-		Upgrade<Integer> upgrade = getUpgrade(NAME, "damage", levelDamage + 1, Integer.class);
+		Upgrade<Integer> upgrade = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage + 1, Integer.class);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
