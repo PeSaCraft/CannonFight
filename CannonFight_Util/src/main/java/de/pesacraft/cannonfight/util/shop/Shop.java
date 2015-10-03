@@ -16,6 +16,9 @@ import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
 
 public class Shop implements Listener {
+	private static int shopCount = 0;
+	
+	private int id;
 	protected String name;
 	protected ItemStack[] items;
 	protected ClickHandler handler;
@@ -28,7 +31,7 @@ public class Shop implements Listener {
 		this.handler = handler;
 		this.items = new ItemStack[rows * 9];
 		
-		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
+		id = shopCount++;
 	}
 	
 	public Shop(String name, ClickHandler handler, ItemStack[] items) {
@@ -42,7 +45,7 @@ public class Shop implements Listener {
 		this.handler = handler;
 		this.items = items;
 		
-		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
+		id = shopCount++;
 	}
 	
 	public void unregister() {
@@ -71,8 +74,9 @@ public class Shop implements Listener {
 			throw new IllegalStateException("Shop already unregistered. It can only be used once!");
 		
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
-		
 		inv.setContents(items);
+		
+		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
 		
 		this.viewer = c;
 		c.getPlayer().openInventory(inv);
@@ -110,5 +114,18 @@ public class Shop implements Listener {
 		
 		// unregister self when inventory is closing
 		unregister();
+	}
+	
+	@Override
+	public int hashCode() {
+		return name.hashCode() + viewer.hashCode() + shopCount;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Shop))
+			return false;
+		Shop shop = (Shop) obj;
+		return shop.id == this.id;
 	}
 }
