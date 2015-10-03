@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,16 +22,19 @@ public class CommunicationGameClient extends Thread {
 	private DataInput in;
 	private DataOutput out;
 	
-	public CommunicationGameClient() {
+	private CommunicationGameClient() {
 		instance = this;
 		try {
 			this.socket = new Socket(InetAddress.getLocalHost(), 26665);
 			this.in = new DataInputStream(socket.getInputStream());
 			this.out = new DataOutputStream(socket.getOutputStream());
-		} catch (UnknownHostException ex) {
-			ex.printStackTrace();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			instance = null;
+			try {
+				socket.close();
+			} catch (IOException exc) {
+				exc.printStackTrace();
+			}
 		}
 	}
 	
@@ -78,10 +80,9 @@ public class CommunicationGameClient extends Thread {
 					CannonFightGame.addFutureSpectator(name, server);
 				}
 			}
-		} catch (UnknownHostException ex) {
-			ex.printStackTrace();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			instance = null;
+			tryToStart();
 		}
 	}
 	
@@ -122,5 +123,28 @@ public class CommunicationGameClient extends Thread {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public static void tryToStart() {
+		if (getInstance() != null)
+			// already connected and running, don't change anything
+			return;
+		
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				CannonFightGame.LOGGER.info("Trying to connect to proxy");
+				// try to establish connection
+				new CommunicationGameClient();
+				
+				if (getInstance() != null) {
+					// connection established, don't have to retry
+					getInstance().run();
+					this.cancel();
+					CannonFightGame.LOGGER.info("Connected to proxy. Back to work!");
+				}
+			}
+		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20 * 30); // every 30 seconds
 	}
 }

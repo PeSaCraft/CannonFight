@@ -7,9 +7,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.hub.CannonFightHub;
 import de.pesacraft.cannonfight.hub.lobby.signs.SignHandler;
@@ -22,16 +22,19 @@ public class CommunicationHubClient extends Thread {
 	private DataInput in;
 	private DataOutput out;
 	
-	public CommunicationHubClient() {
+	private CommunicationHubClient() {
 		instance = this;
 		try {
 			this.socket = new Socket(InetAddress.getLocalHost(), 26665);
 			this.in = new DataInputStream(socket.getInputStream());
 			this.out = new DataOutputStream(socket.getOutputStream());
-		} catch (UnknownHostException ex) {
-			ex.printStackTrace();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			instance = null;
+			try {
+				socket.close();
+			} catch (IOException exc) {
+				exc.printStackTrace();
+			}
 		}
 	}
 	
@@ -67,14 +70,13 @@ public class CommunicationHubClient extends Thread {
 					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join-spectator"));
 				}
 			}
-		} catch (UnknownHostException ex) {
-			ex.printStackTrace();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			instance = null;
+			tryToStart();
 		}
 	}
 	
-	private void sendHubShutdown() {
+	public void sendHubShutdown() {
 		try {
 			out.writeUTF("HubShutdown");
 			socket.close();
@@ -115,5 +117,28 @@ public class CommunicationHubClient extends Thread {
 	
 	public static CommunicationHubClient getInstance() {
 		return instance;
+	}
+	
+	public static void tryToStart() {
+		if (getInstance() != null)
+			// already connected and running, don't change anything
+			return;
+		
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				CannonFightHub.LOGGER.info("Trying to connect to proxy");
+				// try to establish connection
+				new CommunicationHubClient();
+				
+				if (getInstance() != null) {
+					// connection established, don't have to retry
+					getInstance().run();
+					this.cancel();
+					CannonFightHub.LOGGER.info("Connected to proxy. Back to work!");
+				}
+			}
+		}.runTaskTimer(CannonFightHub.PLUGIN, 0, 20 * 30); // every 30 seconds
 	}
 }
