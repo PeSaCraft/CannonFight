@@ -14,10 +14,6 @@ commands:
     description: Join a game in the specified arena
     aliases: [cannonfightjoin, cfjoin, cjoin]
     usage: /join [arena] [player]
-  leave:
-    description: Leave the queue or game
-    aliases: [cannonfightleave, cfleave, cleave]
-    usage: /leave [player]
   setup:
     description: Setup an arena
     aliases: [cannonfightsetup, cfsetup, csetup]

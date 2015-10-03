@@ -2,8 +2,6 @@ package de.pesacraft.cannonfight.hub;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -22,11 +20,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.pesacraft.cannonfight.hub.commands.JoinCommand;
-import de.pesacraft.cannonfight.hub.commands.LeaveCommand;
 import de.pesacraft.cannonfight.hub.commands.SetupCommand;
 import de.pesacraft.cannonfight.hub.commands.SpectateCommand;
 import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
-import de.pesacraft.cannonfight.hub.lobby.signs.JoinSigns;
 import de.pesacraft.cannonfight.hub.lobby.signs.SignHandler;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
@@ -40,8 +36,6 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	public static CannonFightHub PLUGIN;
 	
 	private static Location lobbyLocation;
-	
-	private static Map<String, Set<Location>> signs;
 	
 	public void onEnable() { 
 		PLUGIN = this;
@@ -76,9 +70,6 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		PluginCommand join = this.getCommand("join");
 		join.setExecutor(new JoinCommand());
 		
-		PluginCommand leave = this.getCommand("leave");
-		leave.setExecutor(new LeaveCommand());
-		
 		PluginCommand setup = this.getCommand("setup");
 		setup.setExecutor(new SetupCommand());
 		
@@ -104,8 +95,6 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 				return new JoinCommand().onCommand(sender, cmd, label, subArgs);
 			if (subcommand.equalsIgnoreCase("setup"))
 				return new SetupCommand().onCommand(sender, cmd, label, subArgs);
-			if (subcommand.equalsIgnoreCase("leave"))
-				return new LeaveCommand().onCommand(sender, cmd, label, subArgs);
 			if (subcommand.equalsIgnoreCase("spectate"))
 				return new SpectateCommand().onCommand(sender, cmd, label, subArgs);
 			if (subcommand.equalsIgnoreCase("shop"))
