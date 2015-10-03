@@ -32,7 +32,7 @@ public class IntegerUpgradeChanger implements UpgradeChanger<Integer> {
 
 	@Override
 	public int getInitialPrice() {
-		return 100;
+		return initialPrice;
 	}
 
 	@Override
