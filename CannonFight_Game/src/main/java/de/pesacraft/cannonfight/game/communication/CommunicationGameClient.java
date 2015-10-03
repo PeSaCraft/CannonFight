@@ -31,7 +31,8 @@ public class CommunicationGameClient extends Thread {
 		} catch (IOException ex) {
 			instance = null;
 			try {
-				socket.close();
+				if (socket != null)
+					socket.close();
 			} catch (IOException exc) {
 				exc.printStackTrace();
 			}
@@ -126,6 +127,10 @@ public class CommunicationGameClient extends Thread {
 	}
 	
 	public static void tryToStart() {
+		if (!CannonFightGame.PLUGIN.isEnabled())
+			// plugin disables/d don't try to reconnect
+			return;
+		
 		if (getInstance() != null)
 			// already connected and running, don't change anything
 			return;
