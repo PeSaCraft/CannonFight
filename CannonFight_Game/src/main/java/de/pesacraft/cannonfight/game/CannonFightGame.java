@@ -12,6 +12,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
@@ -474,7 +475,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		String name = event.getPlayer().getName();
-		CannonFighter c = CannonFighter.get(event.getPlayer());
+		CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
 		FuturePlayer futurePlayer = null;
 		for (FuturePlayer f : upcomingPlayers) {
 			if (f.getName().equals(name)) {
@@ -516,7 +517,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		CannonFighter player = CannonFighter.get(event.getPlayer());
+		CannonFighter player = CannonFighter.get((OfflinePlayer) event.getPlayer());
 		
 		// no join message, gets handled somewhere else
 		event.setJoinMessage(null);
@@ -657,7 +658,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			return;
 		
 		Player p = event.getPlayer();
-		CannonFighter c = CannonFighter.get(p);
+		CannonFighter c = CannonFighter.get((OfflinePlayer) p);
 		Participant par = new Participant(c);
 		
 		if (players.contains(par)) {
@@ -754,14 +755,14 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		// player will die
 		// check if it is a player in this game
-		CannonFighter victim = CannonFighter.get(p);
+		CannonFighter victim = CannonFighter.get((OfflinePlayer) p);
 		Participant part = new Participant(victim);
 		
 		if (!players.contains(part))
 			// player not in this game
 			return;
 		
-		CannonFighter killer = p.getKiller() != null ? CannonFighter.get(p.getKiller()) : null;
+		CannonFighter killer = p.getKiller() != null ? CannonFighter.get((OfflinePlayer) p.getKiller()) : null;
 		
 		ActivePlayer victimSession = null;
 		
@@ -820,7 +821,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		// original action will be cancelled
 		event.setCancelled(true);
 		
-		CannonFighter c = CannonFighter.get(event.getPlayer());
+		CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
 					
 		if (players.contains(new Participant(c))) {
 						
@@ -834,7 +835,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
-		CannonFighter c = CannonFighter.get(event.getPlayer());
+		CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
 		
 		for (ActivePlayer a : players) {
 			if (a.getPlayer().equals(c)) {
@@ -868,7 +869,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		CannonFighter sender = CannonFighter.get(event.getPlayer());
+		CannonFighter sender = CannonFighter.get((OfflinePlayer) event.getPlayer());
 		
 		if (spectators.contains(new Participant(sender))) {
 			// sender is spectator, message only for spectators
@@ -876,7 +877,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			Iterator<Player> recipients = event.getRecipients().iterator();
 			
 			while (recipients.hasNext()) {
-				CannonFighter c = CannonFighter.get(recipients.next());
+				CannonFighter c = CannonFighter.get((OfflinePlayer) recipients.next());
 				
 				if (!spectators.contains(new Participant(c)))
 					// not a spectator, will not receive message
@@ -893,8 +894,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	public void onPlayerDamage(EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof Player))
 			return;
-		
-		CannonFighter c = CannonFighter.get((Player) event.getEntity());
 		
 		if (gameState != GameState.INGAME)
 			// cancel all damage if not ingame

@@ -1,6 +1,6 @@
 package de.pesacraft.cannonfight.util.shop;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,7 +31,7 @@ public class ItemInteractEvent {
 	
 	public ItemInteractEvent(InventoryClickEvent event) {
 		this.view = event.getView();
-		this.fighter = CannonFighter.get((Player) event.getWhoClicked());
+		this.fighter = CannonFighter.get((OfflinePlayer) event.getWhoClicked());
 		this.slotItem = event.getCurrentItem();
 		this.cursorItem = event.getCursor();
 		this.closeInv = false;
