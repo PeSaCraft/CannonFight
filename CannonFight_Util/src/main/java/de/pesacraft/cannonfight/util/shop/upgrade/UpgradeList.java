@@ -102,7 +102,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		if (u == null) {
 			// new level
 			// initialise with value of level before
-			u = getForLevel(level - 1);
+			u = getForLevel(level - 1).clone();
 			
 			if (u == null) {
 				// seems to be first level
