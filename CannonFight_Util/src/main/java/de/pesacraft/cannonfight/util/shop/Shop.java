@@ -76,10 +76,10 @@ public class Shop implements Listener {
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
 		inv.setContents(items);
 		
-		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
-		
 		this.viewer = c;
 		c.getPlayer().openInventory(inv);
+	
+		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
 	}
 		
 	@EventHandler
