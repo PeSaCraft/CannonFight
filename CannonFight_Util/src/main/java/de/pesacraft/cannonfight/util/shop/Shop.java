@@ -32,6 +32,7 @@ public class Shop implements Listener {
 		this.items = new ItemStack[rows * 9];
 		
 		id = shopCount++;
+		System.out.println("Shop " + name + " ID: " + id + " created");
 	}
 	
 	public Shop(String name, ClickHandler handler, ItemStack[] items) {
@@ -46,6 +47,7 @@ public class Shop implements Listener {
 		this.items = items;
 		
 		id = shopCount++;
+		System.out.println("Shop " + name + " ID: " + id + " created");
 	}
 	
 	public void unregister() {
@@ -53,6 +55,7 @@ public class Shop implements Listener {
 			throw new IllegalStateException("Shop already unregistered. It can only be used once!");
 		
 		HandlerList.unregisterAll(this);
+		System.out.println("Shop " + name + " ID: " + id + " unregistered shop");
 		unregistered = true;
 	}
 	
@@ -80,12 +83,15 @@ public class Shop implements Listener {
 		c.getPlayer().openInventory(inv);
 	
 		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
+		System.out.println("Shop " + name + " ID: " + id + " opened and registered");
 	}
 		
 	@EventHandler
 	public void onInventoryClick(final InventoryClickEvent event) {
+		System.out.println("Shop " + name + " ID: " + id + " noticed inventory click event");
 		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getWhoClicked()) == viewer)
 			return;
+		System.out.println("Shop " + name + " ID: " + id + " noticed inventory click event for this shop");
 		
 		final ItemInteractEvent e = new ItemInteractEvent(event);
 		
@@ -107,8 +113,10 @@ public class Shop implements Listener {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
+		System.out.println("Shop " + name + " ID: " + id + " noticed inventory close event");
 		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getPlayer()) == viewer)
 			return;
+		System.out.println("Shop " + name + " ID: " + id + " noticed inventory close event for this shop");
 		
 		handler.onInventoryClose(event);
 		
