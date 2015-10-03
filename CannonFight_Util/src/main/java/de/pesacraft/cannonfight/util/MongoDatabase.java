@@ -25,7 +25,7 @@ public class MongoDatabase {
 		String pass = conf.getString("database.auth.password");
 		String authDB = conf.getString("database.auth.db");
 		
-		mongo = new MongoClient(new MongoClientURI("mongodb://" + user + ":" + pass + "@" + host + "/?authSource=" + authDB));
+		mongo = new MongoClient(new MongoClientURI("mongodb://" + user + ":" + pass + "@" + host + ":" + port + "/?authSource=" + authDB));
 		
 		db = mongo.getDatabase(dbName);
 		
