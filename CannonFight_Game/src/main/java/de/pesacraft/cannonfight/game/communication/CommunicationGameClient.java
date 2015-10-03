@@ -140,7 +140,7 @@ public class CommunicationGameClient extends Thread {
 				
 				if (getInstance() != null) {
 					// connection established, don't have to retry
-					getInstance().run();
+					getInstance().start();
 					this.cancel();
 					CannonFightGame.LOGGER.info("Connected to proxy. Back to work!");
 				}

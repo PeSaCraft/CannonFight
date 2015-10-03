@@ -134,7 +134,7 @@ public class CommunicationHubClient extends Thread {
 				
 				if (getInstance() != null) {
 					// connection established, don't have to retry
-					getInstance().run();
+					getInstance().start();
 					this.cancel();
 					CannonFightHub.LOGGER.info("Connected to proxy. Back to work!");
 				}
