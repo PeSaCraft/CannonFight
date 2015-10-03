@@ -4,6 +4,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.md_5.bungee.api.ProxyServer;
 
@@ -14,7 +16,7 @@ public class GameHandler extends Thread {
 	private DataOutput out;
 	
 	private String arena;
-	private int players;
+	private List<String> players;
 	private boolean playerJoinable;
 	private boolean started;
 	
@@ -25,7 +27,7 @@ public class GameHandler extends Thread {
 		this.out = out;
 		
 		this.arena = null;
-		this.players = 0;
+		this.players = new ArrayList<String>();
 		this.playerJoinable = true;
 		this.started = false;
 	}
@@ -44,10 +46,19 @@ public class GameHandler extends Thread {
 				else if (input.equals("PlayerLeave")) {
 					String player = in.readUTF();
 					String server = in.readUTF();
-					ProxyServer.getInstance().getPlayer(player).connect(ProxyServer.getInstance().getServerInfo(server));
-					this.players--;
-					if (!isPlayerJoinable())
-						playerJoinable = true;
+					
+					if (players.contains(player)) {
+						// player is on the server, he may disconnect
+						ProxyServer.getInstance().getPlayer(player).connect(ProxyServer.getInstance().getServerInfo(server));
+						
+						players.remove(player);
+						
+						if (!isPlayerJoinable())
+							playerJoinable = true;
+						
+						CommunicationServer.getInstance().updatePlayerCount(arena);
+					}
+					// else player not on the server, mustn't disconnect
 				}
 				else if (input.equals("GameStarted")) {
 					playerJoinable = false;
@@ -77,13 +88,18 @@ public class GameHandler extends Thread {
 		if (!arenaSet() || !isPlayerJoinable())
 			return false;
 		
+		if (player.contains(player))
+			// player already trying to connect/connecting to server. would result in duplicate player counts.
+			return false;
+		
+		players.add(player);
+		
 		out.writeUTF("Player");
 		out.writeUTF(player);
 		out.writeUTF(server);
 		
 		ProxyServer.getInstance().getPlayer(player).connect(ProxyServer.getInstance().getServerInfo(this.server));
 		
-		players++;
 		return true;
 	}
 	
@@ -117,6 +133,6 @@ public class GameHandler extends Thread {
 	}
 
 	public int getPlayers() {
-		return players;
+		return players.size();
 	}
 }
