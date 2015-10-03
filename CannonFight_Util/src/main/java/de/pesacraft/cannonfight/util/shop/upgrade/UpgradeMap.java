@@ -2,6 +2,7 @@ package de.pesacraft.cannonfight.util.shop.upgrade;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -140,7 +141,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		
 		final UpgradeList upgrades = this.get(name);
 		
-		final Map<ItemStack, Integer> items = new HashMap<ItemStack, Integer>();
+		final Map<ItemStack, Integer> items = new LinkedHashMap<ItemStack, Integer>();
 		
 		int i;
 		
