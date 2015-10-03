@@ -85,50 +85,39 @@ public abstract class Cannon extends Cooldown {
 	}
 	
 	public final static void setUpgradeItem(String cannonName, String upgradeName, ItemStack item) {
-		if (!UPGRADE_MAP.containsKey(cannonName))
-			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
-		
-		((UpgradeMap) UPGRADE_MAP.get(cannonName)).setItemStack(upgradeName, item);
+		getUpgradeMap(cannonName).setItemStack(upgradeName, item);
 	}
 	
 	public final static ItemStack getUpgradeItem(String cannonName, String upgradeName) {
-		if (!UPGRADE_MAP.containsKey(cannonName))
-			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
-		
-		return ((UpgradeMap) UPGRADE_MAP.get(cannonName)).getItemStack(upgradeName);
+		return getUpgradeMap(cannonName).getItemStack(upgradeName);
 	}
 	
 	public final static <T> Upgrade<T> getUpgrade(String cannonName, String upgradeName, int level, Class<T> type) {
-		if (!UPGRADE_MAP.containsKey(cannonName))
-			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
-		
-		return ((UpgradeMap) UPGRADE_MAP.get(cannonName)).getUpgrade(upgradeName, level, type);
+		return getUpgradeMap(cannonName).getUpgrade(upgradeName, level, type);
 	}
 	
 	public final static int getLevelsForUpgrade(String cannonName, String upgradeName) {
-		if (!UPGRADE_MAP.containsKey(cannonName))
-			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
-		
-		return UPGRADE_MAP.get(cannonName).getLevels(upgradeName);
+		return getUpgradeMap(cannonName).getLevels(upgradeName);
 	}
 	public final static Map<String, Object> serializeUpgrades(String cannonName) {
+		return getUpgradeMap(cannonName).serialize();
+	}
+
+	public final static UpgradeMap getUpgradeMap(String cannonName) {
 		if (!UPGRADE_MAP.containsKey(cannonName))
 			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
 		
-		return UPGRADE_MAP.get(cannonName).serialize();
+		return UPGRADE_MAP.get(cannonName);
 	}
-
-	public static Shop getUpgradeShop(String cannon) {
-		if (!UPGRADE_MAP.containsKey(cannon))
-			throw new IllegalArgumentException("Cannon \"" + cannon + "\" isn't registered!");
-		
-		final UpgradeMap upgrades = UPGRADE_MAP.get(cannon);
+	
+	public final static Shop getUpgradeShop(String cannonName) {
+		final UpgradeMap upgrades = getUpgradeMap(cannonName);
 		
 		int rows = (int) Math.ceil((double) upgrades.size() / 9);
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
 		
-		Shop s = new Shop(cannon + "-Setup", new ClickHandler() {
+		Shop s = new Shop(cannonName + "-Setup", new ClickHandler() {
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
