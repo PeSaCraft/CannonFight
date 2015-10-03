@@ -6,6 +6,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bson.Document;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.mongodb.client.model.Filters;
 
@@ -14,6 +18,9 @@ import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
+import de.pesacraft.cannonfight.util.shop.ClickHandler;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
+import de.pesacraft.cannonfight.util.shop.Shop;
 
 public class Cannons {
 	/**
@@ -52,6 +59,47 @@ public class Cannons {
 			
 			Collection.ITEMS().replaceOne(Filters.eq("name", name), doc);	 
 		}
+	}
+	
+	public final static Shop getSetupShop() {
+		final Map<String, CannonConstructor> cannons = Cannons.getCannons();
+		
+		int rows = (int) Math.ceil((double) cannons.size() / 9);
+		
+		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
+		
+		Shop s = new Shop("Cannon-Setup", new ClickHandler() {
+			
+			@Override
+			public void onItemInteract(ItemInteractEvent event) {
+				if (!event.isPickUpAction())
+					return;
+				
+				ItemStack item = event.getItemInSlot();
+				
+				if (item.isSimilar(fill))
+					return;
+				
+				for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
+					if (item.isSimilar(entry.getValue().getItem())) {
+						Cannon.getUpgradeShop(entry.getKey());
+						return;
+					}
+				}
+			}
+
+			@Override
+			public void onInventoryClose(InventoryCloseEvent event) {}
+		}, rows);
+		
+		s.fill(fill);
+		
+		int i = 0;
+		
+		for (Entry<String, CannonConstructor> entry : cannons.entrySet())
+			s.set(i++, entry.getValue().getItem());
+		
+		return s;
 	}
 	
 	public static String getDefaultCannon() {

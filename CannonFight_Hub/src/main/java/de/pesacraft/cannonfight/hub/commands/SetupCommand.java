@@ -1,13 +1,9 @@
 package de.pesacraft.cannonfight.hub.commands;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -18,25 +14,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import de.pesacraft.cannonfight.hub.CannonFightHub;
 import de.pesacraft.cannonfight.hub.game.Setup;
-import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
-//import de.pesacraft.cannonfight.proxy.game.Setup;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
-import de.pesacraft.cannonfight.util.shop.ShopGroup;
-import de.pesacraft.cannonfight.util.shop.ShopMaker;
-import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
-import de.pesacraft.cannonfight.util.shop.upgrade.UpgradeMap;
 
 public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();
@@ -109,7 +97,7 @@ public class SetupCommand implements CommandExecutor {
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("cannons")) {
-				getSetupShop().openInventory(CannonFighter.get((OfflinePlayer) p));
+				Cannons.getSetupShop().openInventory(CannonFighter.get((OfflinePlayer) p));
 				return true;
 			}
 		}
@@ -129,46 +117,5 @@ public class SetupCommand implements CommandExecutor {
 		
 		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label));
 		return true;
-	}
-
-	public final static Shop getSetupShop() {
-		final Map<String, CannonConstructor> cannons = Cannons.getCannons();
-		
-		int rows = (int) Math.ceil((double) cannons.size() / 9);
-		
-		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
-		
-		Shop s = new Shop("Cannon-Setup", new ClickHandler() {
-			
-			@Override
-			public void onItemInteract(ItemInteractEvent event) {
-				if (!event.isPickUpAction())
-					return;
-				
-				ItemStack item = event.getItemInSlot();
-				
-				if (item.isSimilar(fill))
-					return;
-				
-				for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
-					if (item.isSimilar(entry.getValue().getItem())) {
-						Cannon.getUpgradeShop(entry.getKey());
-						return;
-					}
-				}
-			}
-
-			@Override
-			public void onInventoryClose(InventoryCloseEvent event) {}
-		}, rows);
-		
-		s.fill(fill);
-		
-		int i = 0;
-		
-		for (Entry<String, CannonConstructor> entry : cannons.entrySet())
-			s.set(i++, entry.getValue().getItem());
-		
-		return s;
 	}
 }

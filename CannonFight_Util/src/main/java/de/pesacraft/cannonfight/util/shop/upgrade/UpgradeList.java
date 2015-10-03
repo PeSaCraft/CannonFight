@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -13,9 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.pesacraft.cannonfight.hub.commands.SetupCommand;
-import de.pesacraft.cannonfight.util.cannons.Cannon;
-import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
+import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
@@ -306,7 +303,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 					if (getLevels() == 0)
 						// back to main when no level is left.
 						// nothing else is possible with the provided information
-						event.setNextShop(SetupCommand.getSetupShop());
+						event.setNextShop(Cannons.getSetupShop());
 					else {
 						if (level - 1 == 0)
 							// level 0 doesn't exist, have to stay in level 1, which exists!
