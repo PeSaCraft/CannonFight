@@ -82,7 +82,7 @@ public class Cannons {
 				
 				for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
 					if (item.isSimilar(entry.getValue().getItem())) {
-						Cannon.getUpgradeShop(entry.getKey());
+						event.setNextShop(Cannon.getUpgradeShop(entry.getKey()));
 						return;
 					}
 				}
