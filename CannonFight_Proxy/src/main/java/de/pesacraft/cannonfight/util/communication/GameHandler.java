@@ -88,7 +88,7 @@ public class GameHandler extends Thread {
 		if (!arenaSet() || !isPlayerJoinable())
 			return false;
 		
-		if (player.contains(player))
+		if (players.contains(player))
 			// player already trying to connect/connecting to server. would result in duplicate player counts.
 			return false;
 		
