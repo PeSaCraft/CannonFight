@@ -324,7 +324,7 @@ public class CannonFighter {
 	
 	@Override
 	public int hashCode() {
-		return getName().hashCode();
+		return getName().hashCode() + getUUID().hashCode();
 	}
 	
 	@Override
