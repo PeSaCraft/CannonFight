@@ -1,13 +1,8 @@
 package de.pesacraft.cannonfight.util.communication;
 
-import java.io.BufferedReader;
-import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -18,8 +13,6 @@ import java.util.Map;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
-
-import com.google.common.io.ByteArrayDataOutput;
 
 public class CommunicationServer extends Thread {
 	private static CommunicationServer instance;

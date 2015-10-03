@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
@@ -24,6 +25,7 @@ public class MainShop {
 	
 	static {
 		shop = new ShopGroup(new ShopMaker() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.PURPLE.getData());

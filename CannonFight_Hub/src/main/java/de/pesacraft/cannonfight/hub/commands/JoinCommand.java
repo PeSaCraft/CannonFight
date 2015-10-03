@@ -6,9 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.pesacraft.cannonfight.hub.CannonFightHub;
 import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
-import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 /*
 import de.pesacraft.cannonfight.util.game.Arenas;
@@ -16,7 +14,6 @@ import de.pesacraft.cannonfight.util.game.GameManager;
 */
 public class JoinCommand implements CommandExecutor {
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {		
 		if (args.length == 1) {

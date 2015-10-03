@@ -328,6 +328,7 @@ public class FireballCannon extends Cannon implements Listener {
 	static {
 		shop = new ShopGroup(new ShopMaker() {
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public Shop createShop(final CannonFighter c) {
 				final FireballCannon cannon = (FireballCannon) c.getCannon(NAME);

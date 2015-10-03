@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+
 import de.pesacraft.cannonfight.game.CageForm;
 import de.pesacraft.cannonfight.util.game.blockrestore.ModifiedBlock;
 
@@ -26,6 +27,7 @@ public class Cage {
 		this.used = false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void createCage(ItemStack material) throws IllegalStateException {
 		if (used)
 			throw new IllegalStateException("Cage already in use!");
@@ -46,6 +48,7 @@ public class Cage {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void destroyCage() throws IllegalStateException {
 		if (!used)
 			throw new IllegalStateException("Cage not used: Nothing to remove!");

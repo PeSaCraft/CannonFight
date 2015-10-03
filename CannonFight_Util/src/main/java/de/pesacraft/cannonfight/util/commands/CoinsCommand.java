@@ -7,13 +7,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.CannonFighter;
-import de.pesacraft.cannonfight.util.money.Money;
 
 public class CoinsCommand implements CommandExecutor {
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 0) {

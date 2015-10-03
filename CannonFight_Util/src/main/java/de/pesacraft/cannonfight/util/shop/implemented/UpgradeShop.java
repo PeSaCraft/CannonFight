@@ -31,6 +31,7 @@ import de.pesacraft.cannonfight.util.shop.ShopGroup;
 import de.pesacraft.cannonfight.util.shop.ShopMaker;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
+@SuppressWarnings("deprecation")
 public class UpgradeShop {
 	
 	private static final MongoCollection<Document> COLLECTION;
@@ -91,7 +92,6 @@ public class UpgradeShop {
 			
 			doc = new Document("name", NAME_SLOTS);
 			
-			
 			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_SLOTS)));
 			
 			doc = doc.append("upgrades", new Document(upgrades));
@@ -137,7 +137,6 @@ public class UpgradeShop {
 		}
 		
 		shop = new ShopGroup(new ShopMaker() {
-			@SuppressWarnings("deprecation")
 			@Override
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData());

@@ -49,6 +49,7 @@ public class MassBlockUpdate implements Runnable {
 		return setBlock(x, y, z, blockId, 0);
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean setBlock(int x, int y, int z, int blockId, int data) {
 		minX = Math.min(minX, x);
 		minZ = Math.min(minZ, z);
@@ -73,6 +74,7 @@ public class MassBlockUpdate implements Runnable {
 		return res;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void notifyClients() {
 		if (relightingStrategy == RelightingStrategy.DEFERRED || relightingStrategy == RelightingStrategy.HYBRID) {
 			relightTask = Bukkit.getScheduler().runTaskTimer(plugin, this, 1L, 1L);
@@ -84,6 +86,7 @@ public class MassBlockUpdate implements Runnable {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void run() {
 		long now = System.nanoTime();
 		int n = 1;

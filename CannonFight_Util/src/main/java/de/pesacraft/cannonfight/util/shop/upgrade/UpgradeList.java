@@ -94,6 +94,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		return upgradeChanger;
 	}
 
+	@SuppressWarnings("deprecation")
 	public Shop getUpgradeShop(final int level) {
 		
 		Upgrade<T> u = getForLevel(level);

@@ -1,6 +1,5 @@
 package de.pesacraft.cannonfight.util.shop.upgrade;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,7 +13,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
@@ -27,6 +25,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		super(1);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> void setUpgrade(String name, Entry<String, Object> entry, Class<T> type, UpgradeChanger<T> upgradeChanger) {
 		UpgradeList<T> upgrades;
 		
@@ -44,6 +43,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		upgrades.setUpgradeChanger(upgradeChanger);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> void setUpgrade(String name, int level, int price, T value, Class<T> type, UpgradeChanger<T> upgradeChanger) {
 		UpgradeList<T> upgrades;
 		
@@ -78,6 +78,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> Upgrade<T> getUpgrade(String name, int level, T defaultValue, Class<T> type) {
 		if (this.containsKey(name))
 			return (Upgrade<T>) this.get(name).getForLevel(level);
@@ -133,13 +134,14 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		return map;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public Shop getUpgradeShop(String name) {
 		if (!this.containsKey(name))
 			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!");
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.SILVER.getData());
 		
-		final UpgradeList upgrades = this.get(name);
+		final UpgradeList<?> upgrades = this.get(name);
 		
 		final Map<ItemStack, Integer> items = new LinkedHashMap<ItemStack, Integer>();
 		

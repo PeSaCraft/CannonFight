@@ -2,29 +2,19 @@ package de.pesacraft.cannonfight.hub.commands;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 
 import de.pesacraft.cannonfight.hub.CannonFightHub;
 import de.pesacraft.cannonfight.hub.game.Setup;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
-import de.pesacraft.cannonfight.util.cannons.Cannon;
-import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.shop.ClickHandler;
-import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
-import de.pesacraft.cannonfight.util.shop.Shop;
 
 public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();

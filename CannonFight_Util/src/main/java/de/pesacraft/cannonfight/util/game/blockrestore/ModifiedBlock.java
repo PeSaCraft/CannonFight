@@ -14,6 +14,7 @@ public class ModifiedBlock {
 	private final int y;
 	private final int z;
 	
+	@SuppressWarnings("deprecation")
 	public ModifiedBlock(Block b) {
 		w = b.getWorld();
 		x = b.getX();

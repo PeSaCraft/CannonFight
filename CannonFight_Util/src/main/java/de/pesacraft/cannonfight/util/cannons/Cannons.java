@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.mongodb.client.model.Filters;
 
-import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
@@ -61,6 +60,7 @@ public class Cannons {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public final static Shop getSetupShop() {
 		final Map<String, CannonConstructor> cannons = Cannons.getCannons();
 		

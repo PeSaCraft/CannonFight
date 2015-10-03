@@ -5,14 +5,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
-import de.pesacraft.cannonfight.util.CannonFightUtil;
-import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
@@ -110,6 +107,7 @@ public abstract class Cannon extends Cooldown {
 		return UPGRADE_MAP.get(cannonName);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public final static Shop getUpgradeShop(String cannonName) {
 		final UpgradeMap upgrades = getUpgradeMap(cannonName);
 		

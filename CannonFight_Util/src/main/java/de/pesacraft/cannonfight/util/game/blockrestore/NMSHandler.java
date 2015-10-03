@@ -98,7 +98,7 @@ public class NMSHandler {
 	private void invokeNmsD(Chunk nmsChunk, int i, int j, int k) {
 		try {
 			if (d == null) {
-				Class[] classes = {int.class, int.class, int.class};
+				Class<?>[] classes = {int.class, int.class, int.class};
 				d = Chunk.class.getDeclaredMethod("d", classes);
 				d.setAccessible(true);
 			}
@@ -112,7 +112,7 @@ public class NMSHandler {
 	private void invokeNmsD(Chunk nmsChunk, int i, int j) {
 		try {
 			if (e == null) {
-				Class[] classes = {int.class, int.class};
+				Class<?>[] classes = {int.class, int.class};
 				e = Chunk.class.getDeclaredMethod("d", classes);
 				e.setAccessible(true);
 			}
