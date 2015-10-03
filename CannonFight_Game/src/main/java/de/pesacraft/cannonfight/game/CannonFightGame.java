@@ -117,15 +117,23 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		
-		new CommunicationGameClient().start();
+		CommunicationGameClient.tryToStart();
 	}
 	
 	@Override
 	public void onDisable() { 
-		// restore backup
-		File original = WORLD_GAME.getWorldFolder();
-		File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
-		CannonFightUtil.copyWorld(backup, original);		
+		
+		if (WORLD_GAME != null) {
+			// restore backup
+			File original = WORLD_GAME.getWorldFolder();
+			File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
+			Bukkit.unloadWorld(WORLD_GAME, false);
+			LOGGER.info("Unloaded game world. Restoring backup.");
+			CannonFightUtil.copyWorld(backup, original);
+		}
+		
+		// unregister from proxy
+		CommunicationGameClient.getInstance().sendGameOver();
 	}
 	
 	public static void setArena(String arena) {

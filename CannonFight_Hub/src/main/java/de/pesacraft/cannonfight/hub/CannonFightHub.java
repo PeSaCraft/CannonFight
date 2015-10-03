@@ -59,8 +59,7 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		setupCommands();
 		
-		new CommunicationHubClient().start();
-		//LobbySystem.registerGame(this, Game.class);
+		CommunicationHubClient.tryToStart();;
 	}
 	 
 	private void setupCommands() {
@@ -113,6 +112,9 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		this.saveConfig();
 		
 		SignHandler.getInstance().save();
+		
+		// unregister from proxy
+		CommunicationHubClient.getInstance().sendHubShutdown();
 	}
 	
 	@EventHandler
