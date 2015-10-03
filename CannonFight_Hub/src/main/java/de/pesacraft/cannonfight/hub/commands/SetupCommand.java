@@ -31,7 +31,6 @@ public class SetupCommand implements CommandExecutor {
 			return true;
 		}
 		
-		
 		Player p = (Player) sender;
 		Setup s = activeSetups.get(p);
 		
