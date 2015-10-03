@@ -118,7 +118,7 @@ public class Shop implements Listener {
 	
 	@Override
 	public int hashCode() {
-		return name.hashCode() + viewer.hashCode() + shopCount;
+		return name.hashCode() + viewer.hashCode() + id;
 	}
 	
 	@Override
