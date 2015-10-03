@@ -89,7 +89,9 @@ public class GameHandler extends Thread {
 			return false;
 		
 		if (players.contains(player))
-			// player already trying to connect/connecting to server. would result in duplicate player counts.
+			// player already trying to connect/connecting to server.
+			// connecting again would result in duplicate player counts.
+			// thus this is cancelled.
 			return false;
 		
 		players.add(player);
