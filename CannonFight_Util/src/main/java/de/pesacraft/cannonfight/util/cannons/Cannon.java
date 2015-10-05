@@ -108,7 +108,7 @@ public abstract class Cannon extends Cooldown {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public final static Shop getUpgradeShop(String cannonName) {
+	public final static Shop getUpgradeSetupShop(String cannonName) {
 		final UpgradeMap upgrades = getUpgradeMap(cannonName);
 		
 		int rows = (int) Math.ceil((double) upgrades.size() / 9);
@@ -129,7 +129,7 @@ public abstract class Cannon extends Cooldown {
 				
 				for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
 					if (item.isSimilar(entry.getValue())) {
-						event.setNextShop(upgrades.getUpgradeShop(entry.getKey()));
+						event.setNextShop(upgrades.getUpgradeSetupShop(entry.getKey()));
 						return;
 					}
 				}

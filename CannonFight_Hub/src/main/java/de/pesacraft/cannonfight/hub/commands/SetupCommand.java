@@ -86,7 +86,7 @@ public class SetupCommand implements CommandExecutor {
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("cannons")) {
-				Cannons.getSetupShop().openInventory(CannonFighter.get((OfflinePlayer) p));
+				Cannons.getUpgradeSetupShop().openInventory(CannonFighter.get((OfflinePlayer) p));
 				return true;
 			}
 		}

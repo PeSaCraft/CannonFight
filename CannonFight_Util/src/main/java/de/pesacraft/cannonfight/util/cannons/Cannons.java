@@ -61,7 +61,7 @@ public class Cannons {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public final static Shop getSetupShop() {
+	public final static Shop getUpgradeSetupShop() {
 		final Map<String, CannonConstructor> cannons = Cannons.getCannons();
 		
 		int rows = (int) Math.ceil((double) cannons.size() / 9);
@@ -82,7 +82,7 @@ public class Cannons {
 				
 				for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
 					if (item.isSimilar(entry.getValue().getItem())) {
-						event.setNextShop(Cannon.getUpgradeShop(entry.getKey()));
+						event.setNextShop(Cannon.getUpgradeSetupShop(entry.getKey()));
 						return;
 					}
 				}

@@ -123,13 +123,11 @@ public class Setup {
 		Document docLoc = new Document("x", loc1.getBlockX());
 		docLoc = docLoc.append("y", loc1.getBlockY());
 		docLoc = docLoc.append("z", loc1.getBlockZ());
-		
 		doc = doc.append("loc1", docLoc);
 		
 		docLoc = new Document("x", loc2.getBlockX());
 		docLoc = docLoc.append("y", loc2.getBlockY());
 		docLoc = docLoc.append("z", loc2.getBlockZ());
-		
 		doc = doc.append("loc2", docLoc);
 		
 		docLoc = new Document("x", specLoc.getX());

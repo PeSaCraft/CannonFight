@@ -135,7 +135,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Shop getUpgradeShop(String name) {
+	public Shop getUpgradeSetupShop(String name) {
 		if (!this.containsKey(name))
 			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!");
 		
@@ -151,7 +151,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 			ItemStack item = new ItemStack(Material.WOOL, i, DyeColor.WHITE.getWoolData());
 			
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(ChatColor.AQUA + "Level " + i + "einstellen");
+			meta.setDisplayName(ChatColor.AQUA + "Level " + i + " einstellen");
 			item.setItemMeta(meta);
 			
 			items.put(item, i);
@@ -160,7 +160,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		ItemStack newLevelItem = new ItemStack(Material.WOOL, i, DyeColor.GRAY.getWoolData());
 		
 		ItemMeta meta = newLevelItem.getItemMeta();
-		meta.setDisplayName(ChatColor.AQUA + "Level " + i + "erstellen");
+		meta.setDisplayName(ChatColor.AQUA + "Level " + i + " erstellen");
 		newLevelItem.setItemMeta(meta);
 		
 		items.put(newLevelItem, i);
@@ -182,7 +182,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 				
 				for (Entry<ItemStack, Integer> entry : items.entrySet()) {
 					if (item.isSimilar(entry.getKey())) {
-						event.setNextShop(upgrades.getUpgradeShop(entry.getValue()));
+						event.setNextShop(upgrades.getUpgradeSetupShop(entry.getValue()));
 						return;
 					}
 				}

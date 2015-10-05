@@ -95,7 +95,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 	}
 
 	@SuppressWarnings("deprecation")
-	public Shop getUpgradeShop(final int level) {
+	public Shop getUpgradeSetupShop(final int level) {
 		
 		Upgrade<T> u = getForLevel(level);
 		
@@ -239,62 +239,62 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 					return;
 				
 				if (item.isSimilar(prev)) {
-					event.setNextShop(getUpgradeShop(level - 1));
+					event.setNextShop(getUpgradeSetupShop(level - 1));
 					return;
 				}
 				
 				if (item.isSimilar(next)) {
-					event.setNextShop(getUpgradeShop(level + 1));
+					event.setNextShop(getUpgradeSetupShop(level + 1));
 					return;
 				}
 				
 				// price modification, clicking on price does nothing
 				if (item.isSimilar(changePriceDownFast)) {
 					getUpgradeChanger().decreasePriceFast(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				if (item.isSimilar(changePriceDownSlow)) {
 					getUpgradeChanger().decreasePriceSlow(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				if (item.isSimilar(changePriceUpSlow)) {
 					getUpgradeChanger().increasePriceSlow(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				if (item.isSimilar(changePriceUpFast)) {
 					getUpgradeChanger().increasePriceFast(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				// value modification, clicking on value does nothing
 				if (item.isSimilar(changeValueDownFast)) {
 					getUpgradeChanger().decreaseValueFast(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				if (item.isSimilar(changeValueDownSlow)) {
 					getUpgradeChanger().decreaseValueSlow(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				if (item.isSimilar(changeValueUpSlow)) {
 					getUpgradeChanger().increaseValueSlow(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
 				if (item.isSimilar(changeValueUpFast)) {
 					getUpgradeChanger().increaseValueFast(upgrade);
-					event.setNextShop(getUpgradeShop(level));
+					event.setNextShop(getUpgradeSetupShop(level));
 					return;
 				}
 				
@@ -304,17 +304,17 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 					if (getLevels() == 0)
 						// back to main when no level is left.
 						// nothing else is possible with the provided information
-						event.setNextShop(Cannons.getSetupShop());
+						event.setNextShop(Cannons.getUpgradeSetupShop());
 					else {
 						if (level - 1 == 0)
 							// level 0 doesn't exist, have to stay in level 1, which exists!
-							event.setNextShop(getUpgradeShop(1));
+							event.setNextShop(getUpgradeSetupShop(1));
 						else
 							// go to the level before the deleted one.
 							// otherwise, e.g. if there were 3 levels and I
 							// delete level 3 It would recreate level 3, thus
 							// deleting a level would be impossible
-							event.setNextShop(getUpgradeShop(level - 1));
+							event.setNextShop(getUpgradeSetupShop(level - 1));
 					}
 					return;
 				}
