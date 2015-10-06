@@ -1,14 +1,19 @@
 package de.pesacraft.cannonfight.util.cannons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.IllegalClassException;
 import org.bson.Document;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
@@ -22,15 +27,19 @@ import de.pesacraft.cannonfight.util.shop.upgrade.UpgradeMap;
 public abstract class Cannon extends Cooldown {
 	private static final Map<String, UpgradeMap> UPGRADE_MAP = new HashMap<String, UpgradeMap>();
 	
+	private final Map<String, Integer> levels;
+	private final Map<String, Object> currentValues;
+	
 	public Cannon(int time) {
 		super(time);
+		
+		levels = new HashMap<String, Integer>();
+		currentValues = new HashMap<String, Object>();
 	}
 	
 	public abstract ItemStack getItem();
 	
 	public abstract String getName();
-	
-	public abstract int getMaxAmmo();
 	
 	public abstract boolean fire(ItemStack item);
 	
@@ -38,10 +47,49 @@ public abstract class Cannon extends Cooldown {
 	
 	public abstract CannonConstructor getCannonConstructor();
 	
-	public abstract void openShop();
-
 	public abstract void reset();
 	
+	protected final boolean setUpgradeLevel(String upgradeName, int level) {
+		Upgrade<?> upgrade = getUpgrade(getName(), upgradeName, level);
+		
+		if (upgrade == null)
+			// this upgrade does not exist!
+			return false;
+		
+		levels.put(upgradeName, level);
+		resetValue(upgradeName);
+		
+		return true;
+	}
+	
+	protected final int getUpgradeLevel(String upgradeName) {
+		return levels.get(upgradeName);
+	}
+	
+	protected final Object setValue(String upgradeName, Object value) {
+		
+		if (currentValues.get(upgradeName) != null) {
+			Class<?> currentClass = currentValues.get(upgradeName).getClass();
+		
+			if (!currentClass.isAssignableFrom(value.getClass()))
+				throw new IllegalClassException(currentClass, value);
+		}
+		
+		return currentValues.put(upgradeName, value);
+	}
+	
+	protected final Object getValue(String upgradeName) {
+		return currentValues.get(upgradeName);
+	}
+	
+	protected boolean resetValue(String upgradeName) {
+		Upgrade<?> upgrade = getUpgrade(getName(), upgradeName, levels.get(upgradeName));
+		
+		Object old = currentValues.put(upgradeName, upgrade.getValue());
+		
+		return !old.equals(upgrade.getValue());
+	}
+
 	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type, Document upgradeDoc, UpgradeChanger<T> upgradeChanger) {
 		UpgradeMap upgrades;
 		
@@ -89,8 +137,12 @@ public abstract class Cannon extends Cooldown {
 		return getUpgradeMap(cannonName).getItemStack(upgradeName);
 	}
 	
-	public final static <T> Upgrade<T> getUpgrade(String cannonName, String upgradeName, int level, Class<T> type) {
-		return getUpgradeMap(cannonName).getUpgrade(upgradeName, level, type);
+	public final static Upgrade<?> getUpgrade(String cannonName, String upgradeName, int level) {
+		return getUpgradeMap(cannonName).getUpgrade(upgradeName, level);
+	}
+	
+	public final static <T> Upgrade<T> getOrSetUpgrade(String cannonName, String upgradeName, int level, Class<T> type) {
+		return getUpgradeMap(cannonName).getOrSetUpgrade(upgradeName, level, type);
 	}
 	
 	public final static int getLevelsForUpgrade(String cannonName, String upgradeName) {
@@ -145,6 +197,75 @@ public abstract class Cannon extends Cooldown {
 		
 		for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
 			s.set(i++, entry.getValue());
+		}
+		
+		return s;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public final Shop getUpgradeShop() {
+		final UpgradeMap upgrades = getUpgradeMap(getName());
+		
+		int rows = (int) Math.ceil((double) upgrades.size() / 9);
+		
+		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.CYAN.getData());
+		
+		Shop s = new Shop("Upgrade " + getName(), new ClickHandler() {
+			
+			@Override
+			public void onItemInteract(ItemInteractEvent event) {
+				if (!event.isPickUpAction())
+					return;
+				
+				ItemStack item = event.getItemInSlot();
+				
+				if (item.isSimilar(fill))
+					return;
+				
+				for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
+					if (item.isSimilar(entry.getValue())) {
+						event.setNextShop(getUpgradeShop());
+						return;
+					}
+				}
+			}
+
+			@Override
+			public void onInventoryClose(InventoryCloseEvent event) {}
+		}, rows);
+		
+		s.fill(fill);
+		
+		int i = 0;
+		
+		for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
+			ItemStack item = entry.getValue().clone();
+			
+			int level = getUpgradeLevel(entry.getKey());
+			Upgrade<?> oldUpgrade = upgrades.getUpgrade(entry.getKey(), level);
+			Upgrade<?> newUpgrade = upgrades.getUpgrade(entry.getKey(), level + 1);
+			
+			ItemMeta meta = item.getItemMeta();
+			List<String> lore = new ArrayList<String>();
+			
+			lore.add(ChatColor.GOLD + "Momentan: " + oldUpgrade.getValue());
+			
+			if (newUpgrade == null) {
+				// maximum level of upgrade reached
+				lore.add(ChatColor.GREEN + "Maximal verbessert!");
+			}
+			else {
+				// upgradable
+				lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (level + 1));
+				lore.add(ChatColor.AQUA + "Preis: " + newUpgrade.getPrice());
+				lore.add(ChatColor.LIGHT_PURPLE + "Neu: " + newUpgrade.getValue());
+			}
+			
+			meta.setLore(lore);
+			item.setItemMeta(meta);
+			item.setAmount(level);
+			
+			s.set(i++, item);
 		}
 		
 		return s;

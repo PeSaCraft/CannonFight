@@ -72,7 +72,7 @@ public class CannonShop {
 								String cannon = i.getItemMeta().getDisplayName();
 								if (p.hasCannon(cannon)) {
 									// owns cannon: open upgrade shop
-									p.getCannon(cannon).openShop();
+									event.setNextShop(p.getCannon(cannon).getUpgradeShop());
 									return;
 								}
 								

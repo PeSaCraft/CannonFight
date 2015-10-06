@@ -44,11 +44,6 @@ import de.pesacraft.cannonfight.util.shop.upgrade.IntegerUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
 public class FireballCannon extends Cannon implements Listener {
-
-
-	
-	
-	
 	private static final MongoCollection<Document> COLLECTION;
 	
 	/**
@@ -154,10 +149,10 @@ public class FireballCannon extends Cannon implements Listener {
 
 			@Override
 			public int getPrice() {
-				return getUpgrade(NAME, UPGRADE_AMMO, 1, Integer.class).getPrice()
-						+ getUpgrade(NAME, UPGRADE_COOLDOWN, 1, Integer.class).getPrice()
-						+ getUpgrade(NAME, UPGRADE_RADIUS, 1, Double.class).getPrice()
-						+ getUpgrade(NAME, UPGRADE_DAMAGE, 1, Integer.class).getPrice();
+				return getUpgrade(NAME, UPGRADE_AMMO, 1).getPrice()
+						+ getUpgrade(NAME, UPGRADE_COOLDOWN, 1).getPrice()
+						+ getUpgrade(NAME, UPGRADE_RADIUS, 1).getPrice()
+						+ getUpgrade(NAME, UPGRADE_DAMAGE, 1).getPrice();
 			}
 
 			@Override
@@ -178,38 +173,23 @@ public class FireballCannon extends Cannon implements Listener {
 		return NAME;
 	}
 	
-	private int maxAmmo;
-	private int currentAmmo;
-	private float radius;
-	private int damage;
-	private ItemStack item;
-	
 	private CannonFighter player;
-	
+	private ItemStack item;
+	private int maxAmmon;
 	private List<Integer> shoot;
 	
-	private int levelAmmo;
-	private int levelCooldown;
-	private int levelRadius;
-	private int levelDamage;
-	
 	public FireballCannon(CannonFighter player, int levelAmmo, int levelCooldown, int levelRadius, int levelDamage) {
-		super(getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown, Integer.class).getValue());
+		super(((Number) getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown).getValue()).intValue());
 		
-		this.levelAmmo = levelAmmo;
-		this.levelCooldown = levelCooldown;
-		this.levelRadius = levelRadius;
-		this.levelDamage = levelDamage;
+		setUpgradeLevel(UPGRADE_AMMO, levelAmmo);
+		setUpgradeLevel(UPGRADE_COOLDOWN, levelCooldown);
+		setUpgradeLevel(UPGRADE_RADIUS, levelRadius);
+		setUpgradeLevel(UPGRADE_DAMAGE, levelDamage);
 		
 		this.player = player;
 		
-		currentAmmo = maxAmmo = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo, Integer.class).getValue();
-			
-		radius = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius, Double.class).getValue().floatValue();
-		damage = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage, Integer.class).getValue();
-	
 		item = ITEM.clone();
-		item.setAmount(currentAmmo);
+		item.setAmount(((Number) getValue(UPGRADE_AMMO)).intValue());
 		shoot = new ArrayList<Integer>();
 		
 		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
@@ -218,10 +198,10 @@ public class FireballCannon extends Cannon implements Listener {
 	public FireballCannon(CannonFighter player) {
 		this(player, 1, 1, 1, 1);
 		
-		Document doc = new Document(UPGRADE_AMMO, levelAmmo);
-		doc = doc.append(UPGRADE_COOLDOWN, levelCooldown);
-		doc = doc.append(UPGRADE_RADIUS, levelRadius);
-		doc = doc.append(UPGRADE_DAMAGE, levelDamage);
+		Document doc = new Document(UPGRADE_AMMO, getUpgradeLevel(UPGRADE_AMMO));
+		doc = doc.append(UPGRADE_COOLDOWN, getUpgradeLevel(UPGRADE_COOLDOWN));
+		doc = doc.append(UPGRADE_RADIUS, getUpgradeLevel(UPGRADE_RADIUS));
+		doc = doc.append(UPGRADE_DAMAGE, getUpgradeLevel(UPGRADE_DAMAGE));
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME, doc)));
 	}
@@ -239,7 +219,10 @@ public class FireballCannon extends Cannon implements Listener {
 		if (!hasFinished())
 			return false;
 		
-		if (--currentAmmo == 0)
+		int currentAmmo = ((Number) getValue(UPGRADE_AMMO)).intValue() - 1;
+		setValue(UPGRADE_AMMO, new Integer(currentAmmo));
+		
+		if (currentAmmo == 0)
 			start();
 		else
 			item.setAmount(currentAmmo);
@@ -248,7 +231,7 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Fireball fball = p.launchProjectile(Fireball.class);
 		fball.setVelocity(fball.getVelocity().multiply(2));
-		fball.setYield(radius);
+		fball.setYield(((Number) getValue(UPGRADE_RADIUS)).floatValue());
 		
 		shoot.add(fball.getEntityId());
 		return true;
@@ -259,7 +242,7 @@ public class FireballCannon extends Cannon implements Listener {
 		if (!shoot.contains(event.getDamager().getEntityId()))
 			return;
 		
-		event.setDamage(damage);
+		event.setDamage(((Number) getValue(UPGRADE_DAMAGE)).doubleValue());
 	}
 	
 	@EventHandler
@@ -280,13 +263,8 @@ public class FireballCannon extends Cannon implements Listener {
 	}
 	
 	@Override
-	public int getMaxAmmo() {
-		return maxAmmo;
-	}
-
-	@Override
 	public boolean hasAmmo() {
-		return currentAmmo > 0;
+		return ((Number) getValue(UPGRADE_AMMO)).intValue() > 0;
 	}
 
 	@Override
@@ -297,8 +275,8 @@ public class FireballCannon extends Cannon implements Listener {
 	@Override
 	protected void finished() {
 		item.setDurability((short) 0);
-		item.setAmount(maxAmmo);
-		currentAmmo = maxAmmo;
+		resetValue(UPGRADE_AMMO);
+		item.setAmount(((Number) getValue(UPGRADE_AMMO)).intValue());
 	}
 	
 	@Override
@@ -307,22 +285,7 @@ public class FireballCannon extends Cannon implements Listener {
 		finished();
 	}
 	
-	public int getLevelAmmo() {
-		return levelAmmo;
-	}
-	
-	public int getLevelCooldown() {
-		return levelCooldown;
-	}
-	
-	public int getLevelDamage() {
-		return levelDamage;
-	}
-	
-	public int getLevelRadius() {
-		return levelRadius;
-	}
-	
+	/*
 	private static ShopGroup shop;
 	
 	static {
@@ -339,13 +302,13 @@ public class FireballCannon extends Cannon implements Listener {
 				fill.setItemMeta(meta);
 				
 				final ItemStack cooldownItem = new ItemStack(Material.AIR);
-				setCooldownItem(cooldownItem, cannon.levelCooldown);
+				setCooldownItem(cooldownItem, cannon.getUpgradeLevel(UPGRADE_COOLDOWN));
 				final ItemStack ammoItem = new ItemStack(Material.AIR);
-				setAmmoItem(ammoItem, cannon.levelAmmo);
+				setAmmoItem(ammoItem, cannon.getUpgradeLevel(UPGRADE_AMMO));
 				final ItemStack radiusItem = new ItemStack(Material.AIR);
-				setRadiusItem(radiusItem, cannon.levelRadius);
+				setRadiusItem(radiusItem, cannon.getUpgradeLevel(UPGRADE_RADIUS));
 				final ItemStack damageItem = new ItemStack(Material.AIR);
-				setDamageItem(damageItem, cannon.levelDamage);
+				setDamageItem(damageItem, cannon.getUpgradeLevel(UPGRADE_DAMAGE));
 				
 				Shop s = new Shop(NAME + "-Shop", new ClickHandler() {
 					
@@ -495,8 +458,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Integer> oldLevel = getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown, Integer.class);
-				Upgrade<Integer> newLevel = getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown + 1, Integer.class);
+				Upgrade<Integer> oldLevel = getOrSetUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown, Integer.class);
+				Upgrade<Integer> newLevel = getOrSetUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown + 1, Integer.class);
 				
 				lore.add(ChatColor.GOLD + "Cooldownzeit: " + oldLevel.getValue() + " Sekunden");
 				
@@ -530,8 +493,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Integer> oldLevel = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo, Integer.class);
-				Upgrade<Integer> newLevel = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo + 1, Integer.class);
+				Upgrade<Integer> oldLevel = getOrSetUpgrade(NAME, UPGRADE_AMMO, levelAmmo, Integer.class);
+				Upgrade<Integer> newLevel = getOrSetUpgrade(NAME, UPGRADE_AMMO, levelAmmo + 1, Integer.class);
 				
 				lore.add(ChatColor.GOLD + "Munition: " + oldLevel.getValue() + " Schuß");
 				
@@ -565,8 +528,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Double> oldLevel = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius, Double.class);
-				Upgrade<Double> newLevel = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius + 1, Double.class);
+				Upgrade<Double> oldLevel = getOrSetUpgrade(NAME, UPGRADE_RADIUS, levelRadius, Double.class);
+				Upgrade<Double> newLevel = getOrSetUpgrade(NAME, UPGRADE_RADIUS, levelRadius + 1, Double.class);
 				
 				lore.add(ChatColor.GOLD + "Radius: " + oldLevel.getValue() + " Blöcke");
 				
@@ -600,8 +563,8 @@ public class FireballCannon extends Cannon implements Listener {
 				
 				List<String> lore = new ArrayList<String>();
 				
-				Upgrade<Integer> oldLevel = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage, Integer.class);
-				Upgrade<Integer> newLevel = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage + 1, Integer.class);
+				Upgrade<Integer> oldLevel = getOrSetUpgrade(NAME, UPGRADE_DAMAGE, levelDamage, Integer.class);
+				Upgrade<Integer> newLevel = getOrSetUpgrade(NAME, UPGRADE_DAMAGE, levelDamage + 1, Integer.class);
 				
 				String hearts = "";
 				
@@ -646,75 +609,73 @@ public class FireballCannon extends Cannon implements Listener {
 	public static void openShopPage(CannonFighter c) {
 		shop.open(c);
 	}
-	
+
 	@Override
 	public void openShop() {
 		openShopPage(player);
 	}
-
+	 */
 	public boolean upgradeCooldown() {
-		Upgrade<Integer> upgrade = getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown + 1, Integer.class);
+		int newLevel = getUpgradeLevel(UPGRADE_COOLDOWN) + 1;
+		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_COOLDOWN, newLevel);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
 		
-		levelCooldown++;
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".cooldown", levelCooldown)));
+		setUpgradeLevel(UPGRADE_COOLDOWN, newLevel);
 		setTime(upgrade.getValue());
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Cooldown auf Level " + levelCooldown);
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_COOLDOWN, newLevel)));
+		
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Cooldown auf Level " + newLevel);
 		
 		return true;
 	}
 
 	public boolean upgradeAmmo() {
-		Upgrade<Integer> upgrade = getUpgrade(NAME, UPGRADE_AMMO, levelAmmo + 1, Integer.class);
+		int newLevel = getUpgradeLevel(UPGRADE_AMMO) + 1;
+		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_AMMO, newLevel);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
 		
-		levelAmmo++;
+		setUpgradeLevel(UPGRADE_AMMO, newLevel);
 		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".ammo", levelAmmo)));
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_AMMO, newLevel)));
 		
-		currentAmmo = maxAmmo = upgrade.getValue();
-		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Ammo auf Level " + levelAmmo);
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Ammo auf Level " + newLevel);
 		
 		return true;
 	}
 
 	public boolean upgradeRadius() {
-		Upgrade<Double> upgrade = getUpgrade(NAME, UPGRADE_RADIUS, levelRadius + 1, Double.class);
+		int newLevel = getUpgradeLevel(UPGRADE_RADIUS) + 1;
+		Upgrade<Double> upgrade = (Upgrade<Double>) getUpgrade(NAME, UPGRADE_RADIUS, newLevel);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
 		
-		levelRadius++;
+		setUpgradeLevel(UPGRADE_RADIUS, newLevel);
 		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".radius", levelRadius)));
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_RADIUS, newLevel)));
 		
-		radius = upgrade.getValue().floatValue();
-		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Radius auf Level " + levelRadius);
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Radius auf Level " + newLevel);
 		
 		return true;
 	}
 	
 	public boolean upgradeDamage() {
-		Upgrade<Integer> upgrade = getUpgrade(NAME, UPGRADE_DAMAGE, levelDamage + 1, Integer.class);
+		int newLevel = getUpgradeLevel(UPGRADE_DAMAGE) + 1;
+		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(NAME, UPGRADE_DAMAGE, newLevel);
 		
 		if (!player.hasEnoughCoins(upgrade.getPrice()))
 			return false;
 		
-		levelDamage++;
+		setUpgradeLevel(UPGRADE_DAMAGE, newLevel);
 		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + ".damage", levelDamage)));
+		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_DAMAGE, newLevel)));
 		
-		damage = upgrade.getValue();
-		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Damage auf Level " + levelDamage);
+		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Damage auf Level " + newLevel);
 		
 		return true;
 	}
