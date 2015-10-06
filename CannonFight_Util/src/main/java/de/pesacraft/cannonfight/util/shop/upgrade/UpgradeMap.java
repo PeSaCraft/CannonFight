@@ -61,25 +61,29 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	}
 	
 	public <T> void setPrice(String name, int level, int price, Class<T> type) {
-		getUpgrade(name, level, type).setPrice(price);
+		getOrSetUpgrade(name, level, type).setPrice(price);
 	}
 	
 	public <T> void setValue(String name, int level, T value, Class<T> type) {
-		getUpgrade(name, level, type).setValue(value);
+		getOrSetUpgrade(name, level, type).setValue(value);
 	}
 
-	public <T> Upgrade<T> getUpgrade(String name, int level, Class<T> type) {
+	public Upgrade<?> getUpgrade(String name, int level) {
+		return this.get(name).getForLevel(level);
+	}
+	
+	public <T> Upgrade<T> getOrSetUpgrade(String name, int level, Class<T> type) {
 		try {
 			// no default value given, try to create new instance
-			return getUpgrade(name, level, type.newInstance(), type);
+			return getOrSetUpgrade(name, level, type.newInstance(), type);
 		} catch (InstantiationException | IllegalAccessException e) {
 			// couldn't create new instance, default will be null
-			return getUpgrade(name, level, null, type);
+			return getOrSetUpgrade(name, level, null, type);
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> Upgrade<T> getUpgrade(String name, int level, T defaultValue, Class<T> type) {
+	public <T> Upgrade<T> getOrSetUpgrade(String name, int level, T defaultValue, Class<T> type) {
 		if (this.containsKey(name))
 			return (Upgrade<T>) this.get(name).getForLevel(level);
 	
