@@ -87,7 +87,7 @@ public abstract class Cannon extends Cooldown {
 		
 		Object old = currentValues.put(upgradeName, upgrade.getValue());
 		
-		return !old.equals(upgrade.getValue());
+		return !upgrade.getValue().equals(old);
 	}
 
 	protected final static <T> void registerUpgrade(String cannonName, String upgradeName, Class<T> type, Document upgradeDoc, UpgradeChanger<T> upgradeChanger) {
