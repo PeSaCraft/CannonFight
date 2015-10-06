@@ -982,6 +982,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			if (CannonFightGame.ARENA == null)
 				return;
 			
+			if (players.size() == 0 && spectators.size() == 0)
+				return;
+			
 			if (players.size() >= ARENA.getRequiredPlayers()) {
 				// start countdown
 				this.cancel();
