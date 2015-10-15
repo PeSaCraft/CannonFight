@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.game.CannonFightGame;
 import de.pesacraft.cannonfight.game.players.Participant;
+import de.pesacraft.cannonfight.util.Language;
 
 
 public class CommunicationGameClient extends Thread {
@@ -139,7 +140,7 @@ public class CommunicationGameClient extends Thread {
 			
 			@Override
 			public void run() {
-				CannonFightGame.LOGGER.info("Trying to connect to proxy");
+				CannonFightGame.LOGGER.info(Language.get("info.proxy.try-to-connect"));
 				// try to establish connection
 				new CommunicationGameClient();
 				
@@ -147,7 +148,7 @@ public class CommunicationGameClient extends Thread {
 					// connection established, don't have to retry
 					getInstance().start();
 					this.cancel();
-					CannonFightGame.LOGGER.info("Connected to proxy. Back to work!");
+					CannonFightGame.LOGGER.info(Language.get("info.proxy.connected"));
 				}
 			}
 		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20 * 30); // every 30 seconds

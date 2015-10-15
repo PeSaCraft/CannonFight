@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
@@ -154,7 +155,7 @@ public abstract class Cannon extends Cooldown {
 
 	public final static UpgradeMap getUpgradeMap(String cannonName) {
 		if (!UPGRADE_MAP.containsKey(cannonName))
-			throw new IllegalArgumentException("Cannon \"" + cannonName + "\" isn't registered!");
+			throw new IllegalArgumentException(Language.get("error.cannon.not-registered") + cannonName + "\" isn't registered!"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return UPGRADE_MAP.get(cannonName);
 	}
@@ -167,7 +168,7 @@ public abstract class Cannon extends Cooldown {
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
 		
-		Shop s = new Shop(cannonName + "-Setup", new ClickHandler() {
+		Shop s = new Shop(cannonName + Language.get("shop.name.cannon.specific.setup"), new ClickHandler() { //$NON-NLS-1$
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
@@ -210,7 +211,7 @@ public abstract class Cannon extends Cooldown {
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.CYAN.getData());
 		
-		Shop s = new Shop("Upgrade " + getName(), new ClickHandler() {
+		Shop s = new Shop(Language.get("shop.name.cannon.specific.shop") + getName(), new ClickHandler() { //$NON-NLS-1$
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
@@ -248,17 +249,17 @@ public abstract class Cannon extends Cooldown {
 			ItemMeta meta = item.getItemMeta();
 			List<String> lore = new ArrayList<String>();
 			
-			lore.add(ChatColor.GOLD + "Momentan: " + oldUpgrade.getValue());
+			lore.add(ChatColor.GOLD + Language.get("shop.upgrade.lore.current") + oldUpgrade.getValue()); //$NON-NLS-1$
 			
 			if (newUpgrade == null) {
 				// maximum level of upgrade reached
-				lore.add(ChatColor.GREEN + "Maximal verbessert!");
+				lore.add(ChatColor.GREEN + Language.get("shop.upgrade.lore.max-reached")); //$NON-NLS-1$
 			}
 			else {
 				// upgradable
-				lore.add(ChatColor.YELLOW + "Upgrade auf Level " + (level + 1));
-				lore.add(ChatColor.AQUA + "Preis: " + newUpgrade.getPrice());
-				lore.add(ChatColor.LIGHT_PURPLE + "Neu: " + newUpgrade.getValue());
+				lore.add(ChatColor.YELLOW + Language.get("shop.upgrade.lore.upgrade-to.level") + (level + 1)); //$NON-NLS-1$
+				lore.add(ChatColor.AQUA + Language.get("shop.upgrade.lore.upgrade-to.price") + newUpgrade.getPrice()); //$NON-NLS-1$
+				lore.add(ChatColor.LIGHT_PURPLE + Language.get("shop.upgrade.lore.upgrade-to.value") + newUpgrade.getValue()); //$NON-NLS-1$
 			}
 			
 			meta.setLore(lore);

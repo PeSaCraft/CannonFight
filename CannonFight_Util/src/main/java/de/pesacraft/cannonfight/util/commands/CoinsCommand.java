@@ -18,38 +18,38 @@ public class CoinsCommand implements CommandExecutor {
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can have coins
-				sender.sendMessage(Language.get("command.coins-only-players")); 
+				sender.sendMessage(Language.get("command.coins-only-players"));  //$NON-NLS-1$
 				return true;
 			}
 			
 			CannonFighter c = CannonFighter.get((Player) sender);
 			
-			if (!sender.hasPermission("cannonfight.command.coins")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+			if (!sender.hasPermission("cannonfight.command.coins")) { //$NON-NLS-1$
+				sender.sendMessage(Language.get("error.no-permission")); //$NON-NLS-1$
 				return true;
 			}
 			
-			sender.sendMessage(Language.get("info.coins-own").replaceAll("%coins%", c.getCoins() + ""));
+			sender.sendMessage(Language.get("info.coins-own").replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return true;
 		}
 		
 		if (args.length == 1) {
-			if (!sender.hasPermission("cannonfight.command.coins.other")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+			if (!sender.hasPermission("cannonfight.command.coins.other")) { //$NON-NLS-1$
+				sender.sendMessage(Language.get("error.no-permission")); //$NON-NLS-1$
 				return true;
 			}
 		
 			Player p = Bukkit.getPlayer(args[0]);
 			
 			if (p == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[0]));
+				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[0])); //$NON-NLS-1$ //$NON-NLS-2$
 				return true;
 			}
 			
 			CannonFighter c = CannonFighter.get(p);
 			
 			
-			sender.sendMessage(Language.get("info.coins-other").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+			sender.sendMessage(Language.get("info.coins-other").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			return true;
 		}
 		
@@ -59,16 +59,16 @@ public class CoinsCommand implements CommandExecutor {
 			int amount;
 			
 			switch (args[1].toLowerCase()) {
-			case "set":
-				if (!sender.hasPermission("cannonfight.command.coins.set")) {
-					sender.sendMessage(Language.get("error.no-permission"));
+			case "set": //$NON-NLS-1$
+				if (!sender.hasPermission("cannonfight.command.coins.set")) { //$NON-NLS-1$
+					sender.sendMessage(Language.get("error.no-permission")); //$NON-NLS-1$
 					return true;
 				}
 			
 				p = Bukkit.getOfflinePlayer(args[0]);
 				
 				if (p == null) {
-					sender.sendMessage(Language.get("error.player-not-known").replaceAll("%player%", args[0]));
+					sender.sendMessage(Language.get("error.player-not-known").replaceAll("%player%", args[0])); //$NON-NLS-1$ //$NON-NLS-2$
 					return true;
 				}
 				
@@ -77,25 +77,25 @@ public class CoinsCommand implements CommandExecutor {
 				amount = Integer.parseInt(args[2]);
 				
 				if (c.setCoins(amount)) {
-					sender.sendMessage(Language.get("info.coins-set").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+					sender.sendMessage(Language.get("info.coins-set").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					
 					if (p.isOnline())
-						c.sendMessage(Language.get("info.coins-set-by-other").replaceAll("%player%", sender.getName()).replaceAll("%coins%", c.getCoins() + ""));
+						c.sendMessage(Language.get("info.coins-set-by-other").replaceAll("%player%", sender.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				else {
-					sender.sendMessage(Language.get("info.coins-set-failed").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+					sender.sendMessage(Language.get("info.coins-set-failed").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				return true;
-			case "give":
-				if (!sender.hasPermission("cannonfight.command.coins.give")) {
-					sender.sendMessage(Language.get("error.no-permission"));
+			case "give": //$NON-NLS-1$
+				if (!sender.hasPermission("cannonfight.command.coins.give")) { //$NON-NLS-1$
+					sender.sendMessage(Language.get("error.no-permission")); //$NON-NLS-1$
 					return true;
 				}
 			
 				p = Bukkit.getOfflinePlayer(args[0]);
 				
 				if (p == null) {
-					sender.sendMessage(Language.get("error.player-not-known").replaceAll("%player%", args[0]));
+					sender.sendMessage(Language.get("error.player-not-known").replaceAll("%player%", args[0])); //$NON-NLS-1$ //$NON-NLS-2$
 					return true;
 				}
 				
@@ -103,26 +103,26 @@ public class CoinsCommand implements CommandExecutor {
 				
 				amount = Integer.parseInt(args[2]);
 				
-				if (c.giveCoins(amount, sender.toString() + " gave coins")) {
-					sender.sendMessage(Language.get("info.coins-give").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+				if (c.giveCoins(amount, sender.toString() + Language.get("info.coins.log.give"))) { //$NON-NLS-1$
+					sender.sendMessage(Language.get("info.coins-give").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					
 					if (p.isOnline())
-						c.sendMessage(Language.get("info.coins-give-by-other").replaceAll("%player%", sender.getName()).replaceAll("%coins%", c.getCoins() + ""));
+						c.sendMessage(Language.get("info.coins-give-by-other").replaceAll("%player%", sender.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				else {
-					sender.sendMessage(Language.get("info.coins-give-failed").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+					sender.sendMessage(Language.get("info.coins-give-failed").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				return true;
-			case "take":
-				if (!sender.hasPermission("cannonfight.command.coins.take")) {
-					sender.sendMessage(Language.get("error.no-permission"));
+			case "take": //$NON-NLS-1$
+				if (!sender.hasPermission("cannonfight.command.coins.take")) { //$NON-NLS-1$
+					sender.sendMessage(Language.get("error.no-permission")); //$NON-NLS-1$
 					return true;
 				}
 			
 				p = Bukkit.getOfflinePlayer(args[0]);
 				
 				if (p == null) {
-					sender.sendMessage(Language.get("error.player-not-known").replaceAll("%player%", args[0]));
+					sender.sendMessage(Language.get("error.player-not-known").replaceAll("%player%", args[0])); //$NON-NLS-1$ //$NON-NLS-2$
 					return true;
 				}
 				
@@ -130,20 +130,20 @@ public class CoinsCommand implements CommandExecutor {
 				
 				amount = Integer.parseInt(args[2]);
 				
-				if (c.takeCoins(amount, sender.toString() + " took coins")) {
-					sender.sendMessage(Language.get("info.coins-take").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+				if (c.takeCoins(amount, sender.toString() + Language.get("info.coins.log.take"))) { //$NON-NLS-1$
+					sender.sendMessage(Language.get("info.coins-take").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					
 					if (p.isOnline())
-						c.sendMessage(Language.get("info.coins-take-by-other").replaceAll("%player%", sender.getName()).replaceAll("%coins%", c.getCoins() + ""));
+						c.sendMessage(Language.get("info.coins-take-by-other").replaceAll("%player%", sender.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				else {
-					sender.sendMessage(Language.get("info.coins-take-failed").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + ""));
+					sender.sendMessage(Language.get("info.coins-take-failed").replaceAll("%player%", c.getName()).replaceAll("%coins%", c.getCoins() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				return true;
 			};
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [player [(set|give|take) amount]]"));
+		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [player [(set|give|take) amount]]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		return true;
 	}
 }

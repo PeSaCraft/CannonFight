@@ -36,7 +36,7 @@ public class SetupShop {
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData());
 				ItemMeta meta = fill.getItemMeta();
-				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				meta.setDisplayName(ChatColor.AQUA + Language.get("info.has-coins") + ChatColor.GOLD + c.getCoins() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
 				fill.setItemMeta(meta);
 				
 				Set<String> cannons = Cannons.getCannonSet();
@@ -54,7 +54,7 @@ public class SetupShop {
 				
 				int rows = (int) Math.ceil(available.size() / 7.0) + 2; // 7 items per row, spacer row above and below
 				
-				Shop s = new Shop("CannonFight Setup", new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.cannon-setup.name"), new ClickHandler() { //$NON-NLS-1$
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -119,7 +119,7 @@ public class SetupShop {
 								}
 								else {
 									// not enough slots for that one
-									p.sendMessage(Language.get("error.not-enough-slots"));
+									p.sendMessage(Language.get("error.not-enough-slots")); //$NON-NLS-1$
 									return;
 								}
 								
@@ -152,7 +152,7 @@ public class SetupShop {
 							}, 1);
 						}
 						else {
-							player.sendMessage(Language.get("info.cannon-not-selected"));
+							player.sendMessage(Language.get("info.cannon-not-selected")); //$NON-NLS-1$
 						}
 					}
 
@@ -184,14 +184,14 @@ public class SetupShop {
 					// item selected
 					int pos = player.getActivePosition(cannon.getName()) + 1;
 					
-					lore.add(ChatColor.GREEN + "Diese Kanone ist momentan dein " + ChatColor.GOLD + pos + ". Item");
-					lore.add(ChatColor.GREEN + "Klick dieses Item an um es von den aktiven");
-					lore.add(ChatColor.GREEN + "Items zu entfernen oder gebe eine andere");
-					lore.add(ChatColor.GREEN + "Position an um die Items zu tauschen");
+					lore.add(ChatColor.GREEN + Language.get("shop.cannon-setup.using.lore") + ChatColor.GOLD + pos + ". Item"); //$NON-NLS-1$ //$NON-NLS-2$
+					lore.add(ChatColor.GREEN + "Klick dieses Item an um es von den aktiven"); //$NON-NLS-1$
+					lore.add(ChatColor.GREEN + "Items zu entfernen oder gebe eine andere"); //$NON-NLS-1$
+					lore.add(ChatColor.GREEN + "Position an um die Items zu tauschen"); //$NON-NLS-1$
 				}
 				else {
-					lore.add(ChatColor.GREEN + "Momentan verwendest du diese Kanone nicht");
-					lore.add(ChatColor.GREEN + "Gib eine Nummer ein um das Item zu zuweisen.");
+					lore.add(ChatColor.GREEN + Language.get("shop.cannon-setup.not-using.lore")); //$NON-NLS-1$
+					lore.add(ChatColor.GREEN + "Gib eine Nummer ein um das Item zu zuweisen."); //$NON-NLS-1$
 				}
 				
 				m.setLore(lore);

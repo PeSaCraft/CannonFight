@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import de.pesacraft.cannonfight.game.CageForm;
+import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.game.blockrestore.ModifiedBlock;
 
 public class Cage {
@@ -30,7 +31,7 @@ public class Cage {
 	@SuppressWarnings("deprecation")
 	public void createCage(ItemStack material) throws IllegalStateException {
 		if (used)
-			throw new IllegalStateException("Cage already in use!");
+			throw new IllegalStateException(Language.get("info.cage.already-in-use")); //$NON-NLS-1$
 		
 		used = true;
 		
@@ -51,7 +52,7 @@ public class Cage {
 	@SuppressWarnings("deprecation")
 	public void destroyCage() throws IllegalStateException {
 		if (!used)
-			throw new IllegalStateException("Cage not used: Nothing to remove!");
+			throw new IllegalStateException(Language.get("info.cage.not-in-use")); //$NON-NLS-1$
 		
 		used = false;
 		

@@ -43,7 +43,7 @@ public class UpgradeShop {
 	/**
 	 * The slot upgrade name in the database
 	 */
-	public static final String NAME_SLOTS = "Slots";
+	public static final String NAME_SLOTS = "Slots"; //$NON-NLS-1$
 	
 	protected static final Map<Integer, Upgrade<Integer>> SLOT_UPGRADES = new HashMap<Integer, Upgrade<Integer>>();
 	
@@ -54,7 +54,7 @@ public class UpgradeShop {
 	/**
 	 * The slot upgrade name in the database
 	 */
-	public static final String NAME_LIVES = "Lives";
+	public static final String NAME_LIVES = "Lives"; //$NON-NLS-1$
 	
 	protected static final Map<Integer, Upgrade<Integer>> LIFE_UPGRADES = new HashMap<Integer, Upgrade<Integer>>();
 	
@@ -63,14 +63,14 @@ public class UpgradeShop {
 	static {
 		COLLECTION = Collection.ITEMS();
 		
-		Document doc = COLLECTION.find(eq("name", NAME_SLOTS)).first();
+		Document doc = COLLECTION.find(eq("name", NAME_SLOTS)).first(); //$NON-NLS-1$
 		
 		if (doc != null) {
 			// Cannon in database
 			
-			ITEM_SLOTS = ItemSerializer.deserialize((Document) doc.get("item"));
+			ITEM_SLOTS = ItemSerializer.deserialize((Document) doc.get("item")); //$NON-NLS-1$
 			
-			Document upgrades = (Document) doc.get("upgrades");
+			Document upgrades = (Document) doc.get("upgrades"); //$NON-NLS-1$
 			for (Entry<String, Object> upgrade : upgrades.entrySet())
 				SLOT_UPGRADES.put(Integer.parseInt(upgrade.getKey()), new Upgrade<Integer>((Document) upgrade.getValue()));
 			
@@ -87,26 +87,26 @@ public class UpgradeShop {
 			for (int i = 1; i <= 10; i++) {
 				Upgrade<Integer> u = new Upgrade<Integer>(i * 1000, i);
 				SLOT_UPGRADES.put(i, u);
-				upgrades.put(i + "", u);
+				upgrades.put(i + "", u); //$NON-NLS-1$
 			}
 			
-			doc = new Document("name", NAME_SLOTS);
+			doc = new Document("name", NAME_SLOTS); //$NON-NLS-1$
 			
-			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_SLOTS)));
+			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_SLOTS))); //$NON-NLS-1$
 			
-			doc = doc.append("upgrades", new Document(upgrades));
+			doc = doc.append("upgrades", new Document(upgrades)); //$NON-NLS-1$
 			
 			COLLECTION.insertOne(doc);
 		}
 		
-		doc = COLLECTION.find(eq("name", NAME_LIVES)).first();
+		doc = COLLECTION.find(eq("name", NAME_LIVES)).first(); //$NON-NLS-1$
 		
 		if (doc != null) {
 			// Cannon in database
 			
-			ITEM_LIVES = ItemSerializer.deserialize((Document) doc.get("item"));
+			ITEM_LIVES = ItemSerializer.deserialize((Document) doc.get("item")); //$NON-NLS-1$
 			
-			Document upgrades = (Document) doc.get("upgrades");
+			Document upgrades = (Document) doc.get("upgrades"); //$NON-NLS-1$
 			for (Entry<String, Object> upgrade : upgrades.entrySet())
 				LIFE_UPGRADES.put(Integer.parseInt(upgrade.getKey()), new Upgrade<Integer>((Document) upgrade.getValue()));
 			
@@ -123,15 +123,15 @@ public class UpgradeShop {
 			for (int i = 1; i <= 5; i++) {
 				Upgrade<Integer> u = new Upgrade<Integer>(i * 10000, i);
 				LIFE_UPGRADES.put(i, u);
-				upgrades.put(i + "", u);
+				upgrades.put(i + "", u); //$NON-NLS-1$
 			}
 			
-			doc = new Document("name", NAME_LIVES);
+			doc = new Document("name", NAME_LIVES); //$NON-NLS-1$
 			
 			
-			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_LIVES)));
+			doc = doc.append("item", new Document(ItemSerializer.serialize(ITEM_LIVES))); //$NON-NLS-1$
 			
-			doc = doc.append("upgrades", new Document(upgrades));
+			doc = doc.append("upgrades", new Document(upgrades)); //$NON-NLS-1$
 			
 			COLLECTION.insertOne(doc);
 		}
@@ -141,13 +141,13 @@ public class UpgradeShop {
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData());
 				ItemMeta meta = fill.getItemMeta();
-				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				meta.setDisplayName(ChatColor.AQUA + Language.get("info.has-coins") + ChatColor.GOLD + c.getCoins() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
 				fill.setItemMeta(meta);
 				
 				final ItemStack slotItem = setupSlotItem(c);
 				final ItemStack lifeItem = setupLifeItem(c);
 				
-				Shop s = new Shop("Upgrade Shop", new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.upgrade.name"), new ClickHandler() { //$NON-NLS-1$
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -164,13 +164,13 @@ public class UpgradeShop {
 							// upgrade slots
 							if (!SLOT_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
 								// max reached
-								p.sendMessage(Language.get("error.max-upgraded"));
+								p.sendMessage(Language.get("error.max-upgraded")); //$NON-NLS-1$
 								return;
 							}
 							
 							if (!p.upgradeSlots()) {
 								// not enough coins for upgrade
-								p.sendMessage(Language.get("error.not-enough-coins"));
+								p.sendMessage(Language.get("error.not-enough-coins")); //$NON-NLS-1$
 								return;
 							}
 							
@@ -190,13 +190,13 @@ public class UpgradeShop {
 							// upgrade slots
 							if (!LIFE_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
 								// max reached
-								p.sendMessage(Language.get("error.max-upgraded"));
+								p.sendMessage(Language.get("error.max-upgraded")); //$NON-NLS-1$
 								return;
 							}
 							
 							if (!p.upgradeLives()) {
 								// not enough coins for upgrade
-								p.sendMessage(Language.get("error.not-enough-coins"));
+								p.sendMessage(Language.get("error.not-enough-coins")); //$NON-NLS-1$
 								return;
 							}
 							
@@ -233,15 +233,15 @@ public class UpgradeShop {
 				
 				Upgrade<Integer> upgrade = getSlotsUpgradeForLevel(p.getSlotsLevel() + 1);
 				
-				lore.add(ChatColor.GREEN + "Hier kannst du dir mehr Slots kaufen.");
-				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getSlots() + " Slots");
+				lore.add(ChatColor.GREEN + Language.get("shop.upgrade.slots.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getSlots() + " Slots"); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				if (upgrade != null) {
-					lore.add(ChatColor.GREEN + "Ein Upgrade auf " + ChatColor.GOLD + upgrade.getValue() + " Slots");
-					lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice());
+					lore.add(ChatColor.GREEN + Language.get("shop.upgrade.slots.lore.upgradable") + ChatColor.GOLD + upgrade.getValue() + " Slots"); //$NON-NLS-1$ //$NON-NLS-2$
+					lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice()); //$NON-NLS-1$
 				}
 				else
-					lore.add(ChatColor.RED + "Du hast bereits die maximale Anzahl Slots");
+					lore.add(ChatColor.RED + Language.get("shop.upgrade.slots.lore.max-reached")); //$NON-NLS-1$
 					
 				m.setLore(lore);
 				
@@ -258,15 +258,15 @@ public class UpgradeShop {
 				
 				Upgrade<Integer> upgrade = getLivesUpgradeForLevel(p.getLivesLevel() + 1);
 				
-				lore.add(ChatColor.GREEN + "Hier kannst du dir mehr Leben kaufen.");
-				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getLives() + " Leben");
+				lore.add(ChatColor.GREEN + Language.get("shop.upgrade.lives.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "Momentan hast du " + ChatColor.GOLD + p.getLives() + " Leben"); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				if (upgrade != null) {
-					lore.add(ChatColor.GREEN + "Ein Upgrade auf " + ChatColor.GOLD + upgrade.getValue() + " Leben");
-					lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice());
+					lore.add(ChatColor.GREEN + Language.get("shop.upgrade.lives.lore.upgradable") + ChatColor.GOLD + upgrade.getValue() + " Leben"); //$NON-NLS-1$ //$NON-NLS-2$
+					lore.add(ChatColor.GREEN + "kostet " + ChatColor.GOLD + upgrade.getPrice()); //$NON-NLS-1$
 				}
 				else
-					lore.add(ChatColor.RED + "Du hast bereits die maximale Anzahl LEben");
+					lore.add(ChatColor.RED + Language.get("shop.upgrade.lives.lore.max-reached")); //$NON-NLS-1$
 					
 				m.setLore(lore);
 				

@@ -34,7 +34,7 @@ public class CannonShop {
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GREEN.getData());
 				ItemMeta meta = fill.getItemMeta();
-				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				meta.setDisplayName(ChatColor.AQUA + Language.get("info.has-coins") + ChatColor.GOLD + c.getCoins() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
 				fill.setItemMeta(meta);
 				
 				Set<String> cannons = Cannons.getCannonSet();
@@ -54,7 +54,7 @@ public class CannonShop {
 					items.add(item);
 				}
 				
-				Shop s = new Shop("Cannon Shop", new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.cannons.name"), new ClickHandler() { //$NON-NLS-1$
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -81,7 +81,7 @@ public class CannonShop {
 								
 								if (p.hasEnoughCoins(constructor.getPrice())) {
 									Cannon c = constructor.buyNew(p);
-									p.takeCoins(constructor.getPrice(), cannon + " gekauft");
+									p.takeCoins(constructor.getPrice(), cannon + Language.get("info.cannon-bought")); //$NON-NLS-1$
 									p.addCannon(c);
 									
 									// regenerate this shop, cannon isnt buyable anymore
@@ -96,7 +96,7 @@ public class CannonShop {
 									return;
 								}
 								
-								p.sendMessage(Language.get("error.not-enough-coins"));
+								p.sendMessage(Language.get("error.not-enough-coins")); //$NON-NLS-1$
 								
 								return;
 							}
@@ -124,8 +124,8 @@ public class CannonShop {
 				ItemMeta m = i.getItemMeta();
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.RED + "Diese Kanone besitzt du noch nicht.");
-				lore.add(ChatColor.GREEN + "Du kannst sie für " + constructor.getPrice() + " Coins kaufen.");
+				lore.add(ChatColor.RED + Language.get("shop.cannons.not-owning.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "Du kannst sie für " + constructor.getPrice() + " Coins kaufen."); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				m.setLore(lore);
 				
@@ -140,8 +140,8 @@ public class CannonShop {
 				ItemMeta m = i.getItemMeta();
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + "Diese Kanone besitzt du bereits.");
-				lore.add(ChatColor.GREEN + "Klicke um sie zu verbessern.");
+				lore.add(ChatColor.GREEN + Language.get("shop.cannons.owning.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "Klicke um sie zu verbessern."); //$NON-NLS-1$
 				
 				m.setLore(lore);
 				

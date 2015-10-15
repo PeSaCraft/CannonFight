@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
@@ -30,7 +31,7 @@ public class MainShop {
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.PURPLE.getData());
 				ItemMeta meta = fill.getItemMeta();
-				meta.setDisplayName(ChatColor.AQUA + "Du hast " + ChatColor.GOLD + c.getCoins() + " Coins");
+				meta.setDisplayName(ChatColor.AQUA + Language.get("info.has-coins") + ChatColor.GOLD + c.getCoins() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
 				fill.setItemMeta(meta);
 				
 				final ItemStack cannonItem = setupCannonItem();
@@ -38,7 +39,7 @@ public class MainShop {
 				final ItemStack setupItem = setupSetupItem();
 				final ItemStack powerupItem = setupPowerupItem();
 				
-				Shop s = new Shop("CannonFight Shop", new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.name.general"), new ClickHandler() { //$NON-NLS-1$
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -92,11 +93,11 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.SUGAR);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName("Power-Ups");
+				m.setDisplayName(Language.get("shop.general.power-ups.name")); //$NON-NLS-1$
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + "Hier kannst du dir Power-Ups");
-				lore.add(ChatColor.GREEN + "kaufen und diese verbessern.");
+				lore.add(ChatColor.GREEN + Language.get("shop.general.power-ups.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "kaufen und diese verbessern."); //$NON-NLS-1$
 				
 				m.setLore(lore);
 				
@@ -108,12 +109,12 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.ANVIL);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName("Setup");
+				m.setDisplayName(Language.get("shop.general.setup.name")); //$NON-NLS-1$
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + "Hier kannst du dein Inventar");
-				lore.add(ChatColor.GREEN + "für das Spiel einrichten und");
-				lore.add(ChatColor.GREEN + "dir aussuchen was du verwendest.");
+				lore.add(ChatColor.GREEN + Language.get("shop.general.setup.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "für das Spiel einrichten und"); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "dir aussuchen was du verwendest."); //$NON-NLS-1$
 				
 				m.setLore(lore);
 				
@@ -125,11 +126,11 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.NETHER_STAR);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName("Upgrades");
+				m.setDisplayName(Language.get("shop.general.upgrades.name")); //$NON-NLS-1$
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + "Hier kannst du dir allgemeine Upgrades");
-				lore.add(ChatColor.GREEN + "wie Leben und Slots kaufen.");
+				lore.add(ChatColor.GREEN + Language.get("shop.general.upgrades.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "wie Leben und Slots kaufen."); //$NON-NLS-1$
 				
 				m.setLore(lore);
 				
@@ -141,11 +142,11 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.BLAZE_ROD);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName("Cannons");
+				m.setDisplayName(Language.get("shop.general.cannons.name")); //$NON-NLS-1$
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + "Hier kannst du dir neue Kanonen");
-				lore.add(ChatColor.GREEN + "und Upgrades für diese kaufen.");
+				lore.add(ChatColor.GREEN + Language.get("shop.general.cannons.lore")); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + "und Upgrades für diese kaufen."); //$NON-NLS-1$
 				
 				m.setLore(lore);
 				

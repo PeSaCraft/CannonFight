@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.Language;
 
 public class Shop implements Listener {
 	private static int shopCount = 0;
@@ -38,7 +39,7 @@ public class Shop implements Listener {
 			items = new ItemStack[0];
 		
 		if (items.length % 9 != 0)
-			throw new IllegalArgumentException("Array for inventory has to have a length dividable by 9");
+			throw new IllegalArgumentException(Language.get("error.shop.array-length-not-div-9")); //$NON-NLS-1$
 		
 		this.name = name;
 		this.handler = handler;
@@ -49,7 +50,7 @@ public class Shop implements Listener {
 	
 	public void unregister() {
 		if (isUnregistered())
-			throw new IllegalStateException("Shop already unregistered. It can only be used once!");
+			throw new IllegalStateException(Language.get("error.shop.already-unregistered")); //$NON-NLS-1$
 		
 		HandlerList.unregisterAll(this);
 		unregistered = true;
@@ -70,7 +71,7 @@ public class Shop implements Listener {
 	
 	public void openInventory(CannonFighter c) {
 		if (isUnregistered())
-			throw new IllegalStateException("Shop already unregistered. It can only be used once!");
+			throw new IllegalStateException(Language.get("error.shop.already-unregistered")); //$NON-NLS-1$
 		
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
 		inv.setContents(items);

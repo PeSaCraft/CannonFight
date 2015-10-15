@@ -85,12 +85,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		PLUGIN = this;
 		LOGGER = this.getLogger();
 		
-		if (!new File(this.getDataFolder() + "config.yml").exists())
+		if (!new File(this.getDataFolder() + "config.yml").exists()) //$NON-NLS-1$
 			this.saveDefaultConfig();
 		
 		CannonFightUtil.use(this);
 		
-		Language.loadLanguage(this, this.getConfig().getString("language"));
+		Language.loadLanguage(this, this.getConfig().getString("language")); //$NON-NLS-1$
 		
 		Iterator<World> worlds = Bukkit.getWorlds().iterator();
 		
@@ -99,7 +99,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			Bukkit.getServer().unloadWorld(w, true);
 		}
 		
-		WORLD_LOBBY = Bukkit.getServer().createWorld(new WorldCreator("lobby"));
+		WORLD_LOBBY = Bukkit.getServer().createWorld(new WorldCreator("lobby")); //$NON-NLS-1$
 		
 		setupCommands();
 		
@@ -126,9 +126,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		if (WORLD_GAME != null) {
 			// restore backup
 			File original = WORLD_GAME.getWorldFolder();
-			File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
+			File backup = new File(original.getParentFile().getAbsolutePath(), "_backup"); //$NON-NLS-1$
 			Bukkit.unloadWorld(WORLD_GAME, false);
-			LOGGER.info("Unloaded game world. Restoring backup.");
+			LOGGER.info(Language.get("info.unloaded-game-world-restore-backup")); //$NON-NLS-1$
 			CannonFightUtil.copyWorld(backup, original);
 		}
 		
@@ -141,7 +141,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		// create backup
 		File original = WORLD_GAME.getWorldFolder();
-		File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
+		File backup = new File(original.getParentFile().getAbsolutePath(), "_backup"); //$NON-NLS-1$
 		backup.mkdir();
 		CannonFightUtil.copyWorld(original, backup);
 		
@@ -149,19 +149,19 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	}
 	
 	private void setupCommands() {
-		PluginCommand coins = this.getCommand("coins");
+		PluginCommand coins = this.getCommand("coins"); //$NON-NLS-1$
 		coins.setExecutor(new CoinsCommand());
 		
-		PluginCommand leave = this.getCommand("leave");
+		PluginCommand leave = this.getCommand("leave"); //$NON-NLS-1$
 		leave.setExecutor(new LeaveCommand());
 
-		PluginCommand shop = this.getCommand("shop");
+		PluginCommand shop = this.getCommand("shop"); //$NON-NLS-1$
 		shop.setExecutor(new ShopCommand());
 	}
 	
 	private void tryToStart() {
 		BukkitRunnable startTimer = new BukkitRunnable() {
-			private int time = CannonFightGame.PLUGIN.getConfig().getInt("game.time.untilStart");
+			private int time = CannonFightGame.PLUGIN.getConfig().getInt("game.time.untilStart"); //$NON-NLS-1$
 			
 			@Override
 			public void run() {
@@ -185,7 +185,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				
 				time--;
 				
-				Bukkit.broadcastMessage(Language.get("info.time-till-start").replaceAll("%time%", time + ""));
+				Bukkit.broadcastMessage(Language.get("info.time-till-start").replaceAll("%time%", time + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		};
 		
@@ -205,7 +205,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			
 			Configuration config = CannonFightUtil.PLUGIN.getConfig();
 			
-			p.setMaxHealth(config.getDouble("game.livesPerLive"));
+			p.setMaxHealth(config.getDouble("game.livesPerLive")); //$NON-NLS-1$
 			p.setHealth(p.getMaxHealth());
 			p.setFoodLevel(20);
 			
@@ -233,7 +233,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		}
 		
 		new BukkitRunnable() {
-			private int time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.start");
+			private int time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.start"); //$NON-NLS-1$
 			
 			@Override
 			public void run() {
@@ -242,26 +242,26 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 					if (time == 0) {
 						CommunicationGameClient.getInstance().sendGameStarted();
 						gameState = GameState.INGAME;
-						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.play");
+						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.play"); //$NON-NLS-1$
 						
 						for (ActivePlayer player : players) {
 							player.destroyCage();
 							
 							player.createPlatform();
 						}
-						Bukkit.broadcastMessage(Language.get("info.game-start"));
+						Bukkit.broadcastMessage(Language.get("info.game-start")); //$NON-NLS-1$
 						
 						break;	
 					}
 					
-					Bukkit.broadcastMessage(Language.get("info.game-start-countdown").replaceAll("%time%", time + ""));
+					Bukkit.broadcastMessage(Language.get("info.game-start-countdown").replaceAll("%time%", time + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					
 					break;
 				case INGAME:
 					if (players.size() <= 1) {
 						
 						gameState = GameState.GAMEOVER;
-						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.gameover");
+						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.gameover"); //$NON-NLS-1$
 						
 						Set<CannonFighter> winner = new HashSet<CannonFighter>();
 						
@@ -279,7 +279,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 					if (time == 0) {
 						
 						gameState = GameState.GAMEOVER;
-						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.gameover");
+						time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.gameover"); //$NON-NLS-1$
 						
 						Set<CannonFighter> winner = new HashSet<CannonFighter>();
 					
@@ -292,18 +292,18 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 					}
 					// jede Minute uebrige Zeit, wenn weniger als 1 min alle 15 sek und die letzten 15 sek.
 					if (time % 60 == 0)
-						Bukkit.broadcastMessage(Language.get("info.game-remaining-min").replaceAll("%time%", (time / 60) + ""));
+						Bukkit.broadcastMessage(Language.get("info.game-remaining-min").replaceAll("%time%", (time / 60) + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 					if ((time < 60 && time % 15 == 0) || (time < 15))
-						Bukkit.broadcastMessage(Language.get("info.game-remaining-sec").replaceAll("%time%", time + ""));
+						Bukkit.broadcastMessage(Language.get("info.game-remaining-sec").replaceAll("%time%", time + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					
 					break;
 				case GAMEOVER:
 					if (time % 5 == 0 || (time < 5 && time != 0))
-						Bukkit.broadcastMessage(Language.get("info.game-over-teleport-back-in").replaceAll("%time%", time + ""));
+						Bukkit.broadcastMessage(Language.get("info.game-over-teleport-back-in").replaceAll("%time%", time + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					
 					if (time == 0) {
-						Bukkit.broadcastMessage(Language.get("info.game-over-teleport-back-now"));
+						Bukkit.broadcastMessage(Language.get("info.game-over-teleport-back-now")); //$NON-NLS-1$
 						
 						this.cancel();
 
@@ -467,7 +467,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		p.setFoodLevel(20);
 		p.setFireTicks(0);
 		
-		c.sendMessage(Language.get("info.respawned").replaceAll("%lives%", a.getLives() + ""));
+		c.sendMessage(Language.get("info.respawned").replaceAll("%lives%", a.getLives() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
 	public static void addFuturePlayer(String name, String server) {
@@ -497,7 +497,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			Bukkit.getPluginManager().callEvent(preJoinEvent);
 			
 			if (preJoinEvent.isCancelled())
-				event.disallow(Result.KICK_OTHER, "Game running!");
+				event.disallow(Result.KICK_OTHER, Language.get("info.kick.game-running")); //$NON-NLS-1$
 			return;
 		}
 		// no player, maybe spectator
@@ -515,12 +515,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			Bukkit.getPluginManager().callEvent(preJoinEvent);
 			
 			if (preJoinEvent.isCancelled())
-				event.disallow(Result.KICK_FULL, "Server full!");
+				event.disallow(Result.KICK_FULL, Language.get("info.kick.server-full")); //$NON-NLS-1$
 			return;
 		}
 		
 		// neither player nor spectator: cannot join
-		event.disallow(Result.KICK_WHITELIST, "Not authenticated!");
+		event.disallow(Result.KICK_WHITELIST, Language.get("info.kick.not-authenticated")); //$NON-NLS-1$
 	}
 	
 	@EventHandler
@@ -606,7 +606,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			
 			Configuration config = CannonFightUtil.PLUGIN.getConfig();
 			
-			p.setMaxHealth(config.getDouble("game.livesPerLive"));
+			p.setMaxHealth(config.getDouble("game.livesPerLive")); //$NON-NLS-1$
 			p.setHealth(p.getMaxHealth());
 			p.setFoodLevel(20);
 			
@@ -622,12 +622,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				inv.setItem(i, cannon.getItem());
 			}
 			
-			Bukkit.broadcastMessage(Language.get("info.player-join-game-others").replaceAll("%player%", event.getPlayer().getName()));
+			Bukkit.broadcastMessage(Language.get("info.player-join-game-others").replaceAll("%player%", event.getPlayer().getName())); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else {
 			p.teleport(WORLD_LOBBY.getSpawnLocation());
 			
-			Bukkit.broadcastMessage(Language.get("info.player-join-lobby-others").replaceAll("%player%", event.getPlayer().getName()));	
+			Bukkit.broadcastMessage(Language.get("info.player-join-lobby-others").replaceAll("%player%", event.getPlayer().getName()));	 //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -747,7 +747,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
  			p.setVelocity(direction);
 			
 			event.setTo(from);
-			p.sendMessage(Language.get("error.cannot-leave-arena-bounds"));
+			p.sendMessage(Language.get("error.cannot-leave-arena-bounds")); //$NON-NLS-1$
 		}
 	}
 	
@@ -895,7 +895,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		// player messages are visible to everyone
 		
-		event.setFormat(Language.get("general.chat-format").replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));	
+		event.setFormat(Language.get("general.chat-format").replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
 	@EventHandler
@@ -916,10 +916,10 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
-		Bukkit.broadcastMessage(Language.get("info.game-over")); // ChatColor.RED + "Spiel vorbei!"
+		Bukkit.broadcastMessage(Language.get("info.game-over")); // ChatColor.RED + "Spiel vorbei!" //$NON-NLS-1$
 		
-		int reward = CannonFightUtil.PLUGIN.getConfig().getInt("game.reward");
-		String msg = Language.get("info.game-won").replaceAll("%coins%", reward + "");
+		int reward = CannonFightUtil.PLUGIN.getConfig().getInt("game.reward"); //$NON-NLS-1$
+		String msg = Language.get("info.game-won").replaceAll("%coins%", reward + ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		for (CannonFighter c : event.getWinner()) {
 			c.sendMessage(msg);
 			c.giveCoins(reward / event.getWinner().size());
@@ -932,20 +932,20 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		if (event.getKiller() != null) {
 			// von spieler getoetet
-			msg = Language.get("info.player-died-killed-by-other").replaceAll("%killer%", event.getKiller().getName()).replaceAll("%victim%", event.getVictim().getName()); // event.getVictim().getName() + " wurde von " + event.getKiller().getName() + " getötet."
-			event.getKiller().sendMessage(Language.get("info.player-killed").replaceAll("%victim%", event.getVictim().getName()));
-			event.getVictim().sendMessage(Language.get("info.player-got-killed").replaceAll("%killer%", event.getKiller().getName()));
+			msg = Language.get("info.player-died-killed-by-other").replaceAll("%killer%", event.getKiller().getName()).replaceAll("%victim%", event.getVictim().getName()); // event.getVictim().getName() + " wurde von " + event.getKiller().getName() + " getötet." //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			event.getKiller().sendMessage(Language.get("info.player-killed").replaceAll("%victim%", event.getVictim().getName())); //$NON-NLS-1$ //$NON-NLS-2$
+			event.getVictim().sendMessage(Language.get("info.player-got-killed").replaceAll("%killer%", event.getKiller().getName())); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		else {
 			// anderer todes grund
-			msg = Language.get("info.player-died"); // event.getVictim().getName() + " ist gestorben.";	
-			event.getVictim().sendMessage(Language.get("info.player-died-self"));
+			msg = Language.get("info.player-died"); // event.getVictim().getName() + " ist gestorben.";	 //$NON-NLS-1$
+			event.getVictim().sendMessage(Language.get("info.player-died-self")); //$NON-NLS-1$
 		}
 		
 		Bukkit.broadcastMessage(msg);
 		
 		if (event.isOutOfGame())
-			Bukkit.broadcastMessage(Language.get("info.remaining-players").replaceAll("%player%", players.size() + ""));
+			Bukkit.broadcastMessage(Language.get("info.remaining-players").replaceAll("%player%", players.size() + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
 	@EventHandler
@@ -964,14 +964,14 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			}
 		}
 		if (gameState == GameState.INGAME || gameState == GameState.STARTING) {
-			String msg = Language.get("info.player-left-game").replaceAll("%player%", event.getFighter().getName());
-			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", (players.size() - 1) + "");
+			String msg = Language.get("info.player-left-game").replaceAll("%player%", event.getFighter().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+			String msg2 = Language.get("info.remaining-players").replaceAll("%player%", (players.size() - 1) + ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 			Bukkit.broadcastMessage(msg);
 			Bukkit.broadcastMessage(msg2);
 		}
 		else if (gameState == GameState.WAITING) {
-			Bukkit.broadcastMessage(Language.get("info.player-left-lobby"));
+			Bukkit.broadcastMessage(Language.get("info.player-left-lobby")); //$NON-NLS-1$
 		}
 	}
 	
@@ -989,12 +989,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				// start countdown
 				this.cancel();
 				
-				Bukkit.broadcastMessage(Language.get("info.enough-players-game-starts"));
+				Bukkit.broadcastMessage(Language.get("info.enough-players-game-starts")); //$NON-NLS-1$
 				tryToStart();
 			}
 			else {
 				// not enough: no countdown
-				Bukkit.broadcastMessage(Language.get("info.not-enough-players"));
+				Bukkit.broadcastMessage(Language.get("info.not-enough-players")); //$NON-NLS-1$
 			}
 		}
 	}

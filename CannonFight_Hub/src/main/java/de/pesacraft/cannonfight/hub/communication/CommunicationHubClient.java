@@ -42,33 +42,33 @@ public class CommunicationHubClient extends Thread {
 	@Override
 	public void run() {
 		try {
-			out.writeUTF("HubReady");
-			out.writeUTF(CannonFightHub.PLUGIN.getConfig().getString("bungeecord.servername"));
+			out.writeUTF("HubReady"); //$NON-NLS-1$
+			out.writeUTF(CannonFightHub.PLUGIN.getConfig().getString("bungeecord.servername")); //$NON-NLS-1$
 			out.writeInt(Bukkit.getPort());
 			
 			String input = in.readUTF();
 			
-			if (!input.equals("HubConnected")) {
+			if (!input.equals("HubConnected")) { //$NON-NLS-1$
 				CommunicationHubClient.getInstance().sendHubShutdown();
 				Bukkit.getServer().spigot().restart();
 				return;
 			}
 			
 			while ((input = in.readUTF()) != null) {
-				if (input.equals("PlayerCount")) {
+				if (input.equals("PlayerCount")) { //$NON-NLS-1$
 					String arena = in.readUTF();
 					int amount = in.readInt();
 					SignHandler.getInstance().updateSign(arena, amount);
 				}
-				else if (input.equals("PlayerDenied")) {
+				else if (input.equals("PlayerDenied")) { //$NON-NLS-1$
 					String player = in.readUTF();
 					
-					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join"));
+					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join")); //$NON-NLS-1$
 				}
-				else if (input.equals("SpectatorDenied")) {
+				else if (input.equals("SpectatorDenied")) { //$NON-NLS-1$
 					String player = in.readUTF();
 					
-					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join-spectator"));
+					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join-spectator")); //$NON-NLS-1$
 				}
 			}
 		} catch (IOException ex) {
@@ -79,7 +79,7 @@ public class CommunicationHubClient extends Thread {
 	
 	public void sendHubShutdown() {
 		try {
-			out.writeUTF("HubShutdown");
+			out.writeUTF("HubShutdown"); //$NON-NLS-1$
 			socket.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -88,7 +88,7 @@ public class CommunicationHubClient extends Thread {
 
 	public void sendPlayer(String arena, String player) {
 		try {
-			out.writeUTF("Player");
+			out.writeUTF("Player"); //$NON-NLS-1$
 			out.writeUTF(arena);
 			out.writeUTF(player);
 		} catch (IOException ex) {
@@ -98,7 +98,7 @@ public class CommunicationHubClient extends Thread {
 	
 	public void sendSpectator(String player, String whoToSpectate) {
 		try {
-			out.writeUTF("Spectator");
+			out.writeUTF("Spectator"); //$NON-NLS-1$
 			out.writeUTF(player);
 			out.writeUTF(whoToSpectate);
 		} catch (IOException ex) {
@@ -108,7 +108,7 @@ public class CommunicationHubClient extends Thread {
 	
 	public void sendSpectatorToArena(String arena, String player) {
 		try {
-			out.writeUTF("SpectatorArena");
+			out.writeUTF("SpectatorArena"); //$NON-NLS-1$
 			out.writeUTF(arena);
 			out.writeUTF(player);
 		} catch (IOException ex) {
@@ -133,7 +133,7 @@ public class CommunicationHubClient extends Thread {
 			
 			@Override
 			public void run() {
-				CannonFightHub.LOGGER.info("Trying to connect to proxy");
+				CannonFightHub.LOGGER.info(Language.get("info.proxy.try-to-connect")); //$NON-NLS-1$
 				// try to establish connection
 				new CommunicationHubClient();
 				
@@ -141,7 +141,7 @@ public class CommunicationHubClient extends Thread {
 					// connection established, don't have to retry
 					getInstance().start();
 					this.cancel();
-					CannonFightHub.LOGGER.info("Connected to proxy. Back to work!");
+					CannonFightHub.LOGGER.info(Language.get("info.proxy.connected")); //$NON-NLS-1$
 				}
 			}
 		}.runTaskTimer(CannonFightHub.PLUGIN, 0, 20 * 30); // every 30 seconds

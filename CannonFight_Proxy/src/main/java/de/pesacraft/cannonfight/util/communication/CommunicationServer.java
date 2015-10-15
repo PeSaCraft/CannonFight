@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.pesacraft.cannonfight.util.Language;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
@@ -41,11 +42,11 @@ public class CommunicationServer extends Thread {
 				// if request coming from this machine use 127.0.0.1 instead of the connected address to make servers not visible from outside the machine compatible
 				InetAddress address = NetworkInterface.getByInetAddress(client.getInetAddress()) == null ? client.getInetAddress() : InetAddress.getLoopbackAddress();
 				
-				if (type.equals("HubReady")) {
+				if (type.equals("HubReady")) { //$NON-NLS-1$
 					String serverName = in.readUTF();
 					int port = in.readInt();
 					
-					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM HUB!", false);
+					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM HUB!", false); //$NON-NLS-1$
 					
 					ProxyServer.getInstance().getServers().put(serverName, info);
 					
@@ -53,11 +54,11 @@ public class CommunicationServer extends Thread {
 					handler.start();
 					hubs.put(serverName, handler);
 				}
-				else if (type.equals("GameReady")) {
+				else if (type.equals("GameReady")) { //$NON-NLS-1$
 					String serverName = in.readUTF();
 					int port = in.readInt();
 					
-					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM GAME!", false);
+					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM GAME!", false); //$NON-NLS-1$
 					
 					ProxyServer.getInstance().getServers().put(serverName, info);
 					
@@ -66,8 +67,8 @@ public class CommunicationServer extends Thread {
 					games.put(serverName, handler);
 				}
 				else {
-					out.writeUTF("ConnectionRefused");
-					out.writeUTF("Wrong start of connection");
+					out.writeUTF("ConnectionRefused"); //$NON-NLS-1$
+					out.writeUTF(Language.get("error.proxy.connection-refused.message")); //$NON-NLS-1$
 					out.close();
 					in.close();
 					client.close();

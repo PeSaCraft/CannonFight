@@ -26,7 +26,7 @@ public class ActivePlayer extends Participant {
 	
 	public void createCage() throws IllegalStateException {
 		if (hasCage())
-			throw new IllegalStateException("Only one cage can be created per player at the same time");
+			throw new IllegalStateException(Language.get("error.only-one-cage-instance"));
 		
 		cage = new Cage(CageForm.PLAYER, getPlayer().getPlayer().getLocation().getBlock());
 		
@@ -35,7 +35,7 @@ public class ActivePlayer extends Participant {
 	
 	public void destroyCage() throws IllegalStateException {
 		if (!hasCage())
-			throw new IllegalStateException("No cage created!");
+			throw new IllegalStateException(Language.get("error.no-cage-created"));
 		
 		cage.destroyCage();
 		
@@ -60,7 +60,7 @@ public class ActivePlayer extends Participant {
 					this.cancel();
 					return;
 				}
-				a.getPlayer().sendMessage(Language.get("info.platform.dissapears-in-sec").replaceAll("%time%", time + ""));
+				a.getPlayer().sendMessage(Language.get("info.platform.dissapears.time").replaceAll("%time%", time + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				time--;
 			}
 		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20);

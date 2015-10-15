@@ -15,6 +15,7 @@ import com.mongodb.client.model.Filters;
 
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
+import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
@@ -50,13 +51,13 @@ public class Cannons {
 	public static void storeCannons() {	
 		for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
 			String name = entry.getKey();
-			Document doc = new Document("name", name);	
+			Document doc = new Document("name", name);	 //$NON-NLS-1$
 			
-			doc = doc.append("item", new Document(ItemSerializer.serialize(entry.getValue().getItem())));
+			doc = doc.append("item", new Document(ItemSerializer.serialize(entry.getValue().getItem()))); //$NON-NLS-1$
 			
 			doc.putAll(Cannon.serializeUpgrades(name));
 			
-			Collection.ITEMS().replaceOne(Filters.eq("name", name), doc);	 
+			Collection.ITEMS().replaceOne(Filters.eq("name", name), doc);	  //$NON-NLS-1$
 		}
 	}
 	
@@ -68,7 +69,7 @@ public class Cannons {
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
 		
-		Shop s = new Shop("Cannon-Setup", new ClickHandler() {
+		Shop s = new Shop(Language.get("shop.name.cannon.setup"), new ClickHandler() { //$NON-NLS-1$
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
