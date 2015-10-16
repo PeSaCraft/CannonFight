@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
+import de.pesacraft.cannonfight.util.Language.TimeOutputs;
+
 public class Language {
 	private static ResourceBundle MESSAGES;
 	private static String brand;
@@ -48,7 +50,62 @@ public class Language {
 			return (brand ? Language.brand : "") + ChatColor.translateAlternateColorCodes('&', MESSAGES.getString(key));
 		}
 		catch (Exception ex) {
-			return get("error.missing-translation").replaceAll("%key%", key);
+			return getStringMaker(get("error.missing-translation"), brand).replace("%key%", key).getString();
 		}
+	}
+	
+	public static String formatTime(int timeInSeconds, TimeOutputs outputMode) {
+		switch (outputMode) {
+		case MINUTES:
+			int timeInMinutes = timeInSeconds / 60;
+			if (timeInMinutes == 1)
+				return timeInMinutes + " " + get("general.units.minute", false);
+			return timeInMinutes + " " + get("general.units.minutes", false);
+		case SECONDS:
+			if (timeInSeconds == 1)
+				return timeInSeconds + " " + get("general.units.second", false);
+			return timeInSeconds + " " + get("general.units.seconds", false);
+		default:
+			break;
+		
+		}
+		return "";
+	}
+	
+	public static StringMaker getStringMaker(String key, boolean brand) {
+		return new StringMaker(get(key, brand));
+	}
+	
+	public static class StringMaker {
+		
+		private String string;
+		
+		private StringMaker(String string) {
+			this.string = string;
+		}
+		
+		public StringMaker replace(String match, String replacement) {
+			this.string.replaceAll(match, replacement);
+			return this;
+		}
+		
+		public String getString() {
+			return string;
+		}
+	}
+	
+	public static enum TimeOutputs {
+		SECONDS,
+		MINUTES,
+	}
+
+	public static String formatLives(int lives) {
+		return null;
+	}
+
+	public static String formatCoins(int coins) {
+		if (coins == 1)
+			return coins + " " + get("general.units.coin", false);
+		return coins + " " + get("general.units.coins", false);
 	}
 }
