@@ -42,7 +42,7 @@ public class Arena {
 		Document doc = COLLECTION.find(eq("name", name)).first();
 		
 		if (doc == null)
-			throw new IllegalArgumentException(Language.get("error.arena-does-not-exist"));
+			throw new IllegalArgumentException(Language.getStringMaker("error.arena.does-not-exist", false).replace("%name%", name).getString());
 		
 		requiredPlayers = doc.getInteger("requiredPlayers");
 		

@@ -60,7 +60,8 @@ public class ActivePlayer extends Participant {
 					this.cancel();
 					return;
 				}
-				a.getPlayer().sendMessage(Language.get("info.platform.dissapears.time").replaceAll("%time%", time + "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				
+				Language.getStringMaker("info.platform.dissapears.time", true).replace("%time%", Language.formatTime(time, Language.TimeOutputs.SECONDS));
 				time--;
 			}
 		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20);
