@@ -52,10 +52,10 @@ public class Language {
 			return (brand ? Language.brand : "") + ChatColor.translateAlternateColorCodes('&', MESSAGES.getString(key));
 		}
 		catch (Exception ex) {
-			if (key.equalsIgnoreCase("error.missing-translation")) {
+			if (key.equalsIgnoreCase("error.missing-translation"))
 				return "error.missing-translation is missing!";
-			}
-			return getStringMaker(get("error.missing-translation"), brand).replace("%key%", key).getString();
+
+			return getStringMaker("error.missing-translation", brand).replace("%key%", key).getString();
 		}
 	}
 	
