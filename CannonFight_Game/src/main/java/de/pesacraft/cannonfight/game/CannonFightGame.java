@@ -86,13 +86,14 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		PLUGIN = this;
 		LOGGER = this.getLogger();
 		
-		CannonFightUtil.use(this);
 		Language.loadLanguage(this, this.getConfig().getString("language"));
 		
 		if (!new File(this.getDataFolder() + "config.yml").exists()) {
 			LOGGER.info(Language.get("info.new-config-created", false));
 			this.saveDefaultConfig();
 		}
+		
+		CannonFightUtil.use(this);
 		
 		LOGGER.info(Language.get("info.unloading-worlds.begin", false));
 		Iterator<World> worlds = Bukkit.getWorlds().iterator();

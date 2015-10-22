@@ -31,6 +31,7 @@ public class Language {
 		String lang[] = language.split("_");
 		
 		File msg = new File(folder.getAbsolutePath() + "/lang_" + language + ".properties");
+		
 		if (!msg.exists())
 			plugin.saveResource("lang/lang_" + language + ".properties", false);
 		
