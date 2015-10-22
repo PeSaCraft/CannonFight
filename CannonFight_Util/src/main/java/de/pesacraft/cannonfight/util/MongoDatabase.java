@@ -1,9 +1,11 @@
 package de.pesacraft.cannonfight.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.MongoSecurityException;
 
 
 public class MongoDatabase {
@@ -24,11 +26,16 @@ public class MongoDatabase {
 		String user = conf.getString("database.auth.username");
 		String pass = conf.getString("database.auth.password");
 		String authDB = conf.getString("database.auth.db");
+		try {
+			mongo = new MongoClient(new MongoClientURI("mongodb://" + user + ":" + pass + "@" + host + ":" + port + "/?authSource=" + authDB));
 		
-		mongo = new MongoClient(new MongoClientURI("mongodb://" + user + ":" + pass + "@" + host + ":" + port + "/?authSource=" + authDB));
-		
-		db = mongo.getDatabase(dbName);
-		
+			db = mongo.getDatabase(dbName);
+		}
+		catch (MongoSecurityException ex) {
+			CannonFightUtil.PLUGIN.getLogger().severe(Language.get("error.database.failed-to-connect", false));
+			Bukkit.getPluginManager().disablePlugin(CannonFightUtil.PLUGIN);
+			return;
+		}
 		Collection.load(db);
 	}
 
