@@ -19,6 +19,11 @@ public class Language {
 	public static void loadLanguage(Plugin plugin, String language) {
 		File folder = new File(plugin.getDataFolder() + "/lang/");
 	
+		File msg = new File(folder.getAbsolutePath() + "/lang_" + language + ".properties");
+		
+		if (!msg.exists())
+			plugin.saveResource("lang/lang_" + language + ".properties", false);
+		
 		URL[] urls;
 		try {
 			urls = new URL[]{folder.toURI().toURL()};
@@ -30,10 +35,6 @@ public class Language {
 		
 		String lang[] = language.split("_");
 		
-		File msg = new File(folder.getAbsolutePath() + "/lang_" + language + ".properties");
-		
-		if (!msg.exists())
-			plugin.saveResource("lang/lang_" + language + ".properties", false);
 		
 		MESSAGES = ResourceBundle.getBundle("lang", new Locale(lang[0], lang[1]), loader);
 		
