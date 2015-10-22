@@ -86,20 +86,23 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		PLUGIN = this;
 		LOGGER = this.getLogger();
 		
-		if (!new File(this.getDataFolder() + "config.yml").exists())
-			this.saveDefaultConfig();
-		
 		CannonFightUtil.use(this);
-		
 		Language.loadLanguage(this, this.getConfig().getString("language"));
 		
-		Iterator<World> worlds = Bukkit.getWorlds().iterator();
+		if (!new File(this.getDataFolder() + "config.yml").exists()) {
+			LOGGER.info(Language.get("info.new-config-created", false));
+			this.saveDefaultConfig();
+		}
 		
+		LOGGER.info(Language.get("info.unloading-worlds.begin", false));
+		Iterator<World> worlds = Bukkit.getWorlds().iterator();
 		while (worlds.hasNext()) {
 			World w = worlds.next();
 			Bukkit.getServer().unloadWorld(w, true);
 		}
+		LOGGER.info(Language.get("info.unloading-worlds.finish", false));
 		
+		LOGGER.info(Language.get("info.load-lobby", false));
 		WORLD_LOBBY = Bukkit.getServer().createWorld(new WorldCreator("lobby"));
 		
 		setupCommands();
@@ -123,14 +126,15 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onDisable() { 
-		
 		if (WORLD_GAME != null) {
 			// restore backup
+			LOGGER.info(Language.get("info.restore-backup.begin", false));
 			File original = WORLD_GAME.getWorldFolder();
 			File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
 			Bukkit.unloadWorld(WORLD_GAME, false);
-			LOGGER.info(Language.get("info.game.unloaded"));
+			LOGGER.info(Language.get("info.game.unloaded", false));
 			CannonFightUtil.copyWorld(backup, original);
+			LOGGER.info(Language.get("info.unloading-worlds.finished", false));
 		}
 		
 		// unregister from proxy
@@ -138,8 +142,10 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	}
 	
 	public static void setArena(String arena) {
+		LOGGER.info(Language.getStringMaker("info.arena-set", false).replace("%arena%", arena).getString());
 		WORLD_GAME = Bukkit.getServer().createWorld(new WorldCreator(arena));
 		
+		LOGGER.info(Language.get("info.create-backup", false));
 		// create backup
 		File original = WORLD_GAME.getWorldFolder();
 		File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
@@ -150,6 +156,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	}
 	
 	private void setupCommands() {
+		LOGGER.info(Language.get("info.register-commands", false));
 		PluginCommand coins = this.getCommand("coins");
 		coins.setExecutor(new CoinsCommand());
 		
