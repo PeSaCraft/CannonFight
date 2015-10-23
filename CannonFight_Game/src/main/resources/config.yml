@@ -14,6 +14,7 @@ database:
     db: auth_db
 
 arena: arena
+
 game:
   time:
     untilStart: 10
