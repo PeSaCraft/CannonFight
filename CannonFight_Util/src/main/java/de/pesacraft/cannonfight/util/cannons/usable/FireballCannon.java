@@ -690,12 +690,13 @@ public class FireballCannon extends Cannon implements Listener {
 	public String formatValueForUpgrade(String upgrade, Object value) {
 		switch (upgrade) {
 		case UPGRADE_AMMO:
+			return Language.formatAmmo(((Number) value).intValue());
 		case UPGRADE_COOLDOWN:
-			return Language.formatTime((int) value, TimeOutputs.SECONDS);
+			return Language.formatTime(((Number) value).intValue(), TimeOutputs.SECONDS);
 		case UPGRADE_DAMAGE:
-			return Language.formatDamage((double) value);
+			return Language.formatDamage(((Number) value).doubleValue());
 		case UPGRADE_RADIUS:
-			return Language.formatDistance((double) value);
+			return Language.formatDistance(((Number) value).doubleValue());
 		}
 		return null;
 	}

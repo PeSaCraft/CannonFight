@@ -128,7 +128,7 @@ public class SignHandler implements Listener {
 		String arena = ChatColor.stripColor(event.getLine(1));
 		
 		event.setLine(0, JOIN_LINE);
-		event.setLine(1, Language.getStringMaker("sign.join.arena-line", false).replace("%arena%", arena).getString());
+		event.setLine(1, arena);
 		event.setLine(2, Language.get("sign.join.sign-not-activated", false));
 	
 		List<Location> locs = signs.get(arena);

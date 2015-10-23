@@ -184,10 +184,10 @@ public class SetupShop {
 					// item selected
 					int pos = player.getActivePosition(cannon.getName()) + 1;
 					
-					lore.add(ChatColor.GREEN + Language.getStringMaker("shop.cannon-setup.using.lore", false).replace("%pos%", String.valueOf(pos)).getString());
+					lore.add(Language.getStringMaker("shop.item-setup.using.lore", false).replace("%pos%", String.valueOf(pos)).getString());
 				}
 				else {
-					lore.add(ChatColor.GREEN + Language.get("shop.cannon-setup.not-using.lore"));
+					lore.add(Language.get("shop.item-setup.not-using.lore"));
 				}
 				
 				m.setLore(lore);

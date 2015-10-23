@@ -127,7 +127,13 @@ public class Language {
 			return slots + " " + get("general.units.slot", false);
 		return slots + " " + get("general.units.slots", false);
 	}
-
+	
+	public static String formatAmmo(int ammo) {
+		if (ammo == 1)
+			return ammo + " " + get("general.units.ammo", false);
+		return ammo + " " + get("general.units.ammos", false);
+	}
+	
 	public static String formatDistance(double distance) {
 		if (distance == 1)
 			return distance + " " + get("general.units.block", false);
