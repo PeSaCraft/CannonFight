@@ -137,97 +137,97 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		final ItemStack delete = new ItemStack(Material.BARRIER);
 		
 		ItemMeta meta = prev.getItemMeta();
-		meta.setDisplayName(ChatColor.AQUA + Language.get("setup.menu.create-level") + (level - 1) + " erstellen");	 //$NON-NLS-1$ //$NON-NLS-2$
+		meta.setDisplayName(Language.getStringMaker("setup.menu.level.change", false).replace("%level%", String.valueOf(level - 1)).getString());
 		prev.setItemMeta(meta);
 		
 		meta = next.getItemMeta();
 		
 		if (getLevels() == level)
 			// next will be new one
-			meta.setDisplayName(ChatColor.GREEN + "Level " + (level + 1) + " erstellen");	 //$NON-NLS-1$ //$NON-NLS-2$
+			meta.setDisplayName(Language.getStringMaker("setup.menu.level.create", false).replace("%level%", String.valueOf(level + 1)).getString());
 		else
 			// next already exists
-			meta.setDisplayName(ChatColor.AQUA + "Level " + (level + 1) + " einstellen");	 //$NON-NLS-1$ //$NON-NLS-2$
+			meta.setDisplayName(Language.getStringMaker("setup.menu.level.change", false).replace("%level%", String.valueOf(level + 1)).getString());
 		
 		next.setItemMeta(meta);
 		
 		// setup price items
 		meta = changePriceDownFast.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + Language.get("setup.menu.price.decrease.strong")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.price.decrease.strong", false));
 		List<String> lore = new ArrayList<String>();
-		lore.add(Language.get("setup.menu.price.decrease.strong.value") + getUpgradeChanger().getFastPriceChange() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
+		lore.add(Language.getStringMaker("setup.menu.price.decrease.strong.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString());
 		meta.setLore(lore);
 		changePriceDownFast.setItemMeta(meta);
 		
 		meta = changePriceDownSlow.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + Language.get("setup.menu.price.decrease.slight")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.price.decrease.slight", false));
 		lore = new ArrayList<String>();
-		lore.add(Language.get("setup.menu.price.decrease.slight.value") + getUpgradeChanger().getSlowPriceChange() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
+		lore.add(Language.getStringMaker("setup.menu.price.decrease.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString());
 		meta.setLore(lore);
 		changePriceDownSlow.setItemMeta(meta);
 		
 		meta = price.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.price.current.title")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.price.current.title", false));
 		lore = new ArrayList<String>();
-		lore.add(upgrade.getPrice() + Language.get("setup.menu.price.current.value")); //$NON-NLS-1$
+		lore.add(Language.getStringMaker("setup.menu.price.current.value", false).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString());
 		meta.setLore(lore);
 		price.setItemMeta(meta);
 		
 		meta = changePriceUpSlow.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + Language.get("setup.menu.price.increase.slight")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.price.increase.slight", false));
 		lore = new ArrayList<String>();
-		lore.add(getUpgradeChanger().getSlowPriceChange() + Language.get("setup.menu.price.increase.slight.value")); //$NON-NLS-1$
+		lore.add(Language.getStringMaker("setup.menu.price.increase.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString());
 		meta.setLore(lore);
 		changePriceUpSlow.setItemMeta(meta);
 		
 		meta = changePriceUpFast.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + Language.get("setup.menu.price.increase.strong")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.price.increase.strong", false));
 		lore = new ArrayList<String>();
-		lore.add(getUpgradeChanger().getFastPriceChange() + Language.get("setup.menu.price.increase.strong.amount")); //$NON-NLS-1$
+		lore.add(Language.getStringMaker("setup.menu.price.increase.strong.amount", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString());
 		meta.setLore(lore);
 		changePriceUpFast.setItemMeta(meta);
 		
 		// setup value items
 		meta = changeValueDownFast.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + Language.get("setup.menu.value.decrease.strong")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.value.decrease.strong", false));
 		lore = new ArrayList<String>();
-		lore.add(Language.get("setup.menu.value.decrease.strong.value") + getUpgradeChanger().getFastValueChange()); //$NON-NLS-1$
+		lore.add(Language.getStringMaker("setup.menu.value.decrease.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString());
 		meta.setLore(lore);
 		changeValueDownFast.setItemMeta(meta);
 		
 		meta = changeValueDownSlow.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + Language.get("setup.menu.value.decrease.slight")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.value.decrease.slight", false));
 		lore = new ArrayList<String>();
-		lore.add(Language.get("setup.menu.value.decrease.slight.value") + getUpgradeChanger().getSlowValueChange()); //$NON-NLS-1$
+		lore.add(Language.getStringMaker("setup.menu.value.decrease.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString());
 		meta.setLore(lore);
 		changeValueDownSlow.setItemMeta(meta);
 		
 		meta = value.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.value.current.title")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.value.current.title", false));
 		lore = new ArrayList<String>();
-		lore.add(upgrade.getValue().toString());
+		lore.add(Language.getStringMaker("setunp.menu.value.current.value", false).replace("%value%", upgrade.getValue().toString()).getString());
 		meta.setLore(lore);
 		value.setItemMeta(meta);
 		
 		meta = changeValueUpSlow.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + Language.get("setup.menu.value.increase.slight")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.value.increase.slight", false));
 		lore = new ArrayList<String>();
-		lore.add(getUpgradeChanger().getSlowValueChange().toString());
+		lore.add(Language.getStringMaker("setup.menu.value.increase.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString());
 		meta.setLore(lore);
 		changeValueUpSlow.setItemMeta(meta);
 		
 		meta = changeValueUpFast.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + Language.get("setup.menu.value.increase.strong")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.value.increase.strong", false));
 		lore = new ArrayList<String>();
-		lore.add(getUpgradeChanger().getFastValueChange().toString());
+		lore.add(Language.getStringMaker("setup.menu.value.increase.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString());
 		meta.setLore(lore);
 		changeValueUpFast.setItemMeta(meta);
 		
 		meta = delete.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + Language.get("setup.menu.upgrade.delete")); //$NON-NLS-1$
+		meta.setDisplayName(Language.get("setup.menu.upgrade.delete"));
 		delete.setItemMeta(meta);
 		
-		Shop s = new Shop(Language.get("setup.menu.title") + level + " Setup", new ClickHandler() { //$NON-NLS-1$ //$NON-NLS-2$
+		Shop s = new Shop(Language.getStringMaker("setup.menu.title", false).replace("%level%", String.valueOf(level)).getString(), new ClickHandler() {
 		
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {

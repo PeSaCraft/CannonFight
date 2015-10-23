@@ -30,6 +30,7 @@ import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.CannonFighter;
+import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
@@ -683,5 +684,19 @@ public class FireballCannon extends Cannon implements Listener {
 	@Override
 	public CannonConstructor getCannonConstructor() {
 		return constructor;
+	}
+
+	@Override
+	public String formatValueForUpgrade(String upgrade, Object value) {
+		switch (upgrade) {
+		case UPGRADE_AMMO:
+		case UPGRADE_COOLDOWN:
+			return Language.formatTime((int) value, TimeOutputs.SECONDS);
+		case UPGRADE_DAMAGE:
+			return Language.formatDamage((double) value);
+		case UPGRADE_RADIUS:
+			return Language.formatDistance((double) value);
+		}
+		return null;
 	}
 }

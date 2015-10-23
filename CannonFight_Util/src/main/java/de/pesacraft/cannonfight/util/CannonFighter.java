@@ -48,20 +48,20 @@ public class CannonFighter {
 	private CannonFighter(UUID uuid) {
 		this.uuid = uuid;
 		
-		Document doc = COLLECTION.find(eq("uuid", uuid.toString())).first(); //$NON-NLS-1$
+		Document doc = COLLECTION.find(eq("uuid", uuid.toString())).first();
 		
 		if (doc != null) {
 			// Player in database
-			xp = ((Number) doc.get("xp")).intValue(); //$NON-NLS-1$
+			xp = ((Number) doc.get("xp")).intValue();
 			
-			slotsLevel = ((Number) doc.get("slotsLevel")).intValue(); //$NON-NLS-1$
+			slotsLevel = ((Number) doc.get("slotsLevel")).intValue();
 			slots = UpgradeShop.getSlotsUpgradeForLevel(slotsLevel).getValue();
 			
-			livesLevel = ((Number) doc.get("livesLevel")).intValue(); //$NON-NLS-1$
+			livesLevel = ((Number) doc.get("livesLevel")).intValue();
 			lives = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
 			
 			cannons = new HashMap<String, Cannon>();
-			Document cannons = (Document) doc.get("cannons"); //$NON-NLS-1$
+			Document cannons = (Document) doc.get("cannons");
 			
 			for (Entry<String, Object> entry : cannons.entrySet()) {
 				CannonConstructor constructor = Cannons.getConstructorByName(entry.getKey());
@@ -69,7 +69,7 @@ public class CannonFighter {
 				this.addCannon(constructor.construct(this, (Document) entry.getValue()));
 			}
 			
-			List<String> activeItems = (List<String>) doc.get("activeItems"); //$NON-NLS-1$
+			List<String> activeItems = (List<String>) doc.get("activeItems");
 			
 			for (String c : activeItems) {
 				this.activeItems.add(this.cannons.get(c));
@@ -89,10 +89,10 @@ public class CannonFighter {
 			livesLevel = 1;
 			slots = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
 			
-			doc = new Document("uuid", uuid.toString()); //$NON-NLS-1$
-			doc = doc.append("xp", 0); //$NON-NLS-1$
-			doc = doc.append("slotsLevel", slotsLevel); //$NON-NLS-1$
-			doc = doc.append("livesLevel", livesLevel); //$NON-NLS-1$
+			doc = new Document("uuid", uuid.toString());
+			doc = doc.append("xp", 0);
+			doc = doc.append("slotsLevel", slotsLevel);
+			doc = doc.append("livesLevel", livesLevel);
 			
 			// cannons don't have to be written into the db here
 			// they will be added when a new cannon is bought.
@@ -107,16 +107,16 @@ public class CannonFighter {
 			List<String> activeStrings = new ArrayList<String>();
 			for (Cannon c : getActiveItems()) {
 				if (c == null)
-					activeStrings.add("null"); //$NON-NLS-1$
+					activeStrings.add("null");
 				else
 					activeStrings.add(c.getName());
 			}
 			
-			COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("activeItems", activeStrings))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("activeItems", activeStrings)));
 		}
 		
 		// update players name
-		COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("name", getName()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		COLLECTION.updateOne(eq("uuid", uuid.toString()), new Document("$set", new Document("name", getName())));
 	}
 	
 	public int getCoins() {
@@ -251,11 +251,11 @@ public class CannonFighter {
 		
 		slotsLevel++;
 		
-		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("slotsLevel", slotsLevel))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("slotsLevel", slotsLevel)));
 		
 		slots = upgrade.getValue();
 		
-		takeCoins(upgrade.getPrice(), UpgradeShop.NAME_SLOTS + Language.get("info.upgrade.to-level") + slotsLevel); //$NON-NLS-1$
+		takeCoins(upgrade.getPrice(), Language.getStringMaker("info.upgrade.to-level", false).replace("%name%", UpgradeShop.NAME_SLOTS).replace("%level%", String.valueOf(slotsLevel)).getString());
 		
 		return true;
 	}
@@ -276,11 +276,11 @@ public class CannonFighter {
 		
 		livesLevel++;
 		
-		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("livesLevel", livesLevel))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("livesLevel", livesLevel)));
 		
 		lives = upgrade.getValue();
 		
-		takeCoins(upgrade.getPrice(), UpgradeShop.NAME_LIVES + "-Upgrade auf Level " + livesLevel); //$NON-NLS-1$
+		takeCoins(upgrade.getPrice(), Language.getStringMaker("info.upgrade.to-level", false).replace("%name%", UpgradeShop.NAME_LIVES).replace("%level%", String.valueOf(livesLevel)).getString());
 		
 		return true;
 	}
@@ -316,12 +316,12 @@ public class CannonFighter {
 		List<String> strings = new ArrayList<String>();
 		for (Cannon c : getActiveItems()) {
 			if (c == null)
-				strings.add("null"); //$NON-NLS-1$
+				strings.add("null");
 			else
 				strings.add(c.getName());
 		}
 		
-		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("activeItems", strings)));	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("activeItems", strings)));
 	}
 	
 	

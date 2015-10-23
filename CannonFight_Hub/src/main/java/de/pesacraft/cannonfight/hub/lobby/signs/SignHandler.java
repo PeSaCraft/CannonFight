@@ -30,7 +30,7 @@ import de.pesacraft.cannonfight.util.Language;
 
 public class SignHandler implements Listener {
 	private static SignHandler instance;
-	private static final String JOIN_LINE = ChatColor.AQUA + Language.get("sign.join.line0.display"); //$NON-NLS-1$
+	private static final String JOIN_LINE = Language.get("sign.join.line0.display");
 	
 	private Map<String, List<Location>> signs;
 	
@@ -41,7 +41,7 @@ public class SignHandler implements Listener {
 		
 		signs = new HashMap<String, List<Location>>();
 		
-		File file = new File(CannonFightHub.PLUGIN.getDataFolder(), "signs.yml"); //$NON-NLS-1$
+		File file = new File(CannonFightHub.PLUGIN.getDataFolder(), "signs.yml");
 		
 		try {
 			file.createNewFile();
@@ -63,7 +63,7 @@ public class SignHandler implements Listener {
 	}
 	
 	public void save() {
-		File file = new File(CannonFightHub.PLUGIN.getDataFolder(), "signs.yml"); //$NON-NLS-1$
+		File file = new File(CannonFightHub.PLUGIN.getDataFolder(), "signs.yml");
 		
 		try {
 			file.createNewFile();
@@ -112,13 +112,13 @@ public class SignHandler implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		
-		if (!ChatColor.stripColor(event.getLine(0)).equals(Language.get("sign.join.line0.enter"))) //$NON-NLS-1$
+		if (!ChatColor.stripColor(event.getLine(0)).equals(Language.get("sign.join.line0.enter")))
 			// sign no join sign: not relevant for this handler
 			return;
 		
 		// sign is a join sign
-		if (!p.hasPermission("cannonfight.sign.create.join")) { //$NON-NLS-1$
-			p.sendMessage(Language.get("error.no-permission")); //$NON-NLS-1$
+		if (!p.hasPermission("cannonfight.sign.create.join")) {
+			p.sendMessage(Language.get("error.no-permission"));
 			event.setCancelled(true);
 			return;
 		}
@@ -128,8 +128,8 @@ public class SignHandler implements Listener {
 		String arena = ChatColor.stripColor(event.getLine(1));
 		
 		event.setLine(0, JOIN_LINE);
-		event.setLine(1, ChatColor.AQUA + arena);
-		event.setLine(2, ChatColor.GREEN + Language.get("sign.join.sign-not-activated")); //$NON-NLS-1$
+		event.setLine(1, Language.getStringMaker("sign.join.arena-line", false).replace("%arena%", arena).getString());
+		event.setLine(2, Language.get("sign.join.sign-not-activated", false));
 	
 		List<Location> locs = signs.get(arena);
 		
@@ -157,7 +157,7 @@ public class SignHandler implements Listener {
 			
 			// there is still a sign
 			Sign sign = (Sign) b.getState();
-			sign.setLine(2, amount + Language.get("sign.join.player-waiting")); //$NON-NLS-1$
+			sign.setLine(2, Language.getStringMaker("sign.join.player-waiting", false).replace("%players%", Language.formatPlayers(amount)).getString());
 			sign.update();
 		}
 	}

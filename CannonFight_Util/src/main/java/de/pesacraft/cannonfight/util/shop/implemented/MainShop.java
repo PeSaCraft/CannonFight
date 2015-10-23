@@ -31,7 +31,7 @@ public class MainShop {
 			public Shop createShop(CannonFighter c) {
 				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.PURPLE.getData());
 				ItemMeta meta = fill.getItemMeta();
-				meta.setDisplayName(ChatColor.AQUA + Language.get("info.has-coins") + ChatColor.GOLD + c.getCoins() + " Coins"); //$NON-NLS-1$ //$NON-NLS-2$
+				meta.setDisplayName(Language.getStringMaker("info.has-coins", false).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
 				fill.setItemMeta(meta);
 				
 				final ItemStack cannonItem = setupCannonItem();
@@ -39,7 +39,7 @@ public class MainShop {
 				final ItemStack setupItem = setupSetupItem();
 				final ItemStack powerupItem = setupPowerupItem();
 				
-				Shop s = new Shop(Language.get("shop.name.general"), new ClickHandler() { //$NON-NLS-1$
+				Shop s = new Shop(Language.get("shop.general.name"), new ClickHandler() {
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -93,11 +93,10 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.SUGAR);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.power-ups.name")); //$NON-NLS-1$
+				m.setDisplayName(Language.get("shop.general.power-ups.name"));
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + Language.get("shop.general.power-ups.lore")); //$NON-NLS-1$
-				lore.add(ChatColor.GREEN + "kaufen und diese verbessern."); //$NON-NLS-1$
+				lore.add(Language.get("shop.general.power-ups.lore"));
 				
 				m.setLore(lore);
 				
@@ -109,12 +108,9 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.ANVIL);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.setup.name")); //$NON-NLS-1$
-				
+				m.setDisplayName(Language.get("shop.general.item-setup.name"));
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + Language.get("shop.general.setup.lore")); //$NON-NLS-1$
-				lore.add(ChatColor.GREEN + "für das Spiel einrichten und"); //$NON-NLS-1$
-				lore.add(ChatColor.GREEN + "dir aussuchen was du verwendest."); //$NON-NLS-1$
+				lore.add(Language.get("shop.general.item-setup.lore"));
 				
 				m.setLore(lore);
 				
@@ -126,11 +122,10 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.NETHER_STAR);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.upgrades.name")); //$NON-NLS-1$
+				m.setDisplayName(Language.get("shop.general.upgrades.name"));
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + Language.get("shop.general.upgrades.lore")); //$NON-NLS-1$
-				lore.add(ChatColor.GREEN + "wie Leben und Slots kaufen."); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + Language.get("shop.general.upgrades.lore"));
 				
 				m.setLore(lore);
 				
@@ -142,11 +137,10 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.BLAZE_ROD);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.cannons.name")); //$NON-NLS-1$
+				m.setDisplayName(Language.get("shop.general.cannons.name"));
 				
 				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + Language.get("shop.general.cannons.lore")); //$NON-NLS-1$
-				lore.add(ChatColor.GREEN + "und Upgrades für diese kaufen."); //$NON-NLS-1$
+				lore.add(ChatColor.GREEN + Language.get("shop.general.cannons.lore"));
 				
 				m.setLore(lore);
 				

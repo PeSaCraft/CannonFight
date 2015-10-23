@@ -51,13 +51,13 @@ public class Cannons {
 	public static void storeCannons() {	
 		for (Entry<String, CannonConstructor> entry : cannons.entrySet()) {
 			String name = entry.getKey();
-			Document doc = new Document("name", name);	 //$NON-NLS-1$
+			Document doc = new Document("name", name);
 			
-			doc = doc.append("item", new Document(ItemSerializer.serialize(entry.getValue().getItem()))); //$NON-NLS-1$
+			doc = doc.append("item", new Document(ItemSerializer.serialize(entry.getValue().getItem())));
 			
 			doc.putAll(Cannon.serializeUpgrades(name));
 			
-			Collection.ITEMS().replaceOne(Filters.eq("name", name), doc);	  //$NON-NLS-1$
+			Collection.ITEMS().replaceOne(Filters.eq("name", name), doc);
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class Cannons {
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
 		
-		Shop s = new Shop(Language.get("shop.name.cannon.setup"), new ClickHandler() { //$NON-NLS-1$
+		Shop s = new Shop(Language.getStringMaker("shop.cannons.setup.name", false).getString(), new ClickHandler() {
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {

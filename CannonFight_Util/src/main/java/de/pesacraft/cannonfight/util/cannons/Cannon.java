@@ -155,7 +155,7 @@ public abstract class Cannon extends Cooldown {
 
 	public final static UpgradeMap getUpgradeMap(String cannonName) {
 		if (!UPGRADE_MAP.containsKey(cannonName))
-			throw new IllegalArgumentException(Language.get("error.cannon.not-registered") + cannonName + "\" isn't registered!"); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalArgumentException(Language.getStringMaker("error.cannon.not-registered", false).replace("%cannon%", cannonName).getString());
 		
 		return UPGRADE_MAP.get(cannonName);
 	}
@@ -168,7 +168,7 @@ public abstract class Cannon extends Cooldown {
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.ORANGE.getData());
 		
-		Shop s = new Shop(cannonName + Language.get("shop.name.cannon.specific.setup"), new ClickHandler() { //$NON-NLS-1$
+		Shop s = new Shop(Language.getStringMaker("shop.specific-cannon.setup.name", false).replace("%cannon%", cannonName).getString(), new ClickHandler() {
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
@@ -211,7 +211,7 @@ public abstract class Cannon extends Cooldown {
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.CYAN.getData());
 		
-		Shop s = new Shop(Language.get("shop.name.cannon.specific.shop") + getName(), new ClickHandler() { //$NON-NLS-1$
+		Shop s = new Shop(Language.getStringMaker("shop.specific-cannon.shop.name", false).replace("%cannon%", getName()).getString(), new ClickHandler() {
 			
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
@@ -249,17 +249,17 @@ public abstract class Cannon extends Cooldown {
 			ItemMeta meta = item.getItemMeta();
 			List<String> lore = new ArrayList<String>();
 			
-			lore.add(ChatColor.GOLD + Language.get("shop.upgrade.lore.current") + oldUpgrade.getValue()); //$NON-NLS-1$
+			lore.add(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.current", false).replace("%value%", formatValueForUpgrade(entry.getKey(), oldUpgrade.getValue())).getString());
 			
 			if (newUpgrade == null) {
 				// maximum level of upgrade reached
-				lore.add(ChatColor.GREEN + Language.get("shop.upgrade.lore.max-reached")); //$NON-NLS-1$
+				lore.add(Language.get("shop.specific-cannon.shop.upgrade.lore.max-reached", false));
 			}
 			else {
 				// upgradable
-				lore.add(ChatColor.YELLOW + Language.get("shop.upgrade.lore.upgrade-to.level") + (level + 1)); //$NON-NLS-1$
-				lore.add(ChatColor.AQUA + Language.get("shop.upgrade.lore.upgrade-to.price") + newUpgrade.getPrice()); //$NON-NLS-1$
-				lore.add(ChatColor.LIGHT_PURPLE + Language.get("shop.upgrade.lore.upgrade-to.value") + newUpgrade.getValue()); //$NON-NLS-1$
+				lore.add(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to.level", false).replace("%level%", String.valueOf(level + 1)).getString());
+				lore.add(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to.price", false).replace("%coins%", Language.formatCoins(newUpgrade.getPrice())).getString());
+				lore.add(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to.value", false).replace("%value%", formatValueForUpgrade(entry.getKey(), newUpgrade.getValue())).getString());
 			}
 			
 			meta.setLore(lore);
@@ -271,4 +271,6 @@ public abstract class Cannon extends Cooldown {
 		
 		return s;
 	}
+	
+	abstract public String formatValueForUpgrade(String upgrade, Object value);
 }

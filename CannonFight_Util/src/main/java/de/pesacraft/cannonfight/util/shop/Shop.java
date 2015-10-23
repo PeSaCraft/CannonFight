@@ -39,7 +39,7 @@ public class Shop implements Listener {
 			items = new ItemStack[0];
 		
 		if (items.length % 9 != 0)
-			throw new IllegalArgumentException(Language.get("error.shop.array-length-not-div-9")); //$NON-NLS-1$
+			throw new IllegalArgumentException(Language.get("error.shop.array-length-not-div-9", false));
 		
 		this.name = name;
 		this.handler = handler;
@@ -50,7 +50,7 @@ public class Shop implements Listener {
 	
 	public void unregister() {
 		if (isUnregistered())
-			throw new IllegalStateException(Language.get("error.shop.already-unregistered")); //$NON-NLS-1$
+			throw new IllegalStateException(Language.get("error.shop.already-unregistered", false));
 		
 		HandlerList.unregisterAll(this);
 		unregistered = true;
@@ -71,7 +71,7 @@ public class Shop implements Listener {
 	
 	public void openInventory(CannonFighter c) {
 		if (isUnregistered())
-			throw new IllegalStateException(Language.get("error.shop.already-unregistered")); //$NON-NLS-1$
+			throw new IllegalStateException(Language.get("error.shop.already-unregistered", false));
 		
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
 		inv.setContents(items);

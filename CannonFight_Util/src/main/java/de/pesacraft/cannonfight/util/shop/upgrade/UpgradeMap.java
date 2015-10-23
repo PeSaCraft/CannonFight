@@ -101,14 +101,14 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	
 	public void setItemStack(String name, ItemStack item) {
 		if (!this.containsKey(name))
-			throw new IllegalStateException(Language.get("error.upgrade.no-item-set") + name + "\" has no ItemStack set!"); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalStateException(Language.getStringMaker("error.upgrade.not-set", false).replace("%name%", name).getString());
 		
 		this.get(name).setItemStack(item);
 	}
 	
 	public ItemStack getItemStack(String name) {
 		if (!this.containsKey(name))
-			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!"); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalStateException(Language.getStringMaker("error.upgrade.not-set", false).replace("%name%", name).getString());
 		
 		return this.get(name).getItemStack();
 	}
@@ -142,7 +142,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 	@SuppressWarnings("deprecation")
 	public Shop getUpgradeSetupShop(String name) {
 		if (!this.containsKey(name))
-			throw new IllegalStateException("Upgrade \"" + name + "\" has no ItemStack set!"); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalStateException(Language.getStringMaker("error.upgrade.not-set", false).replace("%name%", name).getString());
 		
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.SILVER.getData());
 		
@@ -156,7 +156,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 			ItemStack item = new ItemStack(Material.WOOL, i, DyeColor.WHITE.getWoolData());
 			
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(ChatColor.AQUA + Language.get("setup.menu.setup-level") + i + " einstellen"); //$NON-NLS-1$ //$NON-NLS-2$
+			meta.setDisplayName(Language.getStringMaker("setup.menu.setup-level", false).replace("%level%", String.valueOf(i)).getString());
 			item.setItemMeta(meta);
 			
 			items.put(item, i);
@@ -165,7 +165,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		ItemStack newLevelItem = new ItemStack(Material.WOOL, i, DyeColor.GRAY.getWoolData());
 		
 		ItemMeta meta = newLevelItem.getItemMeta();
-		meta.setDisplayName(ChatColor.AQUA + Language.get("setup.menu.create-level") + i + " erstellen"); //$NON-NLS-1$ //$NON-NLS-2$
+		meta.setDisplayName(Language.getStringMaker("setup.menu.create-level", false).replace("%level%", String.valueOf(i)).getString());
 		newLevelItem.setItemMeta(meta);
 		
 		items.put(newLevelItem, i);
@@ -173,7 +173,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		// space for one new level
 		int rows = (int) Math.ceil((double) (upgrades.getLevels() + 1) / 9);
 		
-		Shop s = new Shop(name + Language.get("setup.menu.upgrade-menu.title"), new ClickHandler() { //$NON-NLS-1$
+		Shop s = new Shop(Language.getStringMaker("setup.menu.title", false).replace("%name%", name).getString(), new ClickHandler() {
 		
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {

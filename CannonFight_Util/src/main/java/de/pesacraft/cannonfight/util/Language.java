@@ -105,12 +105,43 @@ public class Language {
 	}
 
 	public static String formatLives(int lives) {
-		return null;
+		if (lives == 1)
+			return lives + " " + get("general.units.life", false);
+		return lives + " " + get("general.units.lives", false);
 	}
 
 	public static String formatCoins(int coins) {
 		if (coins == 1)
 			return coins + " " + get("general.units.coin", false);
 		return coins + " " + get("general.units.coins", false);
+	}
+	
+	public static String formatPlayers(int players) {
+		if (players == 1)
+			return players + " " + get("general.units.player", false);
+		return players + " " + get("general.units.players", false);
+	}
+	
+	public static String formatSlots(int slots) {
+		if (slots == 1)
+			return slots + " " + get("general.units.slot", false);
+		return slots + " " + get("general.units.slots", false);
+	}
+
+	public static String formatDistance(double distance) {
+		if (distance == 1)
+			return distance + " " + get("general.units.block", false);
+		return distance + " " + get("general.units.blocks", false);
+	}
+
+	public static String formatDamage(double damage) {
+		String hearts = "";
+		for (int i = 0; i < damage / 2; i++)
+			hearts += "\u2764";
+		
+		if (damage % 2 == 1)
+			hearts += "\u2765";
+		
+		return getStringMaker("general.units.damage-format", false).replace("%value%", String.valueOf(damage)).replace("%hearts%", hearts).getString();
 	}
 }
