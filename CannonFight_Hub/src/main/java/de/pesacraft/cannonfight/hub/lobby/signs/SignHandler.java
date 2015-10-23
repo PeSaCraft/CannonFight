@@ -30,7 +30,7 @@ import de.pesacraft.cannonfight.util.Language;
 
 public class SignHandler implements Listener {
 	private static SignHandler instance;
-	private static final String JOIN_LINE = Language.get("sign.join.line0.display");
+	private static final String JOIN_LINE = Language.get("sign.join.line0.display", false);
 	
 	private Map<String, List<Location>> signs;
 	
@@ -112,7 +112,7 @@ public class SignHandler implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		
-		if (!ChatColor.stripColor(event.getLine(0)).equals(Language.get("sign.join.line0.enter")))
+		if (!ChatColor.stripColor(event.getLine(0)).equals(Language.get("sign.join.line0.enter", false)))
 			// sign no join sign: not relevant for this handler
 			return;
 		
