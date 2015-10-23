@@ -90,12 +90,12 @@ public class Language {
 		}
 		
 		public StringMaker replace(String match, String replacement) {
-			this.string.replaceAll(match, replacement);
+			this.string = this.string.replaceAll(match, replacement);
 			return this;
 		}
 		
 		public String getString() {
-			return string;
+			return this.string;
 		}
 	}
 	
