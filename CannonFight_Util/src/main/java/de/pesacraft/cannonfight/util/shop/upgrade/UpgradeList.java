@@ -12,6 +12,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.collect.Lists;
+
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
@@ -154,72 +156,62 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		// setup price items
 		meta = changePriceDownFast.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.price.decrease.strong", false));
-		List<String> lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.price.decrease.strong.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString());
+		List<String> lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.decrease.strong.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceDownFast.setItemMeta(meta);
 		
 		meta = changePriceDownSlow.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.price.decrease.slight", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.price.decrease.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.decrease.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceDownSlow.setItemMeta(meta);
 		
 		meta = price.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.price.current.title", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.price.current.value", false).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.current.value", false).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n"));
 		meta.setLore(lore);
 		price.setItemMeta(meta);
 		
 		meta = changePriceUpSlow.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.price.increase.slight", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.price.increase.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.increase.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceUpSlow.setItemMeta(meta);
 		
 		meta = changePriceUpFast.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.price.increase.strong", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.price.increase.strong.amount", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.increase.strong.amount", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceUpFast.setItemMeta(meta);
 		
 		// setup value items
 		meta = changeValueDownFast.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.value.decrease.strong", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.value.decrease.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.decrease.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueDownFast.setItemMeta(meta);
 		
 		meta = changeValueDownSlow.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.value.decrease.slight", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.value.decrease.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.decrease.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueDownSlow.setItemMeta(meta);
 		
 		meta = value.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.value.current.title", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setunp.menu.value.current.value", false).replace("%value%", upgrade.getValue().toString()).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setunp.menu.value.current.value", false).replace("%value%", upgrade.getValue().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		value.setItemMeta(meta);
 		
 		meta = changeValueUpSlow.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.value.increase.slight", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.value.increase.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.increase.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueUpSlow.setItemMeta(meta);
 		
 		meta = changeValueUpFast.getItemMeta();
 		meta.setDisplayName(Language.get("setup.menu.value.increase.strong", false));
-		lore = new ArrayList<String>();
-		lore.add(Language.getStringMaker("setup.menu.value.increase.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString());
+		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.increase.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueUpFast.setItemMeta(meta);
 		

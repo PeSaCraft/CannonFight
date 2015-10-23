@@ -15,6 +15,9 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.google.common.collect.Lists;
+
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.CannonFighter;
@@ -178,16 +181,16 @@ public class SetupShop {
 				
 				ItemMeta m = i.getItemMeta();
 				
-				List<String> lore = new ArrayList<String>();
+				List<String> lore;
 				
 				if (player.isSelected(cannon.getName())) {
 					// item selected
 					int pos = player.getActivePosition(cannon.getName()) + 1;
 					
-					lore.add(Language.getStringMaker("shop.item-setup.using.lore", false).replace("%pos%", String.valueOf(pos)).getString());
+					lore = Lists.newArrayList(Language.getStringMaker("shop.item-setup.using.lore", false).replace("%pos%", String.valueOf(pos)).getString().split("\n"));
 				}
 				else {
-					lore.add(Language.get("shop.item-setup.not-using.lore"));
+					lore = Lists.newArrayList(Language.get("shop.item-setup.not-using.lore").split("\n"));
 				}
 				
 				m.setLore(lore);

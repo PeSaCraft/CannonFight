@@ -10,6 +10,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.collect.Lists;
+
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
@@ -95,8 +97,7 @@ public class MainShop {
 				
 				m.setDisplayName(Language.get("shop.general.power-ups.name"));
 				
-				List<String> lore = new ArrayList<String>();
-				lore.add(Language.get("shop.general.power-ups.lore"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.power-ups.lore").split("\n"));
 				
 				m.setLore(lore);
 				
@@ -109,8 +110,7 @@ public class MainShop {
 				ItemMeta m = i.getItemMeta();
 				
 				m.setDisplayName(Language.get("shop.general.item-setup.name"));
-				List<String> lore = new ArrayList<String>();
-				lore.add(Language.get("shop.general.item-setup.lore"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.item-setup.lore").split("\n"));
 				
 				m.setLore(lore);
 				
@@ -124,8 +124,7 @@ public class MainShop {
 				
 				m.setDisplayName(Language.get("shop.general.upgrades.name"));
 				
-				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + Language.get("shop.general.upgrades.lore"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.upgrades.lore").split("\n"));
 				
 				m.setLore(lore);
 				
@@ -139,8 +138,7 @@ public class MainShop {
 				
 				m.setDisplayName(Language.get("shop.general.cannons.name"));
 				
-				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.GREEN + Language.get("shop.general.cannons.lore"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.cannons.lore").split("\n"));
 				
 				m.setLore(lore);
 				

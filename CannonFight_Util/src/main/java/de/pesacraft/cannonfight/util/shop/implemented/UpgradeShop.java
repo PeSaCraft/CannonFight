@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.util.CannonFightUtil;
@@ -229,17 +230,15 @@ public class UpgradeShop {
 				ItemStack i = ITEM_SLOTS.clone();
 				ItemMeta m = i.getItemMeta();
 				
-				List<String> lore = new ArrayList<String>();
-				
 				Upgrade<Integer> upgrade = getSlotsUpgradeForLevel(p.getSlotsLevel() + 1);
 				
-				lore.add(Language.getStringMaker("shop.upgrades.slots.lore", false).replace("%slots%", Language.formatSlots(p.getSlots())).getString());
+				List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.upgrades.slots.lore", false).replace("%slots%", Language.formatSlots(p.getSlots())).getString().split("\n"));
 				
 				if (upgrade != null) {
-					lore.add(Language.getStringMaker("shop.upgrades.slots.lore.upgradable", false).replace("%slots%", Language.formatSlots(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString());
+					lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.slots.lore.upgradable", false).replace("%slots%", Language.formatSlots(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
 				}
 				else
-					lore.add(Language.get("shop.upgrades.slots.lore.max-reached", false));
+					lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.slots.lore.max-reached", false).split("\n")));
 					
 				m.setLore(lore);
 				
@@ -252,17 +251,15 @@ public class UpgradeShop {
 				ItemStack i = ITEM_LIVES.clone();
 				ItemMeta m = i.getItemMeta();
 				
-				List<String> lore = new ArrayList<String>();
-				
 				Upgrade<Integer> upgrade = getLivesUpgradeForLevel(p.getLivesLevel() + 1);
 				
-				lore.add(Language.getStringMaker("shop.upgrades.lives.lore", false).replace("%lives%", Language.formatLives(p.getLives())).getString());
+				List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore", false).replace("%lives%", Language.formatLives(p.getLives())).getString().split("\n"));
 				
 				if (upgrade != null) {
-					lore.add(Language.getStringMaker("shop.upgrades.lives.lore.upgradable", false).replace("%lives%", Language.formatLives(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString());
+					lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore.upgradable", false).replace("%lives%", Language.formatLives(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
 				}
 				else
-					lore.add(Language.get("shop.upgrades.lives.lore.max-reached"));
+					lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.lives.lore.max-reached").split("\n")));
 					
 				m.setLore(lore);
 				

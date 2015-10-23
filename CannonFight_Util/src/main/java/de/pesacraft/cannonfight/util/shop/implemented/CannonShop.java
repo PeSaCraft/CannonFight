@@ -12,6 +12,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.collect.Lists;
+
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.CannonFighter;
@@ -123,8 +125,7 @@ public class CannonShop {
 				
 				ItemMeta m = i.getItemMeta();
 				
-				List<String> lore = new ArrayList<String>();
-				lore.add(Language.getStringMaker("shop.cannons.not-owning.lore", false).replace("%price%", Language.formatCoins(constructor.getPrice())).getString());
+				List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.cannons.not-owning.lore", false).replace("%price%", Language.formatCoins(constructor.getPrice())).getString().split("\n"));
 				
 				m.setLore(lore);
 				
@@ -138,8 +139,7 @@ public class CannonShop {
 				
 				ItemMeta m = i.getItemMeta();
 				
-				List<String> lore = new ArrayList<String>();
-				lore.add(Language.get("shop.cannons.owning.lore", false));
+				List<String> lore = Lists.newArrayList(Language.get("shop.cannons.owning.lore", false).split("\n"));
 				
 				m.setLore(lore);
 				

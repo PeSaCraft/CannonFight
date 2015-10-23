@@ -15,6 +15,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.collect.Lists;
+
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
@@ -247,17 +249,15 @@ public abstract class Cannon extends Cooldown {
 			Upgrade<?> newUpgrade = upgrades.getUpgrade(entry.getKey(), level + 1);
 			
 			ItemMeta meta = item.getItemMeta();
-			List<String> lore = new ArrayList<String>();
-			
-			lore.add(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.current", false).replace("%value%", formatValueForUpgrade(entry.getKey(), oldUpgrade.getValue())).getString());
+			List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.current", false).replace("%value%", formatValueForUpgrade(entry.getKey(), oldUpgrade.getValue())).getString().split("\n"));
 			
 			if (newUpgrade == null) {
 				// maximum level of upgrade reached
-				lore.add(Language.get("shop.specific-cannon.shop.upgrade.lore.max-reached", false));
+				lore.addAll(Lists.newArrayList(Language.get("shop.specific-cannon.shop.upgrade.lore.max-reached", false).split("\n")));
 			}
 			else {
 				// upgradable
-				lore.add(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to", false).replace("%level%", String.valueOf(level + 1)).replace("%coins%", Language.formatCoins(newUpgrade.getPrice())).replace("%value%", formatValueForUpgrade(entry.getKey(), newUpgrade.getValue())).getString());
+				lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to", false).replace("%level%", String.valueOf(level + 1)).replace("%coins%", Language.formatCoins(newUpgrade.getPrice())).replace("%value%", formatValueForUpgrade(entry.getKey(), newUpgrade.getValue())).getString().split("\n")));
 			}
 			
 			meta.setLore(lore);
