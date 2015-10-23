@@ -100,6 +100,12 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 				return new ShopCommand().onCommand(sender, cmd, label, subArgs);
 			if (subcommand.equalsIgnoreCase("coins"))
 				return new CoinsCommand().onCommand(sender, cmd, label, subArgs);
+			if (subcommand.equalsIgnoreCase("langrl")) {
+				LOGGER.info(Language.get("info.reloading.language", false));
+				Language.loadLanguage(this, this.getConfig().getString("language"));
+				LOGGER.info(Language.get("info.reloaded.language", false));
+				return true;
+			}
 		}
 		return super.onCommand(sender, cmd, label, args);
 	}

@@ -2,19 +2,24 @@ name: CannonFightGame
 main: de.pesacraft.cannonfight.game.CannonFightGame
 version: 0.1.0
 author: FroznMine
+
 commands:
   coins:
-    description: Get the coins a player has
+    description: Get the coins a player has.
     aliases: [cannonfightcoins, cfcoins, ccoins]
     usage: /coins [player]
   leave:
-    description: Leave the queue or game
+    description: Leave the game
     aliases: [cannonfightleave, cfleave, cleave]
     usage: /leave [player]
   shop:
     description: Open the shop
     aliases: [cannonfightshop, cfshop, cshop]
     usage: /shop [player]
+  language-reload:
+    description: Reload language file
+    aliases: [langrl, langreload, rllang, reloadlang, languagereload]
+    usage: /language-reload
   
 permissions:
   cannonfight.command.*:
@@ -23,7 +28,11 @@ permissions:
       cannonfight.command.leave.*: true
       cannonfight.command.setup: true
       cannonfight.command.shop.*: true
-
+      cannonfight.command.language-reload: true
+  
+  cannonfight.command.language-reload:
+    default: op
+  
   cannonfight.command.coins.*:
     children:
       cannonfight.command.coins: true

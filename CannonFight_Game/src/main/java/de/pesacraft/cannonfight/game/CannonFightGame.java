@@ -47,6 +47,7 @@ import de.pesacraft.cannonfight.game.api.CannonFighterPreJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.CannonFighterSpectatorJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.CannonFighterSpectatorPreJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.GameOverEvent;
+import de.pesacraft.cannonfight.game.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.game.commands.LeaveCommand;
 import de.pesacraft.cannonfight.game.communication.CommunicationGameClient;
 import de.pesacraft.cannonfight.game.players.ActivePlayer;
@@ -166,6 +167,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 
 		PluginCommand shop = this.getCommand("shop");
 		shop.setExecutor(new ShopCommand());
+		
+		PluginCommand langrl = this.getCommand("language-reload");
+		langrl.setExecutor(new LanguageReloadCommand());
 	}
 	
 	private void tryToStart() {
