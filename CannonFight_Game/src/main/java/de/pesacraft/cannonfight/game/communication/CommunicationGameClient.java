@@ -140,7 +140,7 @@ public class CommunicationGameClient extends Thread {
 			
 			@Override
 			public void run() {
-				CannonFightGame.LOGGER.info(Language.get("info.proxy.try-to-connect"));
+				CannonFightGame.LOGGER.info(Language.get("info.proxy.try-to-connect", false));
 				// try to establish connection
 				new CommunicationGameClient();
 				
@@ -148,7 +148,7 @@ public class CommunicationGameClient extends Thread {
 					// connection established, don't have to retry
 					getInstance().start();
 					this.cancel();
-					CannonFightGame.LOGGER.info(Language.get("info.proxy.connected"));
+					CannonFightGame.LOGGER.info(Language.get("info.proxy.connected", false));
 				}
 			}
 		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20 * 30); // every 30 seconds
