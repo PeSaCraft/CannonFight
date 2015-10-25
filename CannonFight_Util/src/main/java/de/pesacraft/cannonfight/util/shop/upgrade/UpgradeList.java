@@ -180,7 +180,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		
 		meta = changePriceUpFast.getItemMeta();
 		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.price.increase.strong", false));
-		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.increase.strong.amount", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.increase.strong.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceUpFast.setItemMeta(meta);
 		
