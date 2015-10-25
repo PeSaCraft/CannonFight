@@ -216,7 +216,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		changeValueUpFast.setItemMeta(meta);
 		
 		meta = delete.getItemMeta();
-		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.upgrade.delete", false));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.delete", false));
 		delete.setItemMeta(meta);
 		
 		Shop s = new Shop(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.name", false).replace("%level%", String.valueOf(level)).getString(), new ClickHandler() {
