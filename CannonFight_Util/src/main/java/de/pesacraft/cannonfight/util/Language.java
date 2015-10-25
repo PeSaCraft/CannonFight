@@ -43,10 +43,6 @@ public class Language {
 		brand = get("general.brand", false);
 	}
 	
-	public static String get(String key) {
-		return get(key, true);
-	}
-	
 	public static String get(String key, boolean brand) {
 		try {
 			return (brand ? Language.brand : "") + ChatColor.translateAlternateColorCodes('&', MESSAGES.getString(key));

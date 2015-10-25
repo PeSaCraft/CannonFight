@@ -57,7 +57,7 @@ public class SetupShop {
 				
 				int rows = (int) Math.ceil(available.size() / 7.0) + 2; // 7 items per row, spacer row above and below
 				
-				Shop s = new Shop(Language.get("shop.item-setup.name"), new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.item-setup.name", false), new ClickHandler() {
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -122,7 +122,7 @@ public class SetupShop {
 								}
 								else {
 									// not enough slots for that one
-									p.sendMessage(Language.get("error.not-enough-slots"));
+									p.sendMessage(Language.get("error.not-enough-slots", true));
 									return;
 								}
 								
@@ -155,7 +155,7 @@ public class SetupShop {
 							}, 1);
 						}
 						else {
-							player.sendMessage(Language.get("info.cannon-not-selected"));
+							player.sendMessage(Language.get("info.cannon-not-selected", true));
 						}
 					}
 
@@ -190,7 +190,7 @@ public class SetupShop {
 					lore = Lists.newArrayList(Language.getStringMaker("shop.item-setup.using.lore", false).replace("%pos%", String.valueOf(pos)).getString().split("\n"));
 				}
 				else {
-					lore = Lists.newArrayList(Language.get("shop.item-setup.not-using.lore").split("\n"));
+					lore = Lists.newArrayList(Language.get("shop.item-setup.not-using.lore", false).split("\n"));
 				}
 				
 				m.setLore(lore);

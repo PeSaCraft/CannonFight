@@ -56,7 +56,7 @@ public class CannonShop {
 					items.add(item);
 				}
 				
-				Shop s = new Shop(Language.get("shop.cannons.shop.name"), new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.cannons.shop.name", false), new ClickHandler() {
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -98,7 +98,7 @@ public class CannonShop {
 									return;
 								}
 								
-								p.sendMessage(Language.get("error.not-enough-coins"));
+								p.sendMessage(Language.get("error.not-enough-coins", true));
 								
 								return;
 							}

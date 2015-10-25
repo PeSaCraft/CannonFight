@@ -21,12 +21,12 @@ public class JoinCommand implements CommandExecutor {
 			
 			if (!(sender instanceof Player)) {
 				// only players can join
-				sender.sendMessage(Language.get("command.join-only-players")); 
+				sender.sendMessage(Language.get("command.join-only-players", true)); 
 				return true;
 			}
 			
 			if (!sender.hasPermission("cannonfight.command.join")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
@@ -37,24 +37,24 @@ public class JoinCommand implements CommandExecutor {
 		if (args.length == 2) {
 			// anderen in eine arena
 			if (!sender.hasPermission("cannonfight.command.join.other")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
 			Player p = Bukkit.getPlayer(args[1]);
 			
 			if (p == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[1]));
+				sender.sendMessage(Language.get("error.player-not-online", true).replaceAll("%player%", args[1]));
 				return true;
 			}
 			
 			CommunicationHubClient.getInstance().sendPlayer(args[0], p.getName());
 			
-			sender.sendMessage(Language.get("command.join-tried-other")); 
+			sender.sendMessage(Language.get("command.join-tried-other", true)); 
 			return true;
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [arena] [player]"));
+		sender.sendMessage(Language.get("error.wrong-usage", true).replaceAll("%command%", "/" + label + " [arena] [player]"));
 		return true;
 	}
 

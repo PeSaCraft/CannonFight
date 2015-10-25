@@ -118,7 +118,7 @@ public class SignHandler implements Listener {
 		
 		// sign is a join sign
 		if (!p.hasPermission("cannonfight.sign.create.join")) {
-			p.sendMessage(Language.get("error.no-permission"));
+			p.sendMessage(Language.get("error.no-permission", true));
 			event.setCancelled(true);
 			return;
 		}

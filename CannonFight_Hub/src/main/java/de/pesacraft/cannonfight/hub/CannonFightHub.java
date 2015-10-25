@@ -47,7 +47,7 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		CannonFightUtil.use(this);
 		Language.loadLanguage(this, this.getConfig().getString("language"));
 		
-		LOGGER.info(Language.get("info.using-buildinmoney"));
+		LOGGER.info(Language.get("info.using-buildinmoney", false));
 		
 		lobbyLocation = (Location) this.getConfig().get("lobby");
 		Bukkit.getServer().setSpawnRadius(0);
@@ -126,19 +126,19 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.getPlayer().teleport(lobbyLocation);
-		event.setJoinMessage(Language.get("info.join-lobby").replaceAll("%player%", event.getPlayer().getName()));
+		event.setJoinMessage(Language.get("info.join-lobby", true).replaceAll("%player%", event.getPlayer().getName()));
 		
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 	}
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		event.setQuitMessage(Language.get("info.leave-lobby").replaceAll("%player%", event.getPlayer().getName()));
+		event.setQuitMessage(Language.get("info.leave-lobby", true).replaceAll("%player%", event.getPlayer().getName()));
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
-		event.setFormat(Language.get("general.chat-format").replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));
+		event.setFormat(Language.get("general.chat-format", true).replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));
 	}
 	
 	@EventHandler

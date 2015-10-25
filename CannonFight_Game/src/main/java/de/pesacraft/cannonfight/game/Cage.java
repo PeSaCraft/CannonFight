@@ -31,7 +31,7 @@ public class Cage {
 	@SuppressWarnings("deprecation")
 	public void createCage(ItemStack material) throws IllegalStateException {
 		if (used)
-			throw new IllegalStateException(Language.get("error.cage.already-in-use"));
+			throw new IllegalStateException(Language.get("error.cage.already-in-use", false));
 		
 		used = true;
 		
@@ -52,7 +52,7 @@ public class Cage {
 	@SuppressWarnings("deprecation")
 	public void destroyCage() throws IllegalStateException {
 		if (!used)
-			throw new IllegalStateException(Language.get("error.cage.not-in-use"));
+			throw new IllegalStateException(Language.get("error.cage.not-in-use", false));
 		
 		used = false;
 		

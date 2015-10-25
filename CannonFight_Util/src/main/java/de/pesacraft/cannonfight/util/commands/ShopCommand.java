@@ -18,11 +18,11 @@ public class ShopCommand implements CommandExecutor {
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can have coins
-				sender.sendMessage(Language.get("command.shop-only-players")); 
+				sender.sendMessage(Language.get("command.shop-only-players", true)); 
 				return true;
 			}
 			if (!sender.hasPermission("cannonfight.command.shop")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
@@ -33,14 +33,14 @@ public class ShopCommand implements CommandExecutor {
 		
 		if (args.length == 1) {
 			if (!sender.hasPermission("cannonfight.command.shop.other")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 		
 			Player p = Bukkit.getPlayer(args[0]);
 			
 			if (p == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[0]));
+				sender.sendMessage(Language.getStringMaker("error.player-not-online", true).replace("%player%", args[0]).getString());
 				return true;
 			}
 			
@@ -49,11 +49,11 @@ public class ShopCommand implements CommandExecutor {
 			
 			MainShop.openShopPage(c);
 			
-			sender.sendMessage(Language.get("info.shop-open-other").replaceAll("%player%", c.getName()));
+			sender.sendMessage(Language.getStringMaker("info.shop-open-other", true).replace("%player%", c.getName()).getString());
 			return true;
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [player]"));
+		sender.sendMessage(Language.getStringMaker("error.wrong-usage", true).replace("%command%", "/" + label + " [player]").getString());
 		return true;
 	}
 }

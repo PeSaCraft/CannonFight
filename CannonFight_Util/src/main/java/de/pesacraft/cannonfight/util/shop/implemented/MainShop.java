@@ -41,7 +41,7 @@ public class MainShop {
 				final ItemStack setupItem = setupSetupItem();
 				final ItemStack powerupItem = setupPowerupItem();
 				
-				Shop s = new Shop(Language.get("shop.general.name"), new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.general.name", false), new ClickHandler() {
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -95,9 +95,9 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.SUGAR);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.power-ups.name"));
+				m.setDisplayName(Language.get("shop.general.power-ups.name", false));
 				
-				List<String> lore = Lists.newArrayList(Language.get("shop.general.power-ups.lore").split("\n"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.power-ups.lore", false).split("\n"));
 				
 				m.setLore(lore);
 				
@@ -109,8 +109,8 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.ANVIL);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.item-setup.name"));
-				List<String> lore = Lists.newArrayList(Language.get("shop.general.item-setup.lore").split("\n"));
+				m.setDisplayName(Language.get("shop.general.item-setup.name", false));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.item-setup.lore", false).split("\n"));
 				
 				m.setLore(lore);
 				
@@ -122,9 +122,9 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.NETHER_STAR);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.upgrades.name"));
+				m.setDisplayName(Language.get("shop.general.upgrades.name", false));
 				
-				List<String> lore = Lists.newArrayList(Language.get("shop.general.upgrades.lore").split("\n"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.upgrades.lore", false).split("\n"));
 				
 				m.setLore(lore);
 				
@@ -136,9 +136,9 @@ public class MainShop {
 				ItemStack i = new ItemStack(Material.BLAZE_ROD);
 				ItemMeta m = i.getItemMeta();
 				
-				m.setDisplayName(Language.get("shop.general.cannons.name"));
+				m.setDisplayName(Language.get("shop.general.cannons.name", false));
 				
-				List<String> lore = Lists.newArrayList(Language.get("shop.general.cannons.lore").split("\n"));
+				List<String> lore = Lists.newArrayList(Language.get("shop.general.cannons.lore", false).split("\n"));
 				
 				m.setLore(lore);
 				

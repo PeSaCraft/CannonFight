@@ -26,7 +26,7 @@ public class ActivePlayer extends Participant {
 	
 	public void createCage() throws IllegalStateException {
 		if (hasCage())
-			throw new IllegalStateException(Language.get("error.only-one-cage-instance"));
+			throw new IllegalStateException(Language.get("error.only-one-cage-instance", false));
 		
 		cage = new Cage(CageForm.PLAYER, getPlayer().getPlayer().getLocation().getBlock());
 		
@@ -35,7 +35,7 @@ public class ActivePlayer extends Participant {
 	
 	public void destroyCage() throws IllegalStateException {
 		if (!hasCage())
-			throw new IllegalStateException(Language.get("error.no-cage-created"));
+			throw new IllegalStateException(Language.get("error.no-cage-created", false));
 		
 		cage.destroyCage();
 		
@@ -55,7 +55,7 @@ public class ActivePlayer extends Participant {
 			@Override
 			public void run() {
 				if (time == 0) {
-					a.getPlayer().sendMessage(Language.get("info.platform.dissapears-now"));
+					a.getPlayer().sendMessage(Language.get("info.platform.dissapears-now", true));
 					platform.destroyCage();
 					this.cancel();
 					return;

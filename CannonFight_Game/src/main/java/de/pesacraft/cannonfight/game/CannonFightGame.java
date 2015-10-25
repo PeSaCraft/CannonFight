@@ -262,7 +262,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 							
 							player.createPlatform();
 						}
-						Bukkit.broadcastMessage(Language.get("info.game.start"));
+						Bukkit.broadcastMessage(Language.get("info.game.start", true));
 						
 						break;	
 					}
@@ -316,7 +316,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 						Bukkit.broadcastMessage(Language.getStringMaker("info.game.over.teleport.countdown", true).replace("%time%", Language.formatTime(time, TimeOutputs.SECONDS)).getString());
 					
 					if (time == 0) {
-						Bukkit.broadcastMessage(Language.get("info.game.over.teleport"));
+						Bukkit.broadcastMessage(Language.get("info.game.over.teleport", true));
 						
 						this.cancel();
 
@@ -760,7 +760,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
  			p.setVelocity(direction);
 			
 			event.setTo(from);
-			p.sendMessage(Language.get("error.cannot-leave-arena-bounds"));
+			p.sendMessage(Language.get("error.cannot-leave-arena-bounds", true));
 		}
 	}
 	
@@ -929,7 +929,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onGameOver(GameOverEvent event) {
-		Bukkit.broadcastMessage(Language.get("info.game.over"));
+		Bukkit.broadcastMessage(Language.get("info.game.over", true));
 		
 		int reward = CannonFightUtil.PLUGIN.getConfig().getInt("game.reward");
 		String msg = Language.getStringMaker("info.game.over.won", true).replace("%coins%", Language.formatCoins(reward)).getString();
@@ -954,7 +954,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			// anderer todes grund
 			msg = Language.getStringMaker("info.died.broadcast", true).replace("%player%", event.getVictim().getName()).getString();
 			
-			event.getVictim().sendMessage(Language.get("info.died"));
+			event.getVictim().sendMessage(Language.get("info.died", true));
 		}
 		
 		Bukkit.broadcastMessage(msg);
@@ -1004,12 +1004,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				// start countdown
 				this.cancel();
 				
-				Bukkit.broadcastMessage(Language.get("info.game.wait.enough-players"));
+				Bukkit.broadcastMessage(Language.get("info.game.wait.enough-players", true));
 				tryToStart();
 			}
 			else {
 				// not enough: no countdown
-				Bukkit.broadcastMessage(Language.get("info.game.wait.not-enough-players"));
+				Bukkit.broadcastMessage(Language.get("info.game.wait.not-enough-players", true));
 			}
 		}
 	}

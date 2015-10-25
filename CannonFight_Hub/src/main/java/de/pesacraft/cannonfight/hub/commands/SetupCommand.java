@@ -22,12 +22,12 @@ public class SetupCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(Language.get("command.setup-only-players")); 
+			sender.sendMessage(Language.get("command.setup-only-players", true)); 
 			return true;
 		}
 		
 		if (!sender.hasPermission("cannonfight.command.setup")) {
-			sender.sendMessage(Language.get("error.no-permission"));
+			sender.sendMessage(Language.get("error.no-permission", true));
 			return true;
 		}
 		
@@ -37,7 +37,7 @@ public class SetupCommand implements CommandExecutor {
 		if (s == null) {
 			s = new Setup();
 			activeSetups.put(p, s);
-			sender.sendMessage(Language.get("command.setup-new-setup")); 
+			sender.sendMessage(Language.get("command.setup-new-setup", true)); 
 		}
 		
 		if (args.length == 0) {
@@ -56,33 +56,33 @@ public class SetupCommand implements CommandExecutor {
 			// pos1 pos2 specPos spawn done lobby
 			if (args[0].equalsIgnoreCase("pos1")) {
 				s.setLocation1(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-pos1"));
+				sender.sendMessage(Language.get("command.setup-set-pos1", true));
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("pos2")) {
 				s.setLocation2(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-pos2"));
+				sender.sendMessage(Language.get("command.setup-set-pos2", true));
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("specPos")) {
 				s.setSpectatorLocation(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-specPos")); 
+				sender.sendMessage(Language.get("command.setup-set-specPos", true)); 
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("spawn")) {
 				s.addSpawn(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-spawn")); 
+				sender.sendMessage(Language.get("command.setup-set-spawn", true)); 
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("done")) {
 				//Arenas.put(s.getName(), new Arena(s.getName()));
 				activeSetups.remove(p);
-				sender.sendMessage(Language.get("command.setup-done"));
+				sender.sendMessage(Language.get("command.setup-done", true));
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("lobby")) {
 				CannonFightHub.setLobbyLocation(((Player) sender).getLocation());
-				sender.sendMessage(Language.get("command.setup-set-lobby"));
+				sender.sendMessage(Language.get("command.setup-set-lobby", true));
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("cannons")) {
@@ -95,16 +95,16 @@ public class SetupCommand implements CommandExecutor {
 			// name reqPlayers
 			if (args[0].equalsIgnoreCase("name")) {
 				s.setName(args[1]);
-				sender.sendMessage(Language.get("command.setup-set-name")); 
+				sender.sendMessage(Language.get("command.setup-set-name", true)); 
 			}
 			else if (args[0].equalsIgnoreCase("reqPlayers")) {
 				s.setRequiredPlayers(Integer.parseInt(args[1]));
-				sender.sendMessage(Language.get("command.setup-set-reqPlayers")); 
+				sender.sendMessage(Language.get("command.setup-set-reqPlayers", true)); 
 			}
 			return true;
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label));
+		sender.sendMessage(Language.get("error.wrong-usage", true).replaceAll("%command%", "/" + label));
 		return true;
 	}
 }

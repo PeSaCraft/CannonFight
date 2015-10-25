@@ -148,7 +148,7 @@ public class UpgradeShop {
 				final ItemStack slotItem = setupSlotItem(c);
 				final ItemStack lifeItem = setupLifeItem(c);
 				
-				Shop s = new Shop(Language.get("shop.upgrades.name"), new ClickHandler() {
+				Shop s = new Shop(Language.get("shop.upgrades.name", false), new ClickHandler() {
 					
 					@Override
 					public void onItemInteract(ItemInteractEvent event) {
@@ -165,13 +165,13 @@ public class UpgradeShop {
 							// upgrade slots
 							if (!SLOT_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
 								// max reached
-								p.sendMessage(Language.get("error.max-upgraded"));
+								p.sendMessage(Language.get("error.max-upgraded", true));
 								return;
 							}
 							
 							if (!p.upgradeSlots()) {
 								// not enough coins for upgrade
-								p.sendMessage(Language.get("error.not-enough-coins"));
+								p.sendMessage(Language.get("error.not-enough-coins", true));
 								return;
 							}
 							
@@ -191,13 +191,13 @@ public class UpgradeShop {
 							// upgrade slots
 							if (!LIFE_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
 								// max reached
-								p.sendMessage(Language.get("error.max-upgraded"));
+								p.sendMessage(Language.get("error.max-upgraded", true));
 								return;
 							}
 							
 							if (!p.upgradeLives()) {
 								// not enough coins for upgrade
-								p.sendMessage(Language.get("error.not-enough-coins"));
+								p.sendMessage(Language.get("error.not-enough-coins", true));
 								return;
 							}
 							
@@ -259,7 +259,7 @@ public class UpgradeShop {
 					lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore.upgradable", false).replace("%lives%", Language.formatLives(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
 				}
 				else
-					lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.lives.lore.max-reached").split("\n")));
+					lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.lives.lore.max-reached", false).split("\n")));
 					
 				m.setLore(lore);
 				

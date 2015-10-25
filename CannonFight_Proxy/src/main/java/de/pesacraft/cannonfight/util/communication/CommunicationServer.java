@@ -67,8 +67,8 @@ public class CommunicationServer extends Thread {
 					games.put(serverName, handler);
 				}
 				else {
-					out.writeUTF("ConnectionRefused"); //$NON-NLS-1$
-					out.writeUTF(Language.get("error.proxy.connection-refused.message")); //$NON-NLS-1$
+					out.writeUTF("ConnectionRefused");
+					out.writeUTF(Language.get("error.proxy.connection-refused.message", false));
 					out.close();
 					in.close();
 					client.close();

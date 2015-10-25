@@ -63,12 +63,12 @@ public class CommunicationHubClient extends Thread {
 				else if (input.equals("PlayerDenied")) {
 					String player = in.readUTF();
 					
-					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join"));
+					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join", true));
 				}
 				else if (input.equals("SpectatorDenied")) {
 					String player = in.readUTF();
 					
-					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join-spectator"));
+					Bukkit.getPlayer(player).sendMessage(Language.get("error.cannot-join-spectator", true));
 				}
 			}
 		} catch (IOException ex) {

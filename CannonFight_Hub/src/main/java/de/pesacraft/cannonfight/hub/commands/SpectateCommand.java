@@ -16,12 +16,12 @@ public class SpectateCommand implements CommandExecutor {
 		if (args.length == 1) {
 			if (!(sender instanceof Player)) {
 				// only players can join
-				sender.sendMessage(Language.get("command.spectate-only-players")); 
+				sender.sendMessage(Language.get("command.spectate-only-players", true)); 
 				return true;
 			}
 			
 			if (!sender.hasPermission("cannonfight.command.spectate")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
@@ -30,24 +30,24 @@ public class SpectateCommand implements CommandExecutor {
 		}
 		else if (args.length == 2) {
 			if (!sender.hasPermission("cannonfight.command.spectate.other")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
 			Player p = Bukkit.getPlayer(args[1]);
 			
 			if (p == null) {
-				sender.sendMessage(Language.get("error.player-not-online").replaceAll("%player%", args[1]));
+				sender.sendMessage(Language.getStringMaker("error.player-not-online", true).replace("%player%", args[1]).getString());
 				return true;
 			}
 			
 			CommunicationHubClient.getInstance().sendSpectator(p.getName(), args[0]);
 			
-			sender.sendMessage(Language.get("command.spectate-tried-other-successful"));
+			sender.sendMessage(Language.get("command.spectate-tried-other-successful", true));
 			return true;
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [arena] [player]"));
+		sender.sendMessage(Language.getStringMaker("error.wrong-usage", true).replace("%command%", "/" + label + " [arena] [player]").getString());
 		return true;
 	}
 }

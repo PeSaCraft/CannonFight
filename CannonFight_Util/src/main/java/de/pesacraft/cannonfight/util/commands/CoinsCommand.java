@@ -18,14 +18,14 @@ public class CoinsCommand implements CommandExecutor {
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
 				// only players can have coins
-				sender.sendMessage(Language.get("command.coins-only-players"));
+				sender.sendMessage(Language.get("command.coins-only-players", true));
 				return true;
 			}
 			
 			CannonFighter c = CannonFighter.get((Player) sender);
 			
 			if (!sender.hasPermission("cannonfight.command.coins")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
@@ -35,7 +35,7 @@ public class CoinsCommand implements CommandExecutor {
 		
 		if (args.length == 1) {
 			if (!sender.hasPermission("cannonfight.command.coins.other")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 		
@@ -61,7 +61,7 @@ public class CoinsCommand implements CommandExecutor {
 			switch (args[1].toLowerCase()) {
 			case "set":
 				if (!sender.hasPermission("cannonfight.command.coins.set")) {
-					sender.sendMessage(Language.get("error.no-permission"));
+					sender.sendMessage(Language.get("error.no-permission", true));
 					return true;
 				}
 			
@@ -88,7 +88,7 @@ public class CoinsCommand implements CommandExecutor {
 				return true;
 			case "give":
 				if (!sender.hasPermission("cannonfight.command.coins.give")) {
-					sender.sendMessage(Language.get("error.no-permission"));
+					sender.sendMessage(Language.get("error.no-permission", true));
 					return true;
 				}
 			
@@ -115,7 +115,7 @@ public class CoinsCommand implements CommandExecutor {
 				return true;
 			case "take":
 				if (!sender.hasPermission("cannonfight.command.coins.take")) {
-					sender.sendMessage(Language.get("error.no-permission"));
+					sender.sendMessage(Language.get("error.no-permission", true));
 					return true;
 				}
 			
@@ -130,7 +130,7 @@ public class CoinsCommand implements CommandExecutor {
 				
 				amount = Integer.parseInt(args[2]);
 				
-				if (c.takeCoins(amount, sender.toString() + Language.get("info.coins.log.take"))) {
+				if (c.takeCoins(amount, Language.getStringMaker("info.coins.log.take", false).replace("%player%", sender.getName()).getString())) {
 					sender.sendMessage(Language.getStringMaker("info.coins.take", true).replace("%player%", c.getName()).replace("%coins%", Language.formatCoins(amount)).getString());
 					
 					if (p.isOnline())
@@ -143,7 +143,7 @@ public class CoinsCommand implements CommandExecutor {
 			};
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label + " [player [(set|give|take) amount]]"));
+		sender.sendMessage(Language.get("error.wrong-usage", true).replaceAll("%command%", "/" + label + " [player [(set|give|take) amount]]"));
 		return true;
 	}
 }

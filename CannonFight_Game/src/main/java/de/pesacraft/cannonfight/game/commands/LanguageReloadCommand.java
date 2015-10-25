@@ -18,7 +18,7 @@ public class LanguageReloadCommand implements CommandExecutor {
 			// dieser Spieler
 			
 			if (!sender.hasPermission("cannonfight.command.language-reload")) {
-				sender.sendMessage(Language.get("error.no-permission"));
+				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
 			
@@ -28,7 +28,7 @@ public class LanguageReloadCommand implements CommandExecutor {
 			return true;
 		}
 		
-		sender.sendMessage(Language.get("error.wrong-usage").replaceAll("%command%", "/" + label));
+		sender.sendMessage(Language.get("error.wrong-usage", true).replaceAll("%command%", "/" + label));
 		return true;
 	}
 		
