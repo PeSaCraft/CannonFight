@@ -158,9 +158,6 @@ public class SetupShop {
 							player.sendMessage(Language.get("info.cannon-not-selected", true));
 						}
 					}
-
-					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, rows);
 				
 				s.fill(fill);

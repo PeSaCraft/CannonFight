@@ -213,9 +213,6 @@ public class UpgradeShop {
 							return;
 						}
 					}
-
-					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, 3);
 				
 				s.fill(fill);

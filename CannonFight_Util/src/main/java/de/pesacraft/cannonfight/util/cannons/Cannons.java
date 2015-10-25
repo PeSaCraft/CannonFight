@@ -88,9 +88,6 @@ public class Cannons {
 					}
 				}
 			}
-
-			@Override
-			public void onInventoryClose(InventoryCloseEvent event) {}
 		}, rows);
 		
 		s.fill(fill);

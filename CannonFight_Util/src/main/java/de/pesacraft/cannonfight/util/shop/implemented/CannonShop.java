@@ -104,9 +104,6 @@ public class CannonShop {
 							}
 						}
 					}
-
-					@Override
-					public void onInventoryClose(InventoryCloseEvent event) {}
 				}, rows);
 				
 				s.fill(fill);

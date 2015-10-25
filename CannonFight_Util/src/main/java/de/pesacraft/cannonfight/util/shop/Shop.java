@@ -110,8 +110,6 @@ public class Shop implements Listener {
 		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getPlayer()) == viewer)
 			return;
 		
-		handler.onInventoryClose(event);
-		
 		// unregister self when inventory is closing
 		unregister();
 	}

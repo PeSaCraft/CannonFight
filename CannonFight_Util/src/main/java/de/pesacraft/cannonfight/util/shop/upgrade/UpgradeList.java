@@ -312,9 +312,6 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 					return;
 				}
 			}
-
-			@Override
-			public void onInventoryClose(InventoryCloseEvent event) {}
 		}, 6);
 		
 		s.fill(fill);
