@@ -156,7 +156,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 			ItemStack item = new ItemStack(Material.WOOL, i, DyeColor.WHITE.getWoolData());
 			
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(Language.getStringMaker("setup.menu.setup-level", false).replace("%level%", String.valueOf(i)).getString());
+			meta.setDisplayName(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.change", false).replace("%level%", String.valueOf(i)).getString());
 			item.setItemMeta(meta);
 			
 			items.put(item, i);
@@ -165,7 +165,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		ItemStack newLevelItem = new ItemStack(Material.WOOL, i, DyeColor.GRAY.getWoolData());
 		
 		ItemMeta meta = newLevelItem.getItemMeta();
-		meta.setDisplayName(Language.getStringMaker("setup.menu.create-level", false).replace("%level%", String.valueOf(i)).getString());
+		meta.setDisplayName(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.create", false).replace("%level%", String.valueOf(i)).getString());
 		newLevelItem.setItemMeta(meta);
 		
 		items.put(newLevelItem, i);
@@ -173,7 +173,7 @@ public class UpgradeMap extends HashMap<String, UpgradeList<?>> {
 		// space for one new level
 		int rows = (int) Math.ceil((double) (upgrades.getLevels() + 1) / 9);
 		
-		Shop s = new Shop(Language.getStringMaker("setup.menu.title", false).replace("%name%", name).getString(), new ClickHandler() {
+		Shop s = new Shop(Language.getStringMaker("shop.specific-cannon.setup.upgrade.name", false).replace("%name%", name).getString(), new ClickHandler() {
 		
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {

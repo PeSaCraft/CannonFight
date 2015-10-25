@@ -139,87 +139,87 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		final ItemStack delete = new ItemStack(Material.BARRIER);
 		
 		ItemMeta meta = prev.getItemMeta();
-		meta.setDisplayName(Language.getStringMaker("setup.menu.level.change", false).replace("%level%", String.valueOf(level - 1)).getString());
+		meta.setDisplayName(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.change", false).replace("%level%", String.valueOf(level - 1)).getString());
 		prev.setItemMeta(meta);
 		
 		meta = next.getItemMeta();
 		
 		if (getLevels() == level)
 			// next will be new one
-			meta.setDisplayName(Language.getStringMaker("setup.menu.level.create", false).replace("%level%", String.valueOf(level + 1)).getString());
+			meta.setDisplayName(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.create", false).replace("%level%", String.valueOf(level + 1)).getString());
 		else
 			// next already exists
-			meta.setDisplayName(Language.getStringMaker("setup.menu.level.change", false).replace("%level%", String.valueOf(level + 1)).getString());
+			meta.setDisplayName(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.change", false).replace("%level%", String.valueOf(level + 1)).getString());
 		
 		next.setItemMeta(meta);
 		
 		// setup price items
 		meta = changePriceDownFast.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.price.decrease.strong", false));
-		List<String> lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.decrease.strong.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.price.decrease.strong", false));
+		List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.decrease.strong.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceDownFast.setItemMeta(meta);
 		
 		meta = changePriceDownSlow.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.price.decrease.slight", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.decrease.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.price.decrease.slight", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.decrease.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceDownSlow.setItemMeta(meta);
 		
 		meta = price.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.price.current.title", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.current.value", false).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.price.current.title", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.current.value", false).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n"));
 		meta.setLore(lore);
 		price.setItemMeta(meta);
 		
 		meta = changePriceUpSlow.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.price.increase.slight", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.increase.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.price.increase.slight", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.increase.slight.value", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getSlowPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceUpSlow.setItemMeta(meta);
 		
 		meta = changePriceUpFast.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.price.increase.strong", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.price.increase.strong.amount", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.price.increase.strong", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.price.increase.strong.amount", false).replace("%price%", Language.formatCoins(getUpgradeChanger().getFastPriceChange())).getString().split("\n"));
 		meta.setLore(lore);
 		changePriceUpFast.setItemMeta(meta);
 		
 		// setup value items
 		meta = changeValueDownFast.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.value.decrease.strong", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.decrease.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.value.decrease.strong", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.value.decrease.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueDownFast.setItemMeta(meta);
 		
 		meta = changeValueDownSlow.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.value.decrease.slight", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.decrease.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.value.decrease.slight", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.value.decrease.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueDownSlow.setItemMeta(meta);
 		
 		meta = value.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.value.current.title", false));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.value.current.title", false));
 		lore = Lists.newArrayList(Language.getStringMaker("setunp.menu.value.current.value", false).replace("%value%", upgrade.getValue().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		value.setItemMeta(meta);
 		
 		meta = changeValueUpSlow.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.value.increase.slight", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.increase.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.value.increase.slight", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.value.increase.slight.value", false).replace("%value%", getUpgradeChanger().getSlowValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueUpSlow.setItemMeta(meta);
 		
 		meta = changeValueUpFast.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.value.increase.strong", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setup.menu.value.increase.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString().split("\n"));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.value.increase.strong", false));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.value.increase.strong.value", false).replace("%value%", getUpgradeChanger().getFastValueChange().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		changeValueUpFast.setItemMeta(meta);
 		
 		meta = delete.getItemMeta();
-		meta.setDisplayName(Language.get("setup.menu.upgrade.delete", false));
+		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.upgrade.delete", false));
 		delete.setItemMeta(meta);
 		
-		Shop s = new Shop(Language.getStringMaker("setup.menu.title", false).replace("%level%", String.valueOf(level)).getString(), new ClickHandler() {
+		Shop s = new Shop(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.name", false).replace("%level%", String.valueOf(level)).getString(), new ClickHandler() {
 		
 			@Override
 			public void onItemInteract(ItemInteractEvent event) {
