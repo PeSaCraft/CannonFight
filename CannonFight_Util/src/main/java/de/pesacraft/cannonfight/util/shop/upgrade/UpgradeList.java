@@ -199,7 +199,7 @@ public class UpgradeList<T> extends ArrayList<Upgrade<T>> {
 		
 		meta = value.getItemMeta();
 		meta.setDisplayName(Language.get("shop.specific-cannon.setup.upgrade.level.value.current.title", false));
-		lore = Lists.newArrayList(Language.getStringMaker("setunp.menu.value.current.value", false).replace("%value%", upgrade.getValue().toString()).getString().split("\n"));
+		lore = Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.setup.upgrade.level.value.current.value", false).replace("%value%", upgrade.getValue().toString()).getString().split("\n"));
 		meta.setLore(lore);
 		value.setItemMeta(meta);
 		
