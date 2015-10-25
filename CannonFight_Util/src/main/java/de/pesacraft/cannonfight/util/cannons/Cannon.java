@@ -257,7 +257,7 @@ public abstract class Cannon extends Cooldown {
 			}
 			else {
 				// upgradable
-				lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to", false).replace("%level%", String.valueOf(level + 1)).replace("%coins%", Language.formatCoins(newUpgrade.getPrice())).replace("%value%", formatValueForUpgrade(entry.getKey(), newUpgrade.getValue())).getString().split("\n")));
+				lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.specific-cannon.shop.upgrade.lore.upgrade-to", false).replace("%level%", String.valueOf(level + 1)).replace("%price%", Language.formatCoins(newUpgrade.getPrice())).replace("%value%", formatValueForUpgrade(entry.getKey(), newUpgrade.getValue())).getString().split("\n")));
 			}
 			
 			meta.setLore(lore);
