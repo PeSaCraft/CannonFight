@@ -42,11 +42,11 @@ public class CommunicationServer extends Thread {
 				// if request coming from this machine use 127.0.0.1 instead of the connected address to make servers not visible from outside the machine compatible
 				InetAddress address = NetworkInterface.getByInetAddress(client.getInetAddress()) == null ? client.getInetAddress() : InetAddress.getLoopbackAddress();
 				
-				if (type.equals("HubReady")) { //$NON-NLS-1$
+				if (type.equals("HubReady")) {
 					String serverName = in.readUTF();
 					int port = in.readInt();
 					
-					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM HUB!", false); //$NON-NLS-1$
+					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM HUB!", false);
 					
 					ProxyServer.getInstance().getServers().put(serverName, info);
 					
@@ -54,11 +54,11 @@ public class CommunicationServer extends Thread {
 					handler.start();
 					hubs.put(serverName, handler);
 				}
-				else if (type.equals("GameReady")) { //$NON-NLS-1$
+				else if (type.equals("GameReady")) {
 					String serverName = in.readUTF();
 					int port = in.readInt();
 					
-					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM GAME!", false); //$NON-NLS-1$
+					ServerInfo info = ProxyServer.getInstance().constructServerInfo(serverName, new InetSocketAddress(address, port), "NIX LOS IM GAME!", false);
 					
 					ProxyServer.getInstance().getServers().put(serverName, info);
 					
