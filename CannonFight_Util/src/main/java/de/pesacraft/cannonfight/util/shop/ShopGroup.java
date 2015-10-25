@@ -10,9 +10,6 @@ public class ShopGroup {
 	}
 	
 	public void open(CannonFighter c) {
-		if (c.getPlayer().getOpenInventory() != null)
-			c.getPlayer().closeInventory();
-		
 		Shop s = maker.createShop(c);
 		s.openInventory(c);
 	}
