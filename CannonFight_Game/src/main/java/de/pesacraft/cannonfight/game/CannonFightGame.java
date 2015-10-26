@@ -133,7 +133,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			LOGGER.info(Language.get("info.restore-backup.begin", false));
 			File original = WORLD_GAME.getWorldFolder();
 			File backup = new File(original.getParentFile().getAbsolutePath(), "_backup");
-			Bukkit.unloadWorld(WORLD_GAME, false);
+			Bukkit.unloadWorld(WORLD_GAME, true);
 			LOGGER.info(Language.get("info.game.unloaded", false));
 			CannonFightUtil.copyWorld(backup, original);
 			LOGGER.info(Language.get("info.unloading-worlds.finished", false));
@@ -635,12 +635,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				inv.setItem(i, cannon.getItem());
 			}
 			
-			Bukkit.broadcastMessage(Language.getStringMaker("info.join.game.others", true).replace("%player%", event.getPlayer().getName()).getString());
+			Bukkit.broadcastMessage(Language.getStringMaker("info.join.game.others", true).replace("%player%", event.getPlayer().getName()).replace("%players%", String.valueOf(players.size())).replace("%maxPlayers%", String.valueOf(ARENA.getMaxPlayers())).getString());
 		}
 		else {
 			p.teleport(WORLD_LOBBY.getSpawnLocation());
 			
-			Bukkit.broadcastMessage(Language.getStringMaker("info.join.lobby.others", true).replace("%player%", event.getPlayer().getName()).getString());
+			Bukkit.broadcastMessage(Language.getStringMaker("info.join.lobby.others", true).replace("%player%", event.getPlayer().getName()).replace("%players%", String.valueOf(players.size())).replace("%maxPlayers%", String.valueOf(ARENA.getMaxPlayers())).getString());
 		}
 	}
 	
