@@ -26,6 +26,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -635,12 +636,12 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				inv.setItem(i, cannon.getItem());
 			}
 			
-			Bukkit.broadcastMessage(Language.getStringMaker("info.join.game.others", true).replace("%player%", event.getPlayer().getName()).replace("%players%", String.valueOf(players.size())).replace("%maxPlayers%", String.valueOf(ARENA.getMaxPlayers())).getString());
+			Bukkit.broadcastMessage(Language.getStringMaker("info.join.game.others", true).getString());
 		}
 		else {
 			p.teleport(WORLD_LOBBY.getSpawnLocation());
 			
-			Bukkit.broadcastMessage(Language.getStringMaker("info.join.lobby.others", true).replace("%player%", event.getPlayer().getName()).replace("%players%", String.valueOf(players.size())).replace("%maxPlayers%", String.valueOf(ARENA.getMaxPlayers())).getString());
+			Bukkit.broadcastMessage(Language.getStringMaker("info.join.lobby.others", true).replace("%player%", event.getPlayer().getName()).replace("%players%", String.valueOf(players.size() + 1)).replace("%maxPlayers%", String.valueOf(ARENA.getMaxPlayers())).getString());
 		}
 	}
 	
@@ -889,6 +890,11 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	}
 	
 	@EventHandler
+	public void onItemSpawn(ItemSpawnEvent event) {
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		CannonFighter sender = CannonFighter.get((OfflinePlayer) event.getPlayer());
 		
@@ -986,7 +992,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			Bukkit.broadcastMessage(msg2);
 		}
 		else if (gameState == GameState.WAITING) {
-			Bukkit.broadcastMessage(Language.getStringMaker("info.leave.lobby", true).replace("%player%", event.getFighter().getName()).getString());
+			Bukkit.broadcastMessage(Language.getStringMaker("info.leave.lobby", true).replace("%player%", event.getFighter().getName()).replace("%players%", String.valueOf(players.size() - 1)).replace("%maxPlayers%", String.valueOf(ARENA.getMaxPlayers())).getString());
 		}
 	}
 	
