@@ -112,10 +112,12 @@ public class CommunicationServer extends Thread {
 
 	public void removeHub(String server) {
 		hubs.remove(server);
+		ProxyServer.getInstance().getServers().remove(server);
 	}
 	
 	public void removeGame(String server) {
 		games.remove(server);
+		ProxyServer.getInstance().getServers().remove(server);
 	}
 
 	public void updatePlayerCount(String arena) {
