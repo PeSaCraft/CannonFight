@@ -10,9 +10,11 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -52,7 +54,9 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		lobbyLocation = (Location) this.getConfig().get("lobby");
 		Bukkit.getServer().setSpawnRadius(0);
 		lobbyLocation.getWorld().setSpawnLocation(lobbyLocation.getBlockX(), lobbyLocation.getBlockY(), lobbyLocation.getBlockZ());
-		
+		// disable pvp
+		lobbyLocation.getWorld().setPVP(false);
+
 		Bukkit.getPluginManager().registerEvents(this, this);
 		
 		new SignHandler();
@@ -134,6 +138,12 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		event.setQuitMessage(Language.get("info.leave-lobby", true).replaceAll("%player%", event.getPlayer().getName()));
+	}
+	
+	@EventHandler
+	public void onPlayerDamage(EntityDamageEvent event) {
+		if (event.getEntity() instanceof Player)
+			event.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)

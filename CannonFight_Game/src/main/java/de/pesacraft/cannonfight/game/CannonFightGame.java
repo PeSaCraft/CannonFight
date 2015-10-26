@@ -107,7 +107,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		LOGGER.info(Language.get("info.load-lobby", false));
 		WORLD_LOBBY = Bukkit.getServer().createWorld(new WorldCreator("lobby"));
-		
+		// disable pvp
+		WORLD_LOBBY.setPVP(false);
+				
 		setupCommands();
 		
 		players = new HashSet<ActivePlayer>();
@@ -147,6 +149,8 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	public static void setArena(String arena) {
 		LOGGER.info(Language.getStringMaker("info.arena-set", false).replace("%arena%", arena).getString());
 		WORLD_GAME = Bukkit.getServer().createWorld(new WorldCreator(arena));
+		// disable pvp
+		WORLD_GAME.setPVP(false);
 		
 		LOGGER.info(Language.get("info.create-backup", false));
 		// create backup
@@ -155,7 +159,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		backup.mkdir();
 		CannonFightUtil.copyWorld(original, backup);
 		
-		ARENA = new Arena(arena);
+		ARENA = new Arena(arena);	
 	}
 	
 	private void setupCommands() {
