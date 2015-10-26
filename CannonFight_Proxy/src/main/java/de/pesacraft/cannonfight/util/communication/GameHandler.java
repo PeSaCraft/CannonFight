@@ -20,6 +20,8 @@ public class GameHandler extends Thread {
 	private boolean playerJoinable;
 	private boolean started;
 	
+	private HubHandler settingHandler;
+	
 	public GameHandler(String server, Socket socket, DataInput in, DataOutput out) {
 		this.server = server;
 		this.socket = socket;
@@ -30,6 +32,8 @@ public class GameHandler extends Thread {
 		this.players = new ArrayList<String>();
 		this.playerJoinable = true;
 		this.started = false;
+		
+		this.settingHandler = null;
 	}
 
 	@Override
@@ -66,9 +70,16 @@ public class GameHandler extends Thread {
 					CommunicationServer.getInstance().updatePlayerCount(arena);
 				}
 				else if (input.equals("GameOver")) {
-					socket.close();
 					CommunicationServer.getInstance().removeGame(server);
+					socket.close();
 					return;
+				}
+				else if (input.equals("ArenaSet")) {
+					// arena set, players can be send
+					if (settingHandler != null) {
+						settingHandler.notify();
+						settingHandler = null;
+					}
 				}
 			
 			}
@@ -77,11 +88,12 @@ public class GameHandler extends Thread {
 		}
 	}
 	
-	public void setArena(String arena) throws IOException {
+	public void setArena(String arena, HubHandler settingHandler) throws IOException {
 		out.writeUTF("Arena");
 		out.writeUTF(arena);
 		
 		this.arena = arena;
+		this.settingHandler = settingHandler;
 	}
 	
 	public boolean sendPlayer(String player, String server) throws IOException {

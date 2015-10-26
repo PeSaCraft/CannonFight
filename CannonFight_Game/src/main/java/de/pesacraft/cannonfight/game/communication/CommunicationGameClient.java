@@ -59,12 +59,12 @@ public class CommunicationGameClient extends Thread {
 				if (input.equals("Arena")) {
 					final String arena = in.readUTF();
 					
-					
 					new BukkitRunnable() {
 						
 						@Override
 						public void run() {
 							CannonFightGame.setArena(arena);
+							sendArenaSet();
 						}
 					}.runTask(CannonFightGame.PLUGIN);
 					
@@ -90,6 +90,14 @@ public class CommunicationGameClient extends Thread {
 	
 	public static CommunicationGameClient getInstance() {
 		return instance;
+	}
+
+	public void sendArenaSet() {
+		try {
+			out.writeUTF("ArenaSet");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	public void sendGameOver() {
