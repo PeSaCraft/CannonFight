@@ -27,7 +27,7 @@ public class CannonFighter {
 	private static final MongoCollection<Document> COLLECTION;
 	
 	private final UUID uuid;
-	
+	private final OfflinePlayer player;
 	private int xp;
 	
 	private int slotsLevel;
@@ -47,6 +47,7 @@ public class CannonFighter {
 	@SuppressWarnings("unchecked")
 	private CannonFighter(UUID uuid) {
 		this.uuid = uuid;
+		this.player = Bukkit.getOfflinePlayer(uuid);
 		
 		Document doc = COLLECTION.find(eq("uuid", uuid.toString())).first();
 		
@@ -171,11 +172,11 @@ public class CannonFighter {
 	}
 	
 	public Player getPlayer() {
-		return Bukkit.getPlayer(getUUID());
+		return this.player.getPlayer();
 	}
 	
 	public OfflinePlayer getOfflinePlayer() {
-		return Bukkit.getOfflinePlayer(getUUID());
+		return this.player;
 	}
 	
 	public UUID getUUID() {
