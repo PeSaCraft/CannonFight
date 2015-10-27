@@ -1,0 +1,4 @@
+name: CannonFightProxy
+main: de.pesacraft.cannonfight.proxy.CannonFightProxy
+version: 0.1.0
+author: FroznMine

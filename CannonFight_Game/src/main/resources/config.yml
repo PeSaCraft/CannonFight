@@ -1,0 +1,26 @@
+language: de_DE
+
+bungeecord:
+  servername: "CannonFight-Game#1"
+  
+database:
+  host: 127.0.0.1
+  port: 27017
+  database: CannonFight
+  prefix: ''
+  auth:
+    username: CannonFight
+    password: password
+    db: auth_db
+
+arena: arena
+
+game:
+  time:
+    untilStart: 10
+    start: 10
+    play: 300
+    gameover: 10
+    platform: 5
+  reward: 20
+  livesPerLive: 40

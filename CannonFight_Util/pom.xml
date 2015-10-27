@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>de.pesacraft</groupId>
+        <artifactId>CannonFight</artifactId>
+        <version>dev-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>de.pesacraft.cannonfight</groupId>
+    <artifactId>CannonFightUtil</artifactId>
+    <version>0.1.8${cannonfight.snapshot}</version>
+    <name>CannonFight Util</name>
+    <description>The utilities part for the CannonFight game plugin for Minecraft Bukkit Servers. This contains code that is used in both parts.</description>
+    
+    <distributionManagement>
+        <repository>
+            <id>pesacraft-releases</id>
+            <url>http://pesacraft.de:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>pesacraft-snapshots</id>
+            <url>http://pesacraft.de:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>${minecraft.version}-${bukkit.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>${minecraft.version}-${bukkit.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../repo/craftbukkit-${minecraft.version}-${bukkit.version}.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>de.pesacraft</groupId>
+            <artifactId>LobbySystem</artifactId>
+            <version>${lobbysystem.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.greatman.Craftconomy</groupId>
+            <artifactId>Craftconomy</artifactId>
+            <version>${craftconomy.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../repo/Craftconomy.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <defaultGoal>install</defaultGoal>
+        
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>javadoc</goal>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <skip>false</skip>
+                    <javadoc>target/${project.artifactId}-${project.version}-javadoc.jar</javadoc>
+               </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

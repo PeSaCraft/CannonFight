@@ -1,0 +1,86 @@
+name: CannonFightHub
+main: de.pesacraft.cannonfight.hub.CannonFightHub
+version: 0.1.0
+author: FroznMine
+commands:
+  cannonfight:
+    description: Command to access any subcommand
+    usage: /cannonfight
+  coins:
+    description: Get the coins a player has
+    aliases: [cannonfightcoins, cfcoins, ccoins]
+    usage: /coins [player]
+  join:
+    description: Join a game in the specified arena
+    aliases: [cannonfightjoin, cfjoin, cjoin]
+    usage: /join [arena] [player]
+  language-reload:
+    description: Reload language file
+    aliases: [langrl, langreload, rllang, reloadlang, languagereload]
+    usage: /language-reload
+  setup:
+    description: Setup an arena
+    aliases: [cannonfightsetup, cfsetup, csetup]
+    usage: /setup
+  shop:
+    description: Open the shop
+    aliases: [cannonfightshop, cfshop, cshop]
+    usage: /shop [player]
+  spectate:
+    description: Spectate the game in the given arena
+    aliases: [cannonfightspectate, cfspectate, cspectate]
+    usage: /spectate [arena] [player]
+    
+permissions:
+  cannonfight.command.*:
+    children:
+      cannonfight.command.coins.*: true
+      cannonfight.command.join.*: true
+      cannonfight.command.setup: true
+      cannonfight.command.shop.*: true
+      cannonfight.command.spectate.*: true
+
+  cannonfight.command.coins.*:
+    children:
+      cannonfight.command.coins: true
+      cannonfight.command.coins.other: true
+  cannonfight.command.coins:
+    default: true
+  cannonfight.command.coins.other:
+    default: op
+  
+  cannonfight.command.join.*:
+    children:
+      cannonfight.command.join: true
+      cannonfight.command.join.random: true
+      cannonfight.command.join.other: true
+  cannonfight.command.join:
+    default: true
+  cannonfight.command.join.random:
+    default: op
+  cannonfight.command.join.other:
+    default: op
+     
+  cannonfight.command.setup:
+    default: op
+  
+  cannonfight.command.language-reload:
+    default: op
+    
+  cannonfight.command.shop.*:
+    children:
+      cannonfight.command.shop: true
+      cannonfight.command.shop.other: true
+  cannonfight.command.shop:
+    default: true
+  cannonfight.command.shop.other:
+    default: op
+  
+  cannonfight.command.spectate.*:
+    children:
+      cannonfight.command.spectate: true
+      cannonfight.command.spectate.other: true
+  cannonfight.command.spectate:
+    default: true
+  cannonfight.command.spectate.other:
+    default: op

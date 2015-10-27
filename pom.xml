@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.pesacraft</groupId>
+    <artifactId>CannonFight</artifactId>
+    <packaging>pom</packaging>
+    <name>CannonFight</name>
+    <description>A game plugin for Minecraft Bukkit Servers</description>
+    <version>dev-SNAPSHOT</version>
+    
+    <modules>
+        <module>CannonFight_Util</module>
+        <module>CannonFight_Proxy</module>
+        <module>CannonFight_Hub</module>
+        <module>CannonFight_Game</module>
+    </modules>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cannonfight.version>${project.version}</cannonfight.version>
+        <cannonfight.snapshot>-SNAPSHOT</cannonfight.snapshot>
+        <cannonfightutil.version>0.1.8${cannonfight.snapshot}</cannonfightutil.version>
+        <minecraft.version>1.8.8</minecraft.version>
+        <bukkit.version>R0.1-SNAPSHOT</bukkit.version>
+        <lobbysystem.version>0.0.7</lobbysystem.version>
+        <craftconomy.version>3.3</craftconomy.version>
+        <bungeecord.version>1.8-SNAPSHOT</bungeecord.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        
+        <repository>
+            <id>pesacraft-repo</id>
+            <url>http://pesacraft.de:8081/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <phase>site</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

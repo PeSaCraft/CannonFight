@@ -1,0 +1,34 @@
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Eclipse
+/.classpath
+/.project
+/.settings
+*/bin
+
+# Maven
+*target
+*pom.xml.*
+
+# NetBeans
+/nbproject
+
+# vim
+.*.sw[a-p]
+
+# Mac
+*.DS_Store
+
+# Ant
+build.number
+
+# Repository
+*repo
+
+# Build storage
+*/builds
+/bin/
