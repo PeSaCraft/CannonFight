@@ -128,7 +128,7 @@ public class ActivePlayer extends Participant {
 		String splitter = Language.get("general.cooldown.actionbar.splitter", false);
 		String msg = Language.getStringMaker("general.cooldown.actionbar.format.message", false).replace("%values%", Strings.join(cooldowns, splitter)).getString();
 		
-		PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a(msg), (byte) 2);
+		PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a("{\"text\": \"" + msg + "\"}"), (byte) 2);
 		((CraftPlayer) getPlayer().getPlayer()).getHandle().playerConnection.sendPacket(packet);
 	}
 }
