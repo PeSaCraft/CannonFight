@@ -10,13 +10,12 @@ database:
   prefix: ''
   auth:
     username: CannonFight
-    password: CannonFight
+    password: password
     db: auth_db
-    
-game:
-  time:
-    start: 10
-    play: 300
-    gameover: 10
-  reward: 20
-  livesPerLive: 40
+
+lobby:
+  ==: org.bukkit.Location
+  world: lobby
+  x: 0
+  y: 64
+  z: 0

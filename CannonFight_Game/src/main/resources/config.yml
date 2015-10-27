@@ -10,7 +10,7 @@ database:
   prefix: ''
   auth:
     username: CannonFight
-    password: CannonFight
+    password: password
     db: auth_db
 
 arena: arena
@@ -21,6 +21,6 @@ game:
     start: 10
     play: 300
     gameover: 10
+    platform: 5
   reward: 20
   livesPerLive: 40
-  

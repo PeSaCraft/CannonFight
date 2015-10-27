@@ -14,6 +14,10 @@ commands:
     description: Join a game in the specified arena
     aliases: [cannonfightjoin, cfjoin, cjoin]
     usage: /join [arena] [player]
+  language-reload:
+    description: Reload language file
+    aliases: [langrl, langreload, rllang, reloadlang, languagereload]
+    usage: /language-reload
   setup:
     description: Setup an arena
     aliases: [cannonfightsetup, cfsetup, csetup]
@@ -32,12 +36,10 @@ permissions:
     children:
       cannonfight.command.coins.*: true
       cannonfight.command.join.*: true
-      cannonfight.command.leave.*: true
       cannonfight.command.setup: true
       cannonfight.command.shop.*: true
       cannonfight.command.spectate.*: true
-  
-  
+
   cannonfight.command.coins.*:
     children:
       cannonfight.command.coins: true
@@ -58,19 +60,13 @@ permissions:
     default: op
   cannonfight.command.join.other:
     default: op
-  
-  cannonfight.command.leave.*:
-    children:
-      cannonfight.command.leave: true
-      cannonfight.command.leave.other: true  
-  cannonfight.command.leave:
-    default: true
-  cannonfight.command.leave.other:
-    default: op
-    
+     
   cannonfight.command.setup:
     default: op
   
+  cannonfight.command.language-reload:
+    default: op
+    
   cannonfight.command.shop.*:
     children:
       cannonfight.command.shop: true

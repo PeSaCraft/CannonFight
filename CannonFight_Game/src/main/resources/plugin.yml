@@ -26,7 +26,6 @@ permissions:
     children:
       cannonfight.command.coins.*: true
       cannonfight.command.leave.*: true
-      cannonfight.command.setup: true
       cannonfight.command.shop.*: true
       cannonfight.command.language-reload: true
   
@@ -49,9 +48,6 @@ permissions:
   cannonfight.command.leave:
     default: true
   cannonfight.command.leave.other:
-    default: op
-    
-  cannonfight.command.setup:
     default: op
   
   cannonfight.command.shop.*:
