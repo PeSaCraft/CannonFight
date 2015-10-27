@@ -8,7 +8,6 @@ import java.util.Set;
 import org.bson.Document;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.mongodb.client.model.Filters;

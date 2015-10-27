@@ -1,6 +1,5 @@
 package de.pesacraft.cannonfight.util.cannons;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +7,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.IllegalClassException;
 import org.bson.Document;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 

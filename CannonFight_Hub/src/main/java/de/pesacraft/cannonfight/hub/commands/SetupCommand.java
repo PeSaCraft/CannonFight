@@ -15,9 +15,6 @@ import de.pesacraft.cannonfight.hub.game.Setup;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.shop.ClickHandler;
-import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
-import de.pesacraft.cannonfight.util.shop.Shop;
 
 public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();

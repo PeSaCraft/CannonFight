@@ -3,7 +3,6 @@ package de.pesacraft.cannonfight.game.players;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
 

@@ -2,15 +2,12 @@ package de.pesacraft.cannonfight.util.cannons.usable;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -18,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,11 +31,6 @@ import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
-import de.pesacraft.cannonfight.util.shop.ClickHandler;
-import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
-import de.pesacraft.cannonfight.util.shop.Shop;
-import de.pesacraft.cannonfight.util.shop.ShopGroup;
-import de.pesacraft.cannonfight.util.shop.ShopMaker;
 import de.pesacraft.cannonfight.util.shop.upgrade.DoubleUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.IntegerUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
@@ -176,7 +167,6 @@ public class FireballCannon extends Cannon implements Listener {
 	
 	private CannonFighter player;
 	private ItemStack item;
-	private int maxAmmon;
 	private List<Integer> shoot;
 	
 	public FireballCannon(CannonFighter player, int levelAmmo, int levelCooldown, int levelRadius, int levelDamage) {
