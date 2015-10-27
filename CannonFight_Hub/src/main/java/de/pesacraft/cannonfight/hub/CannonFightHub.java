@@ -28,6 +28,7 @@ import de.pesacraft.cannonfight.hub.communication.CommunicationHubClient;
 import de.pesacraft.cannonfight.hub.lobby.signs.SignHandler;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
+import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Language;
@@ -105,10 +106,7 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 			if (subcommand.equalsIgnoreCase("coins"))
 				return new CoinsCommand().onCommand(sender, cmd, label, subArgs);
 			if (subcommand.equalsIgnoreCase("langrl")) {
-				LOGGER.info(Language.get("info.reloading.language", false));
-				Language.loadLanguage(this, this.getConfig().getString("language"));
-				LOGGER.info(Language.get("info.reloaded.language", false));
-				return true;
+				return new LanguageReloadCommand().onCommand(sender, cmd, label, subArgs);
 			}
 		}
 		return super.onCommand(sender, cmd, label, args);
