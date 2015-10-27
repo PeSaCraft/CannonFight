@@ -24,8 +24,6 @@ public class Arena {
 	private static final MongoCollection<Document> COLLECTION;
 	
 	private final String name;
-	private final Location loc1;
-	private final Location loc2;
 	private final Location spectatorSpawn;
 	private final int requiredPlayers;
 	private final Map<CannonFighter, Location> setSpawns;
@@ -48,13 +46,7 @@ public class Arena {
 		
 		World world = Bukkit.getWorld(name);
 		
-		Document docLoc = (Document) doc.get("loc1");
-		loc1 = new Location(world, docLoc.getInteger("x"), docLoc.getInteger("y"), docLoc.getInteger("z"));
-		
-		docLoc = (Document) doc.get("loc2");
-		loc2 = new Location(world, docLoc.getInteger("x"), docLoc.getInteger("y"), docLoc.getInteger("z"));
-		
-		docLoc = (Document) doc.get("spectatorSpawn");
+		Document docLoc = (Document) doc.get("spectatorSpawn");
 		spectatorSpawn = new Location(world, docLoc.getDouble("x"), docLoc.getDouble("y"), docLoc.getDouble("z"), docLoc.getDouble("yaw").floatValue(), docLoc.getDouble("pitch").floatValue());
 		
 		List<Document> spawnList = (List<Document>) doc.get("spawns");
@@ -103,14 +95,6 @@ public class Arena {
 
 	public int getRequiredPlayers() {
 		return requiredPlayers;
-	}
-	
-	public Location getLowerBound() {
-		return loc1;
-	}
-	
-	public Location getUpperBound() {
-		return loc2;
 	}
 	
 	@Override

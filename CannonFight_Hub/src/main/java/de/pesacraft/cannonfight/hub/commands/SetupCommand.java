@@ -15,6 +15,9 @@ import de.pesacraft.cannonfight.hub.game.Setup;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
+import de.pesacraft.cannonfight.util.shop.ClickHandler;
+import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
+import de.pesacraft.cannonfight.util.shop.Shop;
 
 public class SetupCommand implements CommandExecutor {
 	private static Map<Player, Setup> activeSetups = new HashMap<Player, Setup>();
@@ -34,16 +37,8 @@ public class SetupCommand implements CommandExecutor {
 		Player p = (Player) sender;
 		Setup s = activeSetups.get(p);
 		
-		if (s == null) {
-			s = new Setup();
-			activeSetups.put(p, s);
-			sender.sendMessage(Language.get("command.setup-new-setup", true)); 
-		}
-		
 		if (args.length == 0) {
 			// setup hilfe
-			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup pos1 " + ChatColor.BLUE + "Erste Ecke der Arena an aktueller Position festlegen");
-			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup pos2 " + ChatColor.BLUE + "Zweite Ecke der Arena an aktueller Position festlegen");
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup name <name> " + ChatColor.BLUE + "Name der Arena festlegen");
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup reqPlayers <amount> " + ChatColor.BLUE + "Anzahl der zum Start des Spiels benötigten Spieler festlegen.");
 			p.sendMessage(ChatColor.AQUA + "[CannonFight] " + ChatColor.GOLD + "/cannonfight setup specPos " + ChatColor.BLUE + "Zuschauer Spawn an aktueller Position festlegen");
@@ -53,39 +48,35 @@ public class SetupCommand implements CommandExecutor {
 			return true;
 		}
 		if (args.length == 1) {
-			// pos1 pos2 specPos spawn done lobby
-			if (args[0].equalsIgnoreCase("pos1")) {
-				s.setLocation1(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-pos1", true));
-				return true;
-			}
-			else if (args[0].equalsIgnoreCase("pos2")) {
-				s.setLocation2(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-pos2", true));
-				return true;
-			}
-			else if (args[0].equalsIgnoreCase("specPos")) {
+			// specPos spawn lobby cannons
+			if (args[0].equalsIgnoreCase("specPos")) {
+				if (s == null) {
+					sender.sendMessage(Language.get("command.setup.not-loaded", true)); 
+					return true;
+				}
 				s.setSpectatorLocation(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-specPos", true)); 
+				sender.sendMessage(Language.get("command.setup.set.specPos", true)); 
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("spawn")) {
+				if (s == null) {
+					sender.sendMessage(Language.get("command.setup.not-loaded", true)); 
+					return true;
+				}
 				s.addSpawn(p.getLocation());
-				sender.sendMessage(Language.get("command.setup-set-spawn", true)); 
-				return true;
-			}
-			else if (args[0].equalsIgnoreCase("done")) {
-				//Arenas.put(s.getName(), new Arena(s.getName()));
-				activeSetups.remove(p);
-				sender.sendMessage(Language.get("command.setup-done", true));
+				sender.sendMessage(Language.get("command.setup.set.spawn", true)); 
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("lobby")) {
 				CannonFightHub.setLobbyLocation(((Player) sender).getLocation());
-				sender.sendMessage(Language.get("command.setup-set-lobby", true));
+				sender.sendMessage(Language.get("command.setup.set.lobby", true));
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("cannons")) {
+				if (s == null) {
+					sender.sendMessage(Language.get("command.setup.not-loaded", true)); 
+					return true;
+				}
 				Cannons.getUpgradeSetupShop().openInventory(CannonFighter.get((OfflinePlayer) p));
 				return true;
 			}
@@ -93,13 +84,13 @@ public class SetupCommand implements CommandExecutor {
 		
 		if (args.length == 2) {
 			// name reqPlayers
-			if (args[0].equalsIgnoreCase("name")) {
-				s.setName(args[1]);
-				sender.sendMessage(Language.get("command.setup-set-name", true)); 
-			}
-			else if (args[0].equalsIgnoreCase("reqPlayers")) {
+			if (args[0].equalsIgnoreCase("reqPlayers")) {
 				s.setRequiredPlayers(Integer.parseInt(args[1]));
-				sender.sendMessage(Language.get("command.setup-set-reqPlayers", true)); 
+				sender.sendMessage(Language.get("command.setup.set.reqPlayers", true)); 
+			}
+			else if (args[0].equalsIgnoreCase("load")) {
+				activeSetups.put(p, Setup.get(args[1]));
+				sender.sendMessage(Language.get("command.setup.loaded", true)); 
 			}
 			return true;
 		}

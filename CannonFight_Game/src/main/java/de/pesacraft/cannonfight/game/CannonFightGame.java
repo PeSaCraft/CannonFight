@@ -48,7 +48,6 @@ import de.pesacraft.cannonfight.game.api.CannonFighterPreJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.CannonFighterSpectatorJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.CannonFighterSpectatorPreJoinGameEvent;
 import de.pesacraft.cannonfight.game.api.GameOverEvent;
-import de.pesacraft.cannonfight.game.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.game.commands.LeaveCommand;
 import de.pesacraft.cannonfight.game.communication.CommunicationGameClient;
 import de.pesacraft.cannonfight.game.players.ActivePlayer;
@@ -61,6 +60,7 @@ import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
+import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
 
 public class CannonFightGame extends JavaPlugin implements Listener {
@@ -398,84 +398,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		CommunicationGameClient.getInstance().sendBackToHub(part);
 	}
 	
-	public static boolean locIsInArena(Location loc) {
-		Location lower = ARENA.getLowerBound();
-		Location upper = ARENA.getUpperBound();
-		return loc.getBlockX() >= lower.getBlockX() && loc.getBlockX() <= upper.getBlockX()
-				&& loc.getBlockY() >= lower.getBlockY() && loc.getBlockY() <= upper.getBlockY()
-				&& loc.getBlockZ() >= lower.getBlockZ() && loc.getBlockZ() <= upper.getBlockZ();
-	}
-	
-	private static Set<Block> getBlocksForWall(Block base) {
-		Set<Block> relatives = new HashSet<Block>();
-		
-		for (int i = 1; i <= 5; i++) {
-			Block relative = base.getRelative(BlockFace.NORTH, i);
-			
-			if (!locIsInArena(relative.getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.SOUTH, i)).getLocation())) {
-				// block nearby outside arena:
-				// show particle wall
-				relatives.add(relative);
-				
-				Block up = relative.getRelative(BlockFace.UP);
-				
-				relatives.add(up);
-				relatives.add(up.getRelative(BlockFace.UP));
-				
-				relatives.add(relative.getRelative(BlockFace.DOWN));
-				
-				relatives.add(relative.getRelative(BlockFace.EAST));
-				relatives.add(up.getRelative(BlockFace.EAST));
-				
-				relatives.add(relative.getRelative(BlockFace.WEST));
-				relatives.add(up.getRelative(BlockFace.WEST));
-				
-				return relatives;
-			}
-			
-			if (!locIsInArena((relative = base.getRelative(BlockFace.EAST, i)).getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.WEST, i)).getLocation())) {
-				// block nearby outside arena:
-				// show particle wall
-				relatives.add(relative);
-				
-				Block up = relative.getRelative(BlockFace.UP);
-				
-				relatives.add(up);
-				relatives.add(up.getRelative(BlockFace.UP));
-				
-				relatives.add(relative.getRelative(BlockFace.DOWN));
-				
-				relatives.add(relative.getRelative(BlockFace.NORTH));
-				relatives.add(up.getRelative(BlockFace.NORTH));
-				
-				relatives.add(relative.getRelative(BlockFace.SOUTH));
-				relatives.add(up.getRelative(BlockFace.SOUTH));
-				
-				return relatives;
-			}
-			
-			// players head is 2 above the given location
-			if (!locIsInArena((relative = base.getRelative(BlockFace.DOWN, i)).getLocation()) || !locIsInArena((relative = base.getRelative(BlockFace.UP, i + 2)).getLocation())) {
-				// block nearby outside arena:
-				// show particle wall
-				relatives.add(relative);
-				
-				relatives.add(relative.getRelative(BlockFace.NORTH));
-				relatives.add(relative.getRelative(BlockFace.NORTH_EAST));
-				relatives.add(relative.getRelative(BlockFace.EAST));
-				relatives.add(relative.getRelative(BlockFace.SOUTH_EAST));
-				relatives.add(relative.getRelative(BlockFace.SOUTH));
-				relatives.add(relative.getRelative(BlockFace.SOUTH_WEST));
-				relatives.add(relative.getRelative(BlockFace.WEST));
-				relatives.add(relative.getRelative(BlockFace.NORTH_WEST));
-				
-				return relatives;
-			}
-		}
-		
-		return relatives;
-	}
-	
 	private static void respawn(ActivePlayer a) {
 		CannonFighter c = a.getPlayer();
 		Player p = c.getPlayer();
@@ -677,98 +599,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			ARENA.teleportSpectator(c);
 			
 			p.setGameMode(GameMode.SPECTATOR);	
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event) {
-		if (gameState == GameState.WAITING || gameState == GameState.STARTING)
-			// ignore start
-			return;
-		
-		Player p = event.getPlayer();
-		CannonFighter c = CannonFighter.get((OfflinePlayer) p);
-		Participant par = new Participant(c);
-		
-		if (players.contains(par)) {
-			Location to = event.getTo();
-			Location from = event.getFrom();
-			
-			ifbreak: if (locIsInArena(to)) {
-				if (!locIsInArena(to.add(0, 2, 0))) {
-					// head not in arena
-					break ifbreak;
-				}
-				// work with feet location again
-				to.subtract(0, 2, 0);
-				Set<Block> relatives = getBlocksForWall(to.getBlock());
-				
-				for (Block rel : relatives) {
-					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.BARRIER, false, rel.getX(), rel.getY() + 0.5f, rel.getZ(), 0, 0, 0, 0, 1);
-					((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-				}
-				return;
-			}
-			
-			// player will be outside arena
-			
-			if (!locIsInArena(from)) {
-				// if player comes from outside the arena
-				// he has to be pushed inside
-				p.setVelocity(p.getVelocity().normalize().multiply(2));
-				return;
-			}
-			
-			Vector direction = from.toVector().subtract(to.toVector()).normalize();
-
-			direction.setX(direction.getX() * 2);
-			direction.setY(direction.getY() * 2);
-			direction.setZ(direction.getZ() * 2);
- 			
- 			p.setVelocity(direction);
-			
-			event.setTo(from);
-			return;
-		}
-		
-		if (spectators.contains(par)) {
-			Location to = event.getTo();
-			Location from = event.getFrom();
-			
-			ifbreak: if (locIsInArena(to)) {
-				if (!locIsInArena(to.add(0, 2, 0))) {
-					// head not in arena
-					break ifbreak;
-				}
-				// work with feet location again
-				to.subtract(0, 2, 0);
-				Set<Block> relatives = getBlocksForWall(to.getBlock());
-				
-				for (Block rel : relatives) {
-					PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(EnumParticle.BARRIER, false, rel.getX(), rel.getY() + 0.5f, rel.getZ(), 0, 0, 0, 0, 1);
-					((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-				}
-				return;
-			}
-			
-			// player will be outside arena
-			if (!locIsInArena(from)) {
-				// if player comes from outside the arena
-				// he has to be pushed inside
-				p.setVelocity(p.getVelocity().normalize());
-				return;
-			}
-						
-			Vector direction = from.toVector().subtract(to.toVector()).normalize();
-
-			direction.setX(direction.getX() * 2);
-			direction.setY(direction.getY() * 2);
-			direction.setZ(direction.getZ() * 2);
- 			
- 			p.setVelocity(direction);
-			
-			event.setTo(from);
-			p.sendMessage(Language.get("error.cannot-leave-arena-bounds", true));
 		}
 	}
 	
