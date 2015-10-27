@@ -1,7 +1,16 @@
 package de.pesacraft.cannonfight.game.players;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,6 +19,9 @@ import de.pesacraft.cannonfight.game.CageForm;
 import de.pesacraft.cannonfight.game.CannonFightGame;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.Language.StringMaker;
+import de.pesacraft.cannonfight.util.Language.TimeOutputs;
+import de.pesacraft.cannonfight.util.cannons.Cannon;
 
 public class ActivePlayer extends Participant {
 	private int lives;
@@ -95,5 +107,28 @@ public class ActivePlayer extends Participant {
 
 	public boolean hasCage() {
 		return cage != null;
+	}
+	
+	public void sendActionBar() {
+		StringMaker valueFormat = Language.getStringMaker("general.cooldown.actionbar.format.value", false);
+		List<String> cooldowns = new ArrayList<String>();
+		
+		for (Cannon c : getPlayer().getActiveItems()) {
+			if (c == null)
+				continue;
+			if (c.hasFinished())
+				continue;
+			
+			cooldowns.add(valueFormat.clone().replace("%cannon%", c.getName()).replace("%time%", Language.formatTime(c.getRemainingTime(), TimeOutputs.SECONDS)).getString());
+		}
+		
+		if (cooldowns.isEmpty())
+			return;
+		
+		String splitter = Language.get("general.cooldown.actionbar.splitter", false);
+		String msg = Language.getStringMaker("general.cooldown.actionbar.format.message", false).replace("%values%", Strings.join(cooldowns, splitter)).getString();
+		
+		PacketPlayOutChat packet = new PacketPlayOutChat(ChatSerializer.a(msg), (byte) 2);
+		((CraftPlayer) getPlayer().getPlayer()).getHandle().playerConnection.sendPacket(packet);
 	}
 }

@@ -54,6 +54,10 @@ public abstract class Cooldown {
 		return timeLeft / time;
 	}
 	
+	public final double getRemainingTime() {
+		return timeLeft / REFRESHS_PER_SEC;
+	}
+	
 	public final boolean setTime(double time) {
 		if (!hasFinished())
 			// Timer running: cant change time

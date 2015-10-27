@@ -315,6 +315,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 					if ((time < 60 && time % 15 == 0) || (time < 15))
 						Bukkit.broadcastMessage(Language.getStringMaker("info.game.remaining", true).replace("%time%", Language.formatTime(time, TimeOutputs.SECONDS)).getString());
 					
+					for (ActivePlayer a: players)
+						a.sendActionBar();
+					
 					break;
 				case GAMEOVER:
 					if (time % 5 == 0 || (time < 5 && time != 0))
