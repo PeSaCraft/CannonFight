@@ -45,15 +45,8 @@ public class HubHandler extends Thread {
 							out.writeUTF(player);
 							continue;
 						}
-						// found empty game, set arena
-						handler.setArena(arena, this);
-						// wait for game handler to receive that arena has been set
-						// prevents ReadTimeOut for connecting player
-						try {
-							this.wait();
-						} catch (InterruptedException ex) {
-							ex.printStackTrace();
-						}
+						// find empty, create
+						handler.setArena(arena);
 					}
 					
 					if (handler.sendPlayer(player, this.server)) {
