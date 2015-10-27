@@ -62,11 +62,11 @@ public class Language {
 		case MINUTES:
 			int timeInMinutes = (int) (timeInSeconds / 60);
 			if (timeInMinutes == 1)
-				return timeInMinutes + " " + get("general.units.minute", false);
+				return "1 " + get("general.units.minute", false);
 			return timeInMinutes + " " + get("general.units.minutes", false);
 		case SECONDS:
 			if (timeInSeconds == 1)
-				return timeInSeconds + " " + get("general.units.second", false);
+				return "1 " + get("general.units.second", false);
 			return formatDouble(timeInSeconds) + " " + get("general.units.seconds", false);
 		default:
 			break;
@@ -109,31 +109,31 @@ public class Language {
 
 	public static String formatLives(int lives) {
 		if (lives == 1)
-			return lives + " " + get("general.units.life", false);
+			return "1 " + get("general.units.life", false);
 		return lives + " " + get("general.units.lives", false);
 	}
 
 	public static String formatCoins(int coins) {
 		if (coins == 1)
-			return coins + " " + get("general.units.coin", false);
+			return "1 " + get("general.units.coin", false);
 		return coins + " " + get("general.units.coins", false);
 	}
 	
 	public static String formatPlayers(int players) {
 		if (players == 1)
-			return players + " " + get("general.units.player", false);
+			return "1 " + get("general.units.player", false);
 		return players + " " + get("general.units.players", false);
 	}
 	
 	public static String formatSlots(int slots) {
 		if (slots == 1)
-			return slots + " " + get("general.units.slot", false);
+			return "1 " + get("general.units.slot", false);
 		return slots + " " + get("general.units.slots", false);
 	}
 	
 	public static String formatAmmo(int ammo) {
 		if (ammo == 1)
-			return ammo + " " + get("general.units.ammo", false);
+			return "1 " + get("general.units.ammo", false);
 		return ammo + " " + get("general.units.ammos", false);
 	}
 	

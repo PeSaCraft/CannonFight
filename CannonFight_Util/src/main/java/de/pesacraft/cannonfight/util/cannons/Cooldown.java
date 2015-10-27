@@ -40,6 +40,7 @@ public abstract class Cooldown {
 				}
 				else
 					update();
+				System.out.println(timeLeft + " Sek");
 			}
 		}.runTaskTimer(CannonFightUtil.PLUGIN, 0, (long) (20 / REFRESHS_PER_SEC)).getTaskId();
 		
