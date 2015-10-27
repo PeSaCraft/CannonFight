@@ -73,7 +73,7 @@ public class ActivePlayer extends Participant {
 					return;
 				}
 				
-				Language.getStringMaker("info.platform.dissapears.time", true).replace("%time%", Language.formatTime(time, Language.TimeOutputs.SECONDS));
+				a.getPlayer().sendMessage(Language.getStringMaker("info.platform.dissapears.time", true).replace("%time%", Language.formatTime(time, Language.TimeOutputs.SECONDS)).getString());
 				time--;
 			}
 		}.runTaskTimer(CannonFightGame.PLUGIN, 0, 20);
