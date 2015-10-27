@@ -19,8 +19,8 @@ public abstract class Cooldown {
 	private int taskID;
 	
 	public Cooldown(double time) {
-		this.setTime(time);
 		taskID = -1;
+		this.setTime(time);
 	}
 
 	public final boolean start() {
