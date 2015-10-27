@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -13,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 
 public class Language {
+	private static final DecimalFormat doubleFormat = new DecimalFormat("#.##");
 	private static ResourceBundle MESSAGES;
 	private static String brand;
 	
@@ -55,17 +57,17 @@ public class Language {
 		}
 	}
 	
-	public static String formatTime(int timeInSeconds, TimeOutputs outputMode) {
+	public static String formatTime(double timeInSeconds, TimeOutputs outputMode) {
 		switch (outputMode) {
 		case MINUTES:
-			int timeInMinutes = timeInSeconds / 60;
+			int timeInMinutes = (int) (timeInSeconds / 60);
 			if (timeInMinutes == 1)
 				return timeInMinutes + " " + get("general.units.minute", false);
 			return timeInMinutes + " " + get("general.units.minutes", false);
 		case SECONDS:
 			if (timeInSeconds == 1)
 				return timeInSeconds + " " + get("general.units.second", false);
-			return timeInSeconds + " " + get("general.units.seconds", false);
+			return formatDouble(timeInSeconds) + " " + get("general.units.seconds", false);
 		default:
 			break;
 		
@@ -92,6 +94,11 @@ public class Language {
 		
 		public String getString() {
 			return this.string;
+		}
+		
+		@Override
+		public StringMaker clone() {
+			return new StringMaker(this.string);
 		}
 	}
 	
@@ -132,8 +139,8 @@ public class Language {
 	
 	public static String formatDistance(double distance) {
 		if (distance == 1)
-			return distance + " " + get("general.units.block", false);
-		return distance + " " + get("general.units.blocks", false);
+			return formatDouble(distance) + " " + get("general.units.block", false);
+		return formatDouble(distance) + " " + get("general.units.blocks", false);
 	}
 
 	public static String formatDamage(double damage) {
@@ -144,6 +151,10 @@ public class Language {
 		if (damage % 2 == 1)
 			hearts += "\u2765";
 		
-		return getStringMaker("general.units.damage-format", false).replace("%value%", String.valueOf(damage)).replace("%hearts%", hearts).getString();
+		return getStringMaker("general.units.damage-format", false).replace("%value%", formatDouble(damage)).replace("%hearts%", hearts).getString();
+	}
+	
+	public static String formatDouble(double value) {
+		return doubleFormat.format(value);
 	}
 }
