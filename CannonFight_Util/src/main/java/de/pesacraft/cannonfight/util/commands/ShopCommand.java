@@ -17,7 +17,6 @@ public class ShopCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length == 0) {
 			if (!(sender instanceof Player)) {
-				// only players can have coins
 				sender.sendMessage(Language.get("command.shop-only-players", true)); 
 				return true;
 			}
