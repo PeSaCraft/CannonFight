@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -140,8 +141,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 	public static void setArena(String arena) {
 		LOGGER.info(Language.getStringMaker("info.arena-set", false).replace("%arena%", arena).getString());
 		WORLD_GAME = Bukkit.getServer().createWorld(new WorldCreator(arena));
-		// disable pvp
-		WORLD_GAME.setPVP(false);
 		
 		LOGGER.info(Language.get("info.create-backup", false));
 		// create backup
@@ -752,6 +751,10 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		if (gameState != GameState.INGAME)
 			// cancel all damage if not ingame
+			event.setCancelled(true);
+
+		// disable pvp
+		if (event.getCause() == DamageCause.ENTITY_ATTACK)
 			event.setCancelled(true);
 	}
 	
