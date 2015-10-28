@@ -107,7 +107,7 @@ public class Shop implements Listener {
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getPlayer()) == viewer)
+		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getPlayer()) != viewer)
 			return;
 		
 		// unregister self when inventory is closing
