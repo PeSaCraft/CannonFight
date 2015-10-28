@@ -7,11 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_8_R3.World;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -209,7 +213,7 @@ public class StandardCannon extends Cannon implements Listener {
 		
 		Player p = player.getPlayer();
 		
-		new MovingParticle(p, EnumParticle.BLOCK_CRACK, new HitHandler() {
+		new MovingParticle(p, new HitHandler() {
 			
 			@Override
 			public void hitEntity(EntityDamageByEntityEvent event) {
@@ -219,6 +223,12 @@ public class StandardCannon extends Cannon implements Listener {
 			@Override
 			public void hitBlock(Location location) {
 				BreakingBlock.get(location).damage(((Number) getValue(UPGRADE_DAMAGE)).intValue() / 2);
+			}
+
+			@Override
+			public void flying(Location location) {
+				PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_CRACK, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 1, Material.WOOL.getId() + (DyeColor.GREEN.getWoolData() << 12));
+				((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, (World) location.getWorld());
 			}
 		});
 		

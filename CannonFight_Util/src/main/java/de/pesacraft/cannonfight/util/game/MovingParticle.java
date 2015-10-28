@@ -1,13 +1,8 @@
 package de.pesacraft.cannonfight.util.game;
 
-import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_8_R3.World;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftSnowball;
 import org.bukkit.entity.Player;
@@ -27,7 +22,7 @@ public class MovingParticle implements Listener {
 	private final BukkitRunnable particleTrailRunnable;
 	private final HitHandler hitHandler;
 	
-	public MovingParticle(Player shooter, final EnumParticle particle, HitHandler hitHandler) {
+	public MovingParticle(Player shooter, HitHandler hitHandler) {
 		this.snowball = shooter.launchProjectile(Snowball.class);
 		this.hitHandler = hitHandler;
 		
@@ -42,10 +37,7 @@ public class MovingParticle implements Listener {
 		this.particleTrailRunnable = new BukkitRunnable() {
 			@Override
 			public void run() {
-				Location l = snowball.getLocation();
-				
-				PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(particle, false, (float) l.getX(), (float) l.getY(), (float) l.getZ(), 0, 0, 0, 0, 1);
-				((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, (World) l.getWorld());
+				MovingParticle.this.hitHandler.flying(snowball.getLocation());
 			}
 		};
 		

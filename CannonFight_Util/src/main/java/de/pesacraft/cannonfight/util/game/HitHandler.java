@@ -8,4 +8,6 @@ public interface HitHandler {
 	public void hitBlock(Location location);
 
 	public void hitEntity(EntityDamageByEntityEvent event);
+
+	public void flying(Location location);
 }
