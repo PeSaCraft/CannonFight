@@ -109,6 +109,7 @@ public class CannonShop {
 				int pos = 0; // add position
 				for (ItemStack item : items) {
 					s.set((1 + pos / 7) * 9 + 1 + (pos % 7), item); // 7 Items per row, starting at (1,1)
+					pos++;
 				}
 				
 				return s;
