@@ -10,7 +10,7 @@
 
     <groupId>de.pesacraft.cannonfight</groupId>
     <artifactId>CannonFightUtil</artifactId>
-    <version>0.1.8${cannonfight.snapshot}</version>
+    <version>0.2.0${cannonfight.snapshot}</version>
     <name>CannonFight Util</name>
     <description>The utilities part for the CannonFight game plugin for Minecraft Bukkit Servers. This contains code that is used in both parts.</description>
     
