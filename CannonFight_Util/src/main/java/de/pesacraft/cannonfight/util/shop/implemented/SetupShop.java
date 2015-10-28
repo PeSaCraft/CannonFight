@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -19,6 +18,7 @@ import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
+import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
@@ -39,14 +39,12 @@ public class SetupShop {
 				meta.setDisplayName(Language.getStringMaker("info.has-coins", false).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
 				fill.setItemMeta(meta);
 				
-				Set<String> cannons = Cannons.getCannonSet();
-				
 				final Map<Cannon, ItemStack> available = new HashMap<Cannon, ItemStack>();
 				
-				for (String cannonName : cannons) {
-					if (c.hasCannon(cannonName)) {
+				for (Entry<String, CannonConstructor> entry : Cannons.getCannons().entrySet()) {
+					if (c.hasCannon(entry.getKey())) {
 						// player has this cannon
-						Cannon cannon = c.getCannon(cannonName);
+						Cannon cannon = c.getCannon(entry.getKey());
 						available.put(cannon, setupItem(c, cannon));
 					}
 					// else player doesn't own this cannon
