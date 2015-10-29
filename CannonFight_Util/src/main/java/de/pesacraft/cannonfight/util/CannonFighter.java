@@ -363,7 +363,7 @@ public class CannonFighter {
 		doc.append("activeItems", serializedActive);
 		
 		// update players name
-		COLLECTION.updateOne(eq("uuid", uuid.toString()), doc, new UpdateOptions().upsert(true));
+		COLLECTION.replaceOne(eq("uuid", uuid.toString()), doc, new UpdateOptions().upsert(true));
 	}
 	
 	@Override
