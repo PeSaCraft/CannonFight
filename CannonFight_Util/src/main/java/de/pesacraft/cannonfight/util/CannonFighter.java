@@ -143,8 +143,9 @@ public class CannonFighter {
 	}
 	
 	public void takeCoins(int amount) {
-		if (amount <= 0)
+		if (amount <= 0 || !hasEnoughCoins(amount))
 			throw new IllegalArgumentException();
+		
 		coins -= amount;
 	}
 	
