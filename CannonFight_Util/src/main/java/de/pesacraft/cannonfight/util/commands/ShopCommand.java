@@ -26,7 +26,7 @@ public class ShopCommand implements CommandExecutor {
 			}
 			
 			CannonFighter c = CannonFighter.get((Player) sender);
-			MainShop.openShopPage(c);
+			MainShop.getMainMenu(c).openInventory(c);
 			return true;
 		}
 		
@@ -45,8 +45,7 @@ public class ShopCommand implements CommandExecutor {
 			
 			CannonFighter c = CannonFighter.get(p);
 			
-			
-			MainShop.openShopPage(c);
+			MainShop.getMainMenu(c).openInventory(c);
 			
 			sender.sendMessage(Language.getStringMaker("info.shop-open-other", true).replace("%player%", c.getName()).getString());
 			return true;

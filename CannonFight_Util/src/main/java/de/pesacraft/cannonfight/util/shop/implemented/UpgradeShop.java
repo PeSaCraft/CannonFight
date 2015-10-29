@@ -25,8 +25,6 @@ import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
 import de.pesacraft.cannonfight.util.shop.Shop;
-import de.pesacraft.cannonfight.util.shop.ShopGroup;
-import de.pesacraft.cannonfight.util.shop.ShopMaker;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
 @SuppressWarnings("deprecation")
@@ -55,8 +53,6 @@ public class UpgradeShop {
 	public static final String NAME_LIVES = "Lives";
 	
 	protected static final Map<Integer, Upgrade<Integer>> LIFE_UPGRADES = new HashMap<Integer, Upgrade<Integer>>();
-	
-	private static final ShopGroup shop;
 		
 	static {
 		COLLECTION = Collection.ITEMS();
@@ -133,146 +129,129 @@ public class UpgradeShop {
 			
 			COLLECTION.insertOne(doc);
 		}
-		
-		shop = new ShopGroup(new ShopMaker() {
-			@Override
-			public Shop createShop(CannonFighter c) {
-				final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData());
-				ItemMeta meta = fill.getItemMeta();
-				meta.setDisplayName(Language.getStringMaker("info.has-coins", false).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
-				fill.setItemMeta(meta);
-				
-				final ItemStack slotItem = setupSlotItem(c);
-				final ItemStack lifeItem = setupLifeItem(c);
-				
-				Shop s = new Shop(Language.get("shop.upgrades.name", false), new ClickHandler() {
-					
-					@Override
-					public void onItemInteract(ItemInteractEvent event) {
-						if (!event.isPickUpAction())
-							return;
-						
-						ItemStack item = event.getItemInSlot();
-						final CannonFighter p = event.getFighter();
-						
-						if (item.isSimilar(fill))
-							return;
-						
-						if (item.isSimilar(slotItem)) {
-							// upgrade slots
-							if (!SLOT_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
-								// max reached
-								p.sendMessage(Language.get("error.max-upgraded", true));
-								return;
-							}
-							
-							if (!p.upgradeSlots()) {
-								// not enough coins for upgrade
-								p.sendMessage(Language.get("error.not-enough-coins", true));
-								return;
-							}
-							
-							// upgrade done
-							// regenerate shop
-							Bukkit.getScheduler().runTaskLater(CannonFightUtil.PLUGIN, new Runnable() {
-								
-								@Override
-								public void run() {
-									openShopPage(p);
-								}
-							}, 1);
-							return;
-						}
-						
-						if (item.isSimilar(lifeItem)) {
-							// upgrade slots
-							if (!LIFE_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
-								// max reached
-								p.sendMessage(Language.get("error.max-upgraded", true));
-								return;
-							}
-							
-							if (!p.upgradeLives()) {
-								// not enough coins for upgrade
-								p.sendMessage(Language.get("error.not-enough-coins", true));
-								return;
-							}
-							
-							// upgrade done
-							// regenerate shop
-							Bukkit.getScheduler().runTaskLater(CannonFightUtil.PLUGIN, new Runnable() {
-								
-								@Override
-								public void run() {
-									openShopPage(p);
-								}
-							}, 1);
-							return;
-						}
-					}
-				}, 3);
-				
-				s.fill(fill);
-				
-				s.set(1 * 9 + 3, slotItem); // (1, 3) Slots
-				s.set(1 * 9 + 5, lifeItem); // (1, 5) Lives
-				
-				return s;
-			}
-
-			private ItemStack setupSlotItem(CannonFighter p) {
-				ItemStack i = ITEM_SLOTS.clone();
-				ItemMeta m = i.getItemMeta();
-				
-				Upgrade<Integer> upgrade = getSlotsUpgradeForLevel(p.getSlotsLevel() + 1);
-				
-				List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.upgrades.slots.lore", false).replace("%slots%", Language.formatSlots(p.getSlots())).getString().split("\n"));
-				
-				if (upgrade != null) {
-					lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.slots.lore.upgradable", false).replace("%slots%", Language.formatSlots(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
-				}
-				else
-					lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.slots.lore.max-reached", false).split("\n")));
-					
-				m.setLore(lore);
-				
-				i.setItemMeta(m);
-				
-				return i;
-			}
-			
-			private ItemStack setupLifeItem(CannonFighter p) {
-				ItemStack i = ITEM_LIVES.clone();
-				ItemMeta m = i.getItemMeta();
-				
-				Upgrade<Integer> upgrade = getLivesUpgradeForLevel(p.getLivesLevel() + 1);
-				
-				List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore", false).replace("%lives%", Language.formatLives(p.getLives())).getString().split("\n"));
-				
-				if (upgrade != null) {
-					lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore.upgradable", false).replace("%lives%", Language.formatLives(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
-				}
-				else
-					lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.lives.lore.max-reached", false).split("\n")));
-					
-				m.setLore(lore);
-				
-				i.setItemMeta(m);
-				
-				return i;
-			}
-		});
 	}
 	
-	public static void openShopPage(CannonFighter c) {
-		shop.open(c);
-	}
-
 	public static Upgrade<Integer> getSlotsUpgradeForLevel(int level) {
 		return SLOT_UPGRADES.get(level);
 	}
 	
 	public static Upgrade<Integer> getLivesUpgradeForLevel(int level) {
 		return LIFE_UPGRADES.get(level);
+	}
+	
+	public static Shop getUpgradeMenu(CannonFighter c) {
+		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getData());
+		ItemMeta meta = fill.getItemMeta();
+		meta.setDisplayName(Language.getStringMaker("info.has-coins", false).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
+		fill.setItemMeta(meta);
+		
+		final ItemStack slotItem = setupSlotItem(c);
+		final ItemStack lifeItem = setupLifeItem(c);
+		
+		Shop s = new Shop(Language.get("shop.upgrades.name", false), new ClickHandler() {
+			
+			@Override
+			public void onItemInteract(ItemInteractEvent event) {
+				if (!event.isPickUpAction())
+					return;
+				
+				ItemStack item = event.getItemInSlot();
+				final CannonFighter p = event.getFighter();
+				
+				if (item.isSimilar(fill))
+					return;
+				
+				if (item.isSimilar(slotItem)) {
+					// upgrade slots
+					if (!SLOT_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
+						// max reached
+						p.sendMessage(Language.get("error.max-upgraded", true));
+						return;
+					}
+					
+					if (!p.upgradeSlots()) {
+						// not enough coins for upgrade
+						p.sendMessage(Language.get("error.not-enough-coins", true));
+						return;
+					}
+					
+					// upgrade done
+					// regenerate shop
+					event.setNextShop(getUpgradeMenu(p));
+					
+					return;
+				}
+				
+				if (item.isSimilar(lifeItem)) {
+					// upgrade slots
+					if (!LIFE_UPGRADES.containsKey(p.getSlotsLevel() + 1)) {
+						// max reached
+						p.sendMessage(Language.get("error.max-upgraded", true));
+						return;
+					}
+					
+					if (!p.upgradeLives()) {
+						// not enough coins for upgrade
+						p.sendMessage(Language.get("error.not-enough-coins", true));
+						return;
+					}
+					
+					// upgrade done
+					// regenerate shop
+					event.setNextShop(getUpgradeMenu(p));
+					
+					return;
+				}
+			}
+		}, 3);
+		
+		s.fill(fill);
+		
+		s.set(1 * 9 + 3, slotItem); // (1, 3) Slots
+		s.set(1 * 9 + 5, lifeItem); // (1, 5) Lives
+		
+		return s;
+	}
+
+	private static ItemStack setupSlotItem(CannonFighter p) {
+		ItemStack i = ITEM_SLOTS.clone();
+		ItemMeta m = i.getItemMeta();
+		
+		Upgrade<Integer> upgrade = getSlotsUpgradeForLevel(p.getSlotsLevel() + 1);
+		
+		List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.upgrades.slots.lore", false).replace("%slots%", Language.formatSlots(p.getSlots())).getString().split("\n"));
+		
+		if (upgrade != null) {
+			lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.slots.lore.upgradable", false).replace("%slots%", Language.formatSlots(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
+		}
+		else
+			lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.slots.lore.max-reached", false).split("\n")));
+			
+		m.setLore(lore);
+		
+		i.setItemMeta(m);
+		
+		return i;
+	}
+	
+	private static ItemStack setupLifeItem(CannonFighter p) {
+		ItemStack i = ITEM_LIVES.clone();
+		ItemMeta m = i.getItemMeta();
+		
+		Upgrade<Integer> upgrade = getLivesUpgradeForLevel(p.getLivesLevel() + 1);
+		
+		List<String> lore = Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore", false).replace("%lives%", Language.formatLives(p.getLives())).getString().split("\n"));
+		
+		if (upgrade != null) {
+			lore.addAll(Lists.newArrayList(Language.getStringMaker("shop.upgrades.lives.lore.upgradable", false).replace("%lives%", Language.formatLives(upgrade.getValue())).replace("%price%", Language.formatCoins(upgrade.getPrice())).getString().split("\n")));
+		}
+		else
+			lore.addAll(Lists.newArrayList(Language.get("shop.upgrades.lives.lore.max-reached", false).split("\n")));
+			
+		m.setLore(lore);
+		
+		i.setItemMeta(m);
+		
+		return i;
 	}
 }
