@@ -270,7 +270,7 @@ public class StandardCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_COOLDOWN, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Cooldown auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -286,7 +286,7 @@ public class StandardCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_AMMO, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Ammo auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -302,7 +302,7 @@ public class StandardCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_DAMAGE, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Damage auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}

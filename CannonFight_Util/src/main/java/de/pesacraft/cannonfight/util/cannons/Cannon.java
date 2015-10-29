@@ -1,5 +1,7 @@
 package de.pesacraft.cannonfight.util.cannons;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.common.collect.Lists;
 
+import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;
@@ -148,6 +151,7 @@ public abstract class Cannon extends Cooldown {
 	public final static int getLevelsForUpgrade(String cannonName, String upgradeName) {
 		return getUpgradeMap(cannonName).getLevels(upgradeName);
 	}
+	
 	public final static Map<String, Object> serializeUpgrades(String cannonName) {
 		return getUpgradeMap(cannonName).serialize();
 	}
@@ -262,4 +266,14 @@ public abstract class Cannon extends Cooldown {
 	}
 	
 	abstract public String formatValueForUpgrade(String upgrade, Object value);
+
+	public final Document serializeLevels() {
+		Document doc = new Document();
+		
+		for (Entry<String, Integer> level : levels.entrySet()) {
+			doc.append(level.getKey(), level.getValue());
+		}
+		
+		return doc;
+	}
 }

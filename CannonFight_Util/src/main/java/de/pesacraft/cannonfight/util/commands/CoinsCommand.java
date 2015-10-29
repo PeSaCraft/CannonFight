@@ -76,13 +76,15 @@ public class CoinsCommand implements CommandExecutor {
 				
 				amount = Integer.parseInt(args[2]);
 				
-				if (c.setCoins(amount)) {
+				try {
+					c.setCoins(amount);
+					
 					sender.sendMessage(Language.getStringMaker("info.coins.set", true).replace("%player%", c.getName()).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
 					
 					if (p.isOnline())
 						c.sendMessage(Language.getStringMaker("info.coins.set.by-other", true).replace("%player%", sender.getName()).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
 				}
-				else {
+				catch (IllegalArgumentException ex) {
 					sender.sendMessage(Language.getStringMaker("info.coins.set.failed", true).replace("%player%", c.getName()).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
 				}
 				return true;
@@ -103,13 +105,15 @@ public class CoinsCommand implements CommandExecutor {
 				
 				amount = Integer.parseInt(args[2]);
 				
-				if (c.giveCoins(amount, Language.getStringMaker("info.coins.log.give", false).replace("%player%", sender.getName()).getString())) {
+				try {
+					c.giveCoins(amount);
+					
 					sender.sendMessage(Language.getStringMaker("info.coins.give", true).replace("%player%", c.getName()).replace("%coins%", Language.formatCoins(amount)).getString());
 					
 					if (p.isOnline())
 						c.sendMessage(Language.getStringMaker("info.coins.give.by-other", true).replace("%player%", sender.getName()).replace("%coins%", Language.formatCoins(amount)).getString());
 				}
-				else {
+				catch (IllegalArgumentException ex) {
 					sender.sendMessage(Language.getStringMaker("info.coins.give.failed", true).replace("%player%", c.getName()).getString());
 				}
 				return true;
@@ -130,13 +134,15 @@ public class CoinsCommand implements CommandExecutor {
 				
 				amount = Integer.parseInt(args[2]);
 				
-				if (c.takeCoins(amount, Language.getStringMaker("info.coins.log.take", false).replace("%player%", sender.getName()).getString())) {
+				try {
+					c.takeCoins(amount);
+		
 					sender.sendMessage(Language.getStringMaker("info.coins.take", true).replace("%player%", c.getName()).replace("%coins%", Language.formatCoins(amount)).getString());
 					
 					if (p.isOnline())
 						c.sendMessage(Language.getStringMaker("info.coins.take.by-other", true).replace("%player%", sender.getName()).replace("%coins%", Language.formatCoins(amount)).getString());
 				}
-				else {
+				catch (IllegalArgumentException ex) {
 					sender.sendMessage(Language.getStringMaker("info.coins.take.failed", true).replace("%player%", c.getName()).getString());
 				}
 				return true;

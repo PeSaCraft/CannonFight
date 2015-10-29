@@ -81,7 +81,7 @@ public class CannonShop {
 								
 								if (p.hasEnoughCoins(constructor.getPrice())) {
 									Cannon c = constructor.buyNew(p);
-									p.takeCoins(constructor.getPrice(), Language.getStringMaker("info.cannon-bought", false).replace("%cannon%", cannon).getString());
+									p.takeCoins(constructor.getPrice());
 									p.addCannon(c);
 									
 									// regenerate this shop, cannon isnt buyable anymore

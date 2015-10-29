@@ -188,13 +188,6 @@ public class FireballCannon extends Cannon implements Listener {
 
 	public FireballCannon(CannonFighter player) {
 		this(player, 1, 1, 1, 1);
-		
-		Document doc = new Document(UPGRADE_AMMO, getUpgradeLevel(UPGRADE_AMMO));
-		doc = doc.append(UPGRADE_COOLDOWN, getUpgradeLevel(UPGRADE_COOLDOWN));
-		doc = doc.append(UPGRADE_RADIUS, getUpgradeLevel(UPGRADE_RADIUS));
-		doc = doc.append(UPGRADE_DAMAGE, getUpgradeLevel(UPGRADE_DAMAGE));
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME, doc)));
 	}
 
 	@Override
@@ -288,7 +281,7 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_COOLDOWN, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Cooldown auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -304,7 +297,7 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_AMMO, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Ammo auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -320,7 +313,7 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_RADIUS, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Radius auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -336,7 +329,7 @@ public class FireballCannon extends Cannon implements Listener {
 		
 		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_DAMAGE, newLevel)));
 		
-		player.takeCoins(upgrade.getPrice(), NAME + "-Upgrade: Damage auf Level " + newLevel);
+		player.takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
