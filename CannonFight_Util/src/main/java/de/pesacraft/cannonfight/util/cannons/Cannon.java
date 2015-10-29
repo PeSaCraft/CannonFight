@@ -231,21 +231,28 @@ public abstract class Cannon extends Cooldown {
 						String upgradeName = entry.getKey();
 						int newLevel = Cannon.this.getUpgradeLevel(upgradeName) + 1;
 						
-						Upgrade<?> upgrade = Cannon.getUpgrade(getName(), upgradeName, newLevel);
+						Upgrade<?> upgrade = upgrades.getUpgrade(upgradeName, newLevel);
 						
 						CannonFighter p = event.getFighter();
 						
-						if (p.hasEnoughCoins(upgrade.getPrice())) {
-							// can buy
-							p.takeCoins(upgrade.getPrice());
-							
-							Cannon.this.setUpgradeLevel(upgradeName, newLevel);
-							
-							event.setNextShop(getUpgradeShop());
+						if (upgrade != null) {
+							// upgradable
+							if (p.hasEnoughCoins(upgrade.getPrice())) {
+								// can buy
+								p.takeCoins(upgrade.getPrice());
+								
+								Cannon.this.setUpgradeLevel(upgradeName, newLevel);
+								
+								event.setNextShop(getUpgradeShop());
+							}
+							else {
+								// not enough money
+								p.sendMessage(Language.getStringMaker("info.not-enough-coins", true).replace("%missing%", Language.formatCoins(p.getCoins() - upgrade.getPrice())).getString());
+							}
 						}
 						else {
-							// not enough money
-							p.sendMessage(Language.getStringMaker("info.not-enough-coins", true).replace("%missing%", Language.formatCoins(p.getCoins() - upgrade.getPrice())).getString());
+							// maximum reached
+							p.sendMessage(Language.get("info.upgrade.max-reached", true));
 						}
 						return;
 					}
