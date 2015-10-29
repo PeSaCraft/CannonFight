@@ -5,12 +5,12 @@ import java.util.List;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.PacketPlayOutBlockBreakAnimation;
-import net.minecraft.server.v1_8_R3.World;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 
 public class BreakingBlock {
 
@@ -53,7 +53,7 @@ public class BreakingBlock {
 		}
 		else {
 			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(loc.hashCode(), new BlockPosition(loc.getX(), loc.getY(), loc.getZ()), state);
-			((CraftServer) Bukkit.getServer()).getHandle().sendAll(packet, (World) loc.getWorld());
+			((CraftServer) Bukkit.getServer()).getHandle().sendAll(packet, ((CraftWorld) loc.getWorld()).getHandle());
 		}
 	}
 }
