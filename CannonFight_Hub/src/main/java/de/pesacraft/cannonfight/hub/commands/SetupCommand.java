@@ -70,10 +70,6 @@ public class SetupCommand implements CommandExecutor {
 				return true;
 			}
 			else if (args[0].equalsIgnoreCase("cannons")) {
-				if (s == null) {
-					sender.sendMessage(Language.get("command.setup.not-loaded", true)); 
-					return true;
-				}
 				Cannons.getUpgradeSetupShop().openInventory(CannonFighter.get((OfflinePlayer) p));
 				return true;
 			}
