@@ -72,13 +72,10 @@ public class Shop implements Listener {
 	public void openInventory(CannonFighter c) {
 		if (isUnregistered())
 			throw new IllegalStateException(Language.get("error.shop.already-unregistered", false));
-		System.out.println("X");
 		Inventory inv = Bukkit.createInventory(null, items.length, name);
 		inv.setContents(items);
-		System.out.println("Y");
 		this.viewer = c;
 		c.getPlayer().openInventory(inv);
-	System.out.println("Z");
 		Bukkit.getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
 	}
 		

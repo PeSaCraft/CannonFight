@@ -24,11 +24,8 @@ public class ShopCommand implements CommandExecutor {
 				sender.sendMessage(Language.get("error.no-permission", true));
 				return true;
 			}
-			System.out.println(1);
 			CannonFighter c = CannonFighter.get((Player) sender);
-			System.out.println(2 + "CF: " + c);
 			MainShop.getMainMenu(c).openInventory(c);
-			System.out.println(3);
 			return true;
 		}
 		

@@ -21,17 +21,14 @@ import de.pesacraft.cannonfight.util.shop.implemented.UpgradeShop;
 public class MainShop {
 	
 	public static Shop getMainMenu(CannonFighter c) {
-		System.out.println("A");
 		final ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.PURPLE.getData());
 		ItemMeta meta = fill.getItemMeta();
 		meta.setDisplayName(Language.getStringMaker("info.has-coins", false).replace("%coins%", Language.formatCoins(c.getCoins())).getString());
 		fill.setItemMeta(meta);
-		System.out.println("B");
 		final ItemStack cannonItem = setupCannonItem();
 		final ItemStack upgradeItem = setupUpgradeItem();
 		final ItemStack setupItem = setupSetupItem();
 		final ItemStack powerupItem = setupPowerupItem();
-		System.out.println("C");
 		Shop s = new Shop(Language.get("shop.general.name", false), new ClickHandler() {
 			
 			@Override
@@ -75,7 +72,6 @@ public class MainShop {
 		s.set(1 * 9 + 3, upgradeItem); // (1, 3) Upgrades
 		s.set(1 * 9 + 5, setupItem); // (1, 5) Setup
 		s.set(1 * 9 + 7, powerupItem); // (1, 7) Power-Ups
-		System.out.println("D");
 		return s;
 	}
 
