@@ -268,72 +268,7 @@ public class FireballCannon extends Cannon implements Listener {
 		cancel();
 		finished();
 	}
-	
-	public boolean upgradeCooldown() {
-		int newLevel = getUpgradeLevel(UPGRADE_COOLDOWN) + 1;
-		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_COOLDOWN, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_COOLDOWN, newLevel);
-		setTime(upgrade.getValue());
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_COOLDOWN, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
-	}
 
-	public boolean upgradeAmmo() {
-		int newLevel = getUpgradeLevel(UPGRADE_AMMO) + 1;
-		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_AMMO, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_AMMO, newLevel);
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_AMMO, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
-	}
-
-	public boolean upgradeRadius() {
-		int newLevel = getUpgradeLevel(UPGRADE_RADIUS) + 1;
-		Upgrade<Double> upgrade = (Upgrade<Double>) getUpgrade(NAME, UPGRADE_RADIUS, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_RADIUS, newLevel);
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_RADIUS, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
-	}
-	
-	public boolean upgradeDamage() {
-		int newLevel = getUpgradeLevel(UPGRADE_DAMAGE) + 1;
-		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(NAME, UPGRADE_DAMAGE, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_DAMAGE, newLevel);
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_DAMAGE, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
-	}
-	
 	@Override
 	public CannonConstructor getCannonConstructor() {
 		return constructor;
@@ -352,5 +287,13 @@ public class FireballCannon extends Cannon implements Listener {
 			return Language.formatDistance(((Number) value).doubleValue());
 		}
 		return null;
+	}
+
+	@Override
+	protected void refreshUpgradeValue(String upgradeName) {
+		if (upgradeName.equals(UPGRADE_COOLDOWN)) {
+			Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_COOLDOWN, getUpgradeLevel(UPGRADE_COOLDOWN));
+			setTime(upgrade.getValue());
+		}
 	}
 }

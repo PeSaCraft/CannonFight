@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.common.collect.Lists;
 
+import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
@@ -61,6 +62,7 @@ public abstract class Cannon extends Cooldown {
 		
 		levels.put(upgradeName, level);
 		resetValue(upgradeName);
+		refreshUpgradeValue(upgradeName);
 		
 		return true;
 	}
@@ -225,7 +227,26 @@ public abstract class Cannon extends Cooldown {
 				
 				for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
 					if (item.isSimilar(entry.getValue())) {
-						event.setNextShop(getUpgradeShop());
+						// try to upgrade this cannon
+						String upgradeName = entry.getKey();
+						int newLevel = Cannon.this.getUpgradeLevel(upgradeName) + 1;
+						
+						Upgrade<?> upgrade = Cannon.getUpgrade(getName(), upgradeName, newLevel);
+						
+						CannonFighter p = event.getFighter();
+						
+						if (p.hasEnoughCoins(upgrade.getPrice())) {
+							// can buy
+							p.takeCoins(upgrade.getPrice());
+							
+							Cannon.this.setUpgradeLevel(upgradeName, newLevel);
+							
+							event.setNextShop(getUpgradeShop());
+						}
+						else {
+							// not enough money
+							p.sendMessage(Language.getStringMaker("info.not-enough-coins", true).replace("%missing%", Language.formatCoins(p.getCoins() - upgrade.getPrice())).getString());
+						}
 						return;
 					}
 				}
@@ -267,6 +288,8 @@ public abstract class Cannon extends Cooldown {
 	
 	abstract public String formatValueForUpgrade(String upgrade, Object value);
 
+	abstract protected void refreshUpgradeValue(String upgradeName);
+	
 	public final Document serializeLevels() {
 		Document doc = new Document();
 		

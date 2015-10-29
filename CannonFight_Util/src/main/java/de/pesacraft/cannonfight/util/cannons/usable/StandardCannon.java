@@ -324,4 +324,12 @@ public class StandardCannon extends Cannon implements Listener {
 		}
 		return null;
 	}
+	
+	@Override
+	protected void refreshUpgradeValue(String upgradeName) {
+		if (upgradeName.equals(UPGRADE_COOLDOWN)) {
+			Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_COOLDOWN, getUpgradeLevel(UPGRADE_COOLDOWN));
+			setTime(upgrade.getValue());
+		}
+	}
 }
