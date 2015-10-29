@@ -30,7 +30,6 @@ import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
 import de.pesacraft.cannonfight.util.shop.upgrade.DoubleUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.IntegerUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;

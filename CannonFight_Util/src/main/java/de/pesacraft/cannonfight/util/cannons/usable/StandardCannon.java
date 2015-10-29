@@ -31,7 +31,6 @@ import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.cannons.usable.StandardCannon;
 import de.pesacraft.cannonfight.util.game.BreakingBlock;
 import de.pesacraft.cannonfight.util.game.HitHandler;
 import de.pesacraft.cannonfight.util.game.MovingParticle;
@@ -160,8 +159,6 @@ public class StandardCannon extends Cannon {
 	private CannonFighter player;
 	private ItemStack item;
 	
-	private List<Integer> shoot;
-	
 	public StandardCannon(CannonFighter player, int levelAmmo, int levelCooldown, int levelDamage) {
 		super(((Number) getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown).getValue()).intValue());
 		
@@ -173,17 +170,10 @@ public class StandardCannon extends Cannon {
 		
 		item = ITEM.clone();
 		item.setAmount(((Number) getValue(UPGRADE_AMMO)).intValue());
-		shoot = new ArrayList<Integer>();
 	}
 
 	public StandardCannon(CannonFighter player) {
 		this(player, 1, 1, 1);
-		
-		Document doc = new Document(UPGRADE_AMMO, getUpgradeLevel(UPGRADE_AMMO));
-		doc = doc.append(UPGRADE_COOLDOWN, getUpgradeLevel(UPGRADE_COOLDOWN));
-		doc = doc.append(UPGRADE_DAMAGE, getUpgradeLevel(UPGRADE_DAMAGE));
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME, doc)));
 	}
 
 	@Override
