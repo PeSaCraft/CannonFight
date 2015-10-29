@@ -49,6 +49,7 @@ import de.pesacraft.cannonfight.game.players.Spectator;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
+import de.pesacraft.cannonfight.util.MongoDatabase;
 import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
@@ -136,6 +137,9 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		// unregister from proxy
 		CommunicationGameClient.getInstance().sendGameOver();
+		
+		CannonFighter.saveAll();
+		MongoDatabase.close();
 	}
 	
 	public static void setArena(String arena) {
@@ -373,6 +377,7 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		
 		// normal player or spectator
 		c.resetCannons();
+		CannonFighter.remove(c);
 		
 		Player p = c.getPlayer();
 		
@@ -690,7 +695,6 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 			if (a.getPlayer().equals(c)) {
 				leave(a);
 				players.remove(a);
-				
 				return;
 			}
 		}

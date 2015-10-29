@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -31,6 +32,7 @@ import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
+import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 
@@ -114,6 +116,7 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 
 	public void onDisable() { 
 		Cannons.storeCannons();
+		CannonFighter.saveAll();
 		MongoDatabase.close();
 		
 		this.getConfig().set("lobby", lobbyLocation);
@@ -136,6 +139,8 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		event.setQuitMessage(Language.get("info.leave-lobby", true).replaceAll("%player%", event.getPlayer().getName()));
+	
+		CannonFighter.remove((OfflinePlayer) event.getPlayer());
 	}
 	
 	@EventHandler
