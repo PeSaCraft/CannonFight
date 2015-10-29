@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
 
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
@@ -28,6 +29,8 @@ public class CannonFighter {
 	
 	private final UUID uuid;
 	private final OfflinePlayer player;
+	
+	private int coins;
 	private int xp;
 	
 	private int slotsLevel;
@@ -53,6 +56,7 @@ public class CannonFighter {
 		
 		if (doc != null) {
 			// Player in database
+			coins = ((Number) doc.get("coins")).intValue();
 			xp = ((Number) doc.get("xp")).intValue();
 			
 			slotsLevel = ((Number) doc.get("slotsLevel")).intValue();
@@ -82,6 +86,7 @@ public class CannonFighter {
 		}
 		else {
 			// Player not in database
+			coins = 0;
 			xp = 0;
 			
 			slotsLevel = 1;
@@ -91,6 +96,7 @@ public class CannonFighter {
 			slots = UpgradeShop.getLivesUpgradeForLevel(livesLevel).getValue();
 			
 			doc = new Document("uuid", uuid.toString());
+			doc = doc.append("coins", 0);
 			doc = doc.append("xp", 0);
 			doc = doc.append("slotsLevel", slotsLevel);
 			doc = doc.append("livesLevel", livesLevel);
@@ -121,23 +127,32 @@ public class CannonFighter {
 	}
 	
 	public int getCoins() {
-		return CannonFightUtil.MONEY.getMoney(uuid);
+		return coins;
 	}
 
-	public boolean setCoins(int amount, String... reason) {
-		return CannonFightUtil.MONEY.setMoney(uuid, amount, reason);
+	public void setCoins(int amount) {
+		if (amount < 0)
+			throw new IllegalArgumentException();
+		coins = amount;
 	}
 
-	public boolean giveCoins(int amount, String... reason) {
-		return CannonFightUtil.MONEY.giveMoney(uuid, amount, reason);
+	public void giveCoins(int amount) {
+		if (amount <= 0)
+			throw new IllegalArgumentException();
+		coins += amount;
 	}
 	
-	public boolean takeCoins(int amount, String... reason) {
-		return CannonFightUtil.MONEY.takeMoney(uuid, amount, reason);
+	public void takeCoins(int amount) {
+		if (amount <= 0)
+			throw new IllegalArgumentException();
+		coins -= amount;
 	}
 	
 	public boolean hasEnoughCoins(int amount) {
-		return CannonFightUtil.MONEY.hasEnoughMoney(uuid, amount);
+		if (amount <= 0)
+			throw new IllegalArgumentException();
+		
+		return coins >= amount;
 	}
 	
 	public void show(CannonFighter c) {
@@ -183,14 +198,14 @@ public class CannonFighter {
 		return uuid;
 	}
 	
-	private static Map<String, CannonFighter> players = new HashMap<String, CannonFighter>();
+	private static Map<UUID, CannonFighter> players = new HashMap<UUID, CannonFighter>();
 	
 	public static CannonFighter get(OfflinePlayer p) {
-		if (players.containsKey(p.getName()))
-			return players.get(p.getName());
+		if (players.containsKey(p.getUniqueId()))
+			return players.get(p.getUniqueId());
 		
 		CannonFighter c = new CannonFighter(p.getUniqueId());
-		players.put(p.getName(), c);
+		players.put(p.getUniqueId(), c);
 		
 		return c;
 	}
@@ -201,13 +216,27 @@ public class CannonFighter {
 	}
 	
 	public static CannonFighter remove(OfflinePlayer p) {
-		return players.remove(p.getName());
+		CannonFighter c = players.remove(p.getName());
+		if (c != null)
+			c.save();
+		return c;
 	}
+
 	@Deprecated
 	public static CannonFighter remove(Player p) {
 		return remove((OfflinePlayer) p);
 	}
 
+	public static void remove(CannonFighter c) {
+		remove(c.getOfflinePlayer());
+	}
+
+	public static void saveAll() {
+		for (CannonFighter c : players.values()) {
+			c.save();
+		}
+	}
+	
 	public boolean hasPermission(String perm) {
 		return getPlayer().hasPermission(perm);
 	}
@@ -256,7 +285,7 @@ public class CannonFighter {
 		
 		slots = upgrade.getValue();
 		
-		takeCoins(upgrade.getPrice(), Language.getStringMaker("info.upgrade.to-level", false).replace("%name%", UpgradeShop.NAME_SLOTS).replace("%level%", String.valueOf(slotsLevel)).getString());
+		takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -281,7 +310,7 @@ public class CannonFighter {
 		
 		lives = upgrade.getValue();
 		
-		takeCoins(upgrade.getPrice(), Language.getStringMaker("info.upgrade.to-level", false).replace("%name%", UpgradeShop.NAME_LIVES).replace("%level%", String.valueOf(livesLevel)).getString());
+		takeCoins(upgrade.getPrice());
 		
 		return true;
 	}
@@ -299,7 +328,6 @@ public class CannonFighter {
 	public Cannon selectCannonToSlot(int pos, String cannon) {
 		try {
 			Cannon c = this.activeItems.set(pos, getCannon(cannon));
-			saveActiveItems();
 			return c;
 		}
 		catch (IndexOutOfBoundsException ex) {
@@ -310,21 +338,33 @@ public class CannonFighter {
 	
 	public void deselectCannon(String name) {
 		this.activeItems.set(this.activeItems.indexOf(getCannon(name)), null);
-		saveActiveItems();
 	}
 	
-	private void saveActiveItems() {
-		List<String> strings = new ArrayList<String>();
+	public void save() {
+		Document doc = new Document("uuid", uuid.toString()).append("name", this.getName());
+		doc.append("coins", coins);
+		doc.append("xp", xp);
+		doc.append("slotsLevel", slotsLevel);
+		doc.append("livesLevel", livesLevel);
+		
+		Map<String, Document> serializedCannons = new HashMap<String, Document>();
+		for (Entry<String, Cannon> cannon : cannons.entrySet())
+			serializedCannons.put(cannon.getKey(), cannon.getValue().serializeLevels());
+		doc.append("cannons", serializedCannons);
+		
+		List<String> serializedActive = new ArrayList<String>();
 		for (Cannon c : getActiveItems()) {
 			if (c == null)
-				strings.add("null");
+				serializedActive.add("null");
 			else
-				strings.add(c.getName());
+				serializedActive.add(c.getName());
 		}
 		
-		Collection.PLAYERS().updateOne(eq("uuid", getPlayer().getUniqueId().toString()), new Document("$set", new Document("activeItems", strings)));
+		doc.append("activeItems", serializedActive);
+		
+		// update players name
+		COLLECTION.updateOne(eq("uuid", uuid.toString()), doc, new UpdateOptions().upsert(true));
 	}
-	
 	
 	@Override
 	public int hashCode() {
