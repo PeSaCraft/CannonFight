@@ -216,7 +216,7 @@ public class CannonFighter {
 	}
 	
 	public static CannonFighter remove(OfflinePlayer p) {
-		CannonFighter c = players.remove(p.getName());
+		CannonFighter c = players.remove(p.getUniqueId());
 		if (c != null)
 			c.save();
 		return c;
