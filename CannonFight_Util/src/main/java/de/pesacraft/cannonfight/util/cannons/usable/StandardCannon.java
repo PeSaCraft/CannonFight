@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_8_R3.World;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
@@ -16,15 +15,14 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mongodb.client.MongoCollection;
 
-import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.Language;
@@ -40,7 +38,7 @@ import de.pesacraft.cannonfight.util.game.MovingParticle;
 import de.pesacraft.cannonfight.util.shop.upgrade.IntegerUpgradeChanger;
 import de.pesacraft.cannonfight.util.shop.upgrade.Upgrade;
 
-public class StandardCannon extends Cannon implements Listener {
+public class StandardCannon extends Cannon {
 	private static final MongoCollection<Document> COLLECTION;
 	
 	/**
@@ -176,8 +174,6 @@ public class StandardCannon extends Cannon implements Listener {
 		item = ITEM.clone();
 		item.setAmount(((Number) getValue(UPGRADE_AMMO)).intValue());
 		shoot = new ArrayList<Integer>();
-		
-		Bukkit.getServer().getPluginManager().registerEvents(this, CannonFightUtil.PLUGIN);
 	}
 
 	public StandardCannon(CannonFighter player) {
@@ -227,8 +223,13 @@ public class StandardCannon extends Cannon implements Listener {
 
 			@Override
 			public void flying(Location location) {
-				PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_CRACK, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 1, Material.WOOL.getId() + (DyeColor.GREEN.getWoolData() << 12));
-				((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, (World) location.getWorld());
+				PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_CRACK, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 1, Material.WOOL.getId() + (DyeColor.WHITE.getWoolData() << 12));
+				((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, ((CraftWorld) location.getWorld()).getHandle());
+				particlePacket = new PacketPlayOutWorldParticles(EnumParticle.SPELL_MOB, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 1, 1, 1, 1, 5);
+				
+				for (int i = 0; i < 5; i++) {
+					((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, ((CraftWorld) location.getWorld()).getHandle());
+				}
 			}
 		});
 		
@@ -256,55 +257,6 @@ public class StandardCannon extends Cannon implements Listener {
 	public void reset() {
 		cancel();
 		finished();
-	}
-	
-	public boolean upgradeCooldown() {
-		int newLevel = getUpgradeLevel(UPGRADE_COOLDOWN) + 1;
-		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_COOLDOWN, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_COOLDOWN, newLevel);
-		setTime(upgrade.getValue());
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_COOLDOWN, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
-	}
-
-	public boolean upgradeAmmo() {
-		int newLevel = getUpgradeLevel(UPGRADE_AMMO) + 1;
-		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(getName(), UPGRADE_AMMO, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_AMMO, newLevel);
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_AMMO, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
-	}
-	
-	public boolean upgradeDamage() {
-		int newLevel = getUpgradeLevel(UPGRADE_DAMAGE) + 1;
-		Upgrade<Integer> upgrade = (Upgrade<Integer>) getUpgrade(NAME, UPGRADE_DAMAGE, newLevel);
-		
-		if (!player.hasEnoughCoins(upgrade.getPrice()))
-			return false;
-		
-		setUpgradeLevel(UPGRADE_DAMAGE, newLevel);
-		
-		Collection.PLAYERS().updateOne(eq("uuid", player.getPlayer().getUniqueId().toString()), new Document("$set", new Document("cannons." + NAME + "." + UPGRADE_DAMAGE, newLevel)));
-		
-		player.takeCoins(upgrade.getPrice());
-		
-		return true;
 	}
 	
 	@Override
