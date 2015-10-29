@@ -11,13 +11,9 @@ import java.util.Arrays;
 
 import org.bukkit.plugin.Plugin;
 
-import de.pesacraft.cannonfight.util.money.DatabaseMoney;
-import de.pesacraft.cannonfight.util.money.Money;
-
 public class CannonFightUtil {
 
 	public static Plugin PLUGIN;
-	public static Money MONEY;
 	
 	public static void use(Plugin plugin) {
 		if (PLUGIN != null)
@@ -25,8 +21,6 @@ public class CannonFightUtil {
 		PLUGIN = plugin;
 		
 		MongoDatabase.setup();
-		
-		MONEY = new DatabaseMoney();
 	}
 	
 	public static void copyWorld(File source, File target){
