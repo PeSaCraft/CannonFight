@@ -233,6 +233,12 @@ public class StandardCannon extends Cannon {
 
 	@Override
 	protected void update() {
+		System.out.println("update!");
+		System.out.println("type: " + item.getType());
+		System.out.println("cur dura: " + item.getDurability());
+		System.out.println("max dura: " + item.getType().getMaxDurability());
+		System.out.println("done: " + done());
+		System.out.println("new dura: " + (short) (item.getType().getMaxDurability() * done()));
 		item.setDurability((short) (item.getType().getMaxDurability() * done()));
 	}
 
