@@ -226,7 +226,9 @@ public abstract class Cannon extends Cooldown {
 					return;
 				
 				for (Entry<String, ItemStack> entry : upgrades.getItemMap().entrySet()) {
-					if (item.isSimilar(entry.getValue())) {
+					// lore is changed, thus isSimilar or equals cannot be used
+					// we just compare the display names instead, that should be enough
+					if (item.getItemMeta().getDisplayName().equalsIgnoreCase(entry.getValue().getItemMeta().getDisplayName())) {
 						// try to upgrade this cannon
 						String upgradeName = entry.getKey();
 						int newLevel = Cannon.this.getUpgradeLevel(upgradeName) + 1;
