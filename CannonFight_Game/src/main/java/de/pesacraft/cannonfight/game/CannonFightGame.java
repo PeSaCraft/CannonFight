@@ -675,16 +675,14 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 		// original action will be cancelled
 		event.setCancelled(true);
 		
+		if (gameState != GameState.INGAME)
+			// not in game: no item usable
+			return;
+		
 		CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
 					
-		if (players.contains(new Participant(c))) {
-						
-			if (gameState != GameState.INGAME)
-				// not in game: no item usable
-				return;
-			
+		if (players.contains(new Participant(c)))
 			c.use(event.getItem());
-		}
 	}
 	
 	@EventHandler
