@@ -179,7 +179,7 @@ public class CannonFighter {
 				// skip empty
 				continue;
 			
-			if (c.getItem().equals(item))
+			if (c.getItem().isSimilar(item))
 				// that is the used cannon
 				return c.fire(item);
 		}
