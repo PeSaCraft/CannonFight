@@ -81,7 +81,7 @@ public class Shop implements Listener {
 		
 	@EventHandler
 	public void onInventoryClick(final InventoryClickEvent event) {
-		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getWhoClicked()) == viewer)
+		if (!event.getInventory().getName().equals(name) && CannonFighter.get((OfflinePlayer) event.getWhoClicked()) != viewer)
 			return;
 		
 		final ItemInteractEvent e = new ItemInteractEvent(event);
