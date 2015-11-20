@@ -157,4 +157,8 @@ public class Language {
 	public static String formatDouble(double value) {
 		return doubleFormat.format(value);
 	}
+
+	public static String formatPercentage(double percentage) {
+		return doubleFormat.format(percentage * 100) + " %";
+	}
 }
