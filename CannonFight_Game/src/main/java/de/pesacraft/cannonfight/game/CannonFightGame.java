@@ -46,6 +46,7 @@ import de.pesacraft.cannonfight.game.players.ActivePlayer;
 import de.pesacraft.cannonfight.game.players.FuturePlayer;
 import de.pesacraft.cannonfight.game.players.Participant;
 import de.pesacraft.cannonfight.game.players.Spectator;
+import de.pesacraft.cannonfight.util.CannonFightPlugin;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
@@ -56,7 +57,7 @@ import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
 
-public class CannonFightGame extends JavaPlugin implements Listener {
+public class CannonFightGame extends CannonFightPlugin implements Listener {
 	
 	public static Logger LOGGER;
 	public static CannonFightGame PLUGIN;
@@ -851,5 +852,19 @@ public class CannonFightGame extends JavaPlugin implements Listener {
 				Bukkit.broadcastMessage(Language.get("info.game.wait.not-enough-players", true));
 			}
 		}
+	}
+
+	@Override
+	public boolean isActivePlayer(CannonFighter c) {
+		if (gameState != gameState.INGAME)
+			// active players are only active ingame
+			return false;
+		
+		for (ActivePlayer a : players)
+			if (a.getPlayer().equals(c))
+				return true;
+		
+		// no active player that is this CannonFighter
+		return false;
 	}
 }

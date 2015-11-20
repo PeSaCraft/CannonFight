@@ -13,9 +13,9 @@ import org.bukkit.plugin.Plugin;
 
 public class CannonFightUtil {
 
-	public static Plugin PLUGIN;
+	public static CannonFightPlugin PLUGIN;
 	
-	public static void use(Plugin plugin) {
+	public static void use(CannonFightPlugin plugin) {
 		if (PLUGIN != null)
 			return;
 		PLUGIN = plugin;

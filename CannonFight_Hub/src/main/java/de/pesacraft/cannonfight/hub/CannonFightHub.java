@@ -31,12 +31,13 @@ import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
+import de.pesacraft.cannonfight.util.CannonFightPlugin;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.MongoDatabase;
 
-public class CannonFightHub extends JavaPlugin implements Listener {
+public class CannonFightHub extends CannonFightPlugin implements Listener {
 	public static Logger LOGGER;
 	public static CannonFightHub PLUGIN;
 	
@@ -169,5 +170,11 @@ public class CannonFightHub extends JavaPlugin implements Listener {
 		
 		lobbyLocation.setYaw(l.getYaw());
 		lobbyLocation.setPitch(l.getPitch());
+	}
+
+	@Override
+	public boolean isActivePlayer(CannonFighter c) {
+		// nobody is a player in the lobby
+		return false;
 	}
 }
