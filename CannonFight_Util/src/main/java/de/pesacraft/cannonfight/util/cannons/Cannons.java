@@ -17,6 +17,7 @@ import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.usable.FireballCannon;
+import de.pesacraft.cannonfight.util.cannons.usable.IceCannon;
 import de.pesacraft.cannonfight.util.cannons.usable.StandardCannon;
 import de.pesacraft.cannonfight.util.shop.ClickHandler;
 import de.pesacraft.cannonfight.util.shop.ItemInteractEvent;
@@ -29,8 +30,9 @@ public class Cannons {
 	private static final Map<String, CannonConstructor> cannons = new HashMap<String, CannonConstructor>();
 	
 	static {
-		StandardCannon.setup();
+		IceCannon.setup();
 		FireballCannon.setup();
+		StandardCannon.setup();
 	}
 	
 	public static Map<String, CannonConstructor> getCannons() {
