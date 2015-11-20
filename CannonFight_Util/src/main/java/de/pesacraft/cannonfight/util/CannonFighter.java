@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 import java.util.UUID;
 
 import org.bson.Document;
@@ -13,6 +14,9 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
@@ -42,6 +46,8 @@ public class CannonFighter {
 	private List<Cannon> activeItems = new ArrayList<Cannon>();
 	
 	private Map<String, Cannon> cannons;
+	
+	private Map<PotionEffectType, BukkitRunnable> potions = new HashMap<PotionEffectType, BukkitRunnable>();
 	
 	static {
 		COLLECTION = Collection.PLAYERS();
@@ -389,5 +395,30 @@ public class CannonFighter {
 
 	public boolean teleport(Location loc) {
 		return getPlayer().teleport(loc);
+	}
+
+	public void addPotionEffect(PotionEffect pe, final PotionEffectOverCallback potionEffectOverCallback) {
+		BukkitRunnable oldRunnable = potions.get(pe.getType());
+		if (oldRunnable != null)
+			oldRunnable.cancel();
+		
+		BukkitRunnable newRunnable = new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				potionEffectOverCallback.potionEffectEnded();
+			}
+			
+			@Override
+			public synchronized void cancel() throws IllegalStateException {
+				potionEffectOverCallback.potionEffectEnded();
+				super.cancel();
+			}
+		};
+		
+		potions.put(pe.getType(), newRunnable);
+		newRunnable.runTaskLater(CannonFightUtil.PLUGIN, pe.getDuration());
+		
+		this.getPlayer().addPotionEffect(pe, true);
 	}
 }
