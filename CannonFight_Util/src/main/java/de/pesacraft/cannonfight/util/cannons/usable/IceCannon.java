@@ -261,6 +261,18 @@ public class IceCannon extends Cannon implements Listener {
 					if (e instanceof Player)
 						slowDown((Player) e);
 			}
+
+			@Override
+			public void hitBlock(Location location) {
+				int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
+				double radius = Math.pow(this.radius, 2);
+				 
+				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++)
+					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++)
+						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities())
+							if (e.getLocation().distanceSquared(location) <= radius && e instanceof Player)
+								slowDown((Player) e);
+			}
 			
 			private void slowDown(final Player p) {
 				CannonFighter c = CannonFighter.get((OfflinePlayer) p);
@@ -279,18 +291,6 @@ public class IceCannon extends Cannon implements Listener {
 				});
 				
 				p.setWalkSpeed(1.15f - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue());
-			}
-
-			@Override
-			public void hitBlock(Location location) {
-				int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
-				double radius = Math.pow(this.radius, 2);
-				 
-				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++)
-					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++)
-						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities())
-							if (e.getLocation().distanceSquared(location) <= radius && e instanceof Player)
-								slowDown((Player) e);
 			}
 			
 			@Override
