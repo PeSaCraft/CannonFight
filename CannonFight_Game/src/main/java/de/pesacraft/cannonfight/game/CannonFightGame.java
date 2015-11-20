@@ -642,22 +642,11 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		if (victimSession.isDead()) {
 			// player lost last life: out of game
 			
+			
+			CannonFighterSpectatorJoinGameEvent joinEvent = new CannonFighterSpectatorJoinGameEvent(victim);
+			Bukkit.getPluginManager().callEvent(joinEvent);
+			
 			players.remove(victimSession);
-			
-			// make spectator
-			ARENA.teleportSpectator(victim);
-			
-			// show and hide players
-			for (ActivePlayer active : players)
-				// remaining players shouldn't see spectator
-				// he can already see them
-				active.getPlayer().hide(victim);
-			
-			for (Spectator spectator : spectators)
-				// spectators can already see him
-				// he has to see other spectators
-				victim.show(spectator.getPlayer());
-			
 			spectators.add(new Spectator(victim, victimSession.getServer()));
 		}
 		else
