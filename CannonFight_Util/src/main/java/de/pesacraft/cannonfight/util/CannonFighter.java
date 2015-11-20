@@ -222,6 +222,11 @@ public class CannonFighter {
 		return get((OfflinePlayer) p);
 	}
 	
+	public static CannonFighter reload(OfflinePlayer p) {
+		players.remove(p.getUniqueId());
+		return get(p);
+	}
+	
 	public static CannonFighter remove(OfflinePlayer p) {
 		CannonFighter c = players.remove(p.getUniqueId());
 		if (c != null)
@@ -369,7 +374,7 @@ public class CannonFighter {
 		
 		doc.append("activeItems", serializedActive);
 		
-		// update players name
+		// update or set player
 		COLLECTION.replaceOne(eq("uuid", uuid.toString()), doc, new UpdateOptions().upsert(true));
 	}
 	
