@@ -422,7 +422,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		String name = event.getPlayer().getName();
-		CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
+		
 		FuturePlayer futurePlayer = null;
 		for (FuturePlayer f : upcomingPlayers) {
 			if (f.getName().equals(name)) {
@@ -432,6 +432,8 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		}
 		
 		if (futurePlayer != null) {
+			CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
+			
 			CannonFighterPreJoinGameEvent preJoinEvent = new CannonFighterPreJoinGameEvent(c);
 			Bukkit.getPluginManager().callEvent(preJoinEvent);
 			
@@ -450,6 +452,8 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		}
 		
 		if (futurePlayer != null) {
+			CannonFighter c = CannonFighter.get((OfflinePlayer) event.getPlayer());
+			
 			CannonFighterSpectatorPreJoinGameEvent preJoinEvent = new CannonFighterSpectatorPreJoinGameEvent(c);
 			Bukkit.getPluginManager().callEvent(preJoinEvent);
 			
@@ -464,25 +468,25 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		CannonFighter player = CannonFighter.get((OfflinePlayer) event.getPlayer());
-		
 		// no join message, gets handled somewhere else
 		event.setJoinMessage(null);
 		
 		FuturePlayer futurePlayer = null;
 		for (FuturePlayer f : upcomingPlayers) {
-			if (f.getName().equals(player.getName())) {
+			if (f.getName().equals(event.getPlayer().getName())) {
 				futurePlayer = f;
 				break;
 			}
 		}
 		
 		if (futurePlayer != null) {
-			CannonFighterJoinGameEvent joinEvent = new CannonFighterJoinGameEvent(player);
+			CannonFighter newPlayer = CannonFighter.reload((OfflinePlayer) event.getPlayer());
+			
+			CannonFighterJoinGameEvent joinEvent = new CannonFighterJoinGameEvent(newPlayer);
 			Bukkit.getPluginManager().callEvent(joinEvent);
 			
 			upcomingPlayers.remove(futurePlayer);
-			players.add(new ActivePlayer(player, futurePlayer.getServer()));
+			players.add(new ActivePlayer(newPlayer, futurePlayer.getServer()));
 			
 			if (players.size() == ARENA.getMaxPlayers())
 				CommunicationGameClient.getInstance().sendGameFull();
@@ -492,18 +496,20 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		// not a player, is spectator
 		futurePlayer = null;
 		for (FuturePlayer f : upcomingSpectators) {
-			if (f.getName().equals(player.getName())) {
+			if (f.getName().equals(event.getPlayer().getName())) {
 				futurePlayer = f;
 				break;
 			}
 		}
 		
 		if (futurePlayer != null) {
-			CannonFighterSpectatorJoinGameEvent joinEvent = new CannonFighterSpectatorJoinGameEvent(player);
+			CannonFighter newPlayer = CannonFighter.reload((OfflinePlayer) event.getPlayer());
+			
+			CannonFighterSpectatorJoinGameEvent joinEvent = new CannonFighterSpectatorJoinGameEvent(newPlayer);
 			Bukkit.getPluginManager().callEvent(joinEvent);
 			
 			upcomingSpectators.remove(futurePlayer);
-			spectators.add(new Spectator(player, futurePlayer.getServer()));
+			spectators.add(new Spectator(newPlayer, futurePlayer.getServer()));
 		}
 	}
 	
