@@ -253,7 +253,6 @@ public class FireballCannon extends Cannon implements Listener {
 	@Override
 	protected void update() {
 		item.setDurability((short) (item.getType().getMaxDurability() * done()));
-		this.player.getPlayer().updateInventory();
 	}
 
 	@Override

@@ -2,8 +2,6 @@ package de.pesacraft.cannonfight.util.cannons.usable;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
@@ -213,9 +211,7 @@ public class StandardCannon extends Cannon {
 
 			@Override
 			public void flying(Location location) {
-				PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_CRACK, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, 0, 1, Material.WOOL.getId() + (DyeColor.WHITE.getWoolData() << 12));
-				((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, ((CraftWorld) location.getWorld()).getHandle());
-				particlePacket = new PacketPlayOutWorldParticles(EnumParticle.SPELL_MOB, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 1, 1, 1, 1, 0);
+				PacketPlayOutWorldParticles particlePacket = new PacketPlayOutWorldParticles(EnumParticle.SPELL_MOB, false, (float) location.getX(), (float) location.getY(), (float) location.getZ(), 1, 1, 1, 1, 0);
 				
 				for (int i = 0; i < 5; i++) {
 					((CraftServer) Bukkit.getServer()).getHandle().sendAll(particlePacket, ((CraftWorld) location.getWorld()).getHandle());
@@ -234,7 +230,6 @@ public class StandardCannon extends Cannon {
 	@Override
 	protected void update() {
 		item.setDurability((short) (item.getType().getMaxDurability() * done()));
-		this.player.getPlayer().updateInventory();
 	}
 
 	@Override
