@@ -467,50 +467,57 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onPlayerJoin(final PlayerJoinEvent event) {
 		// no join message, gets handled somewhere else
 		event.setJoinMessage(null);
 		
-		FuturePlayer futurePlayer = null;
-		for (FuturePlayer f : upcomingPlayers) {
-			if (f.getName().equals(event.getPlayer().getName())) {
-				futurePlayer = f;
-				break;
+		// handle everything one second later so the leave event on the hub has passed and data is saved
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				FuturePlayer futurePlayer = null;
+				for (FuturePlayer f : upcomingPlayers) {
+					if (f.getName().equals(event.getPlayer().getName())) {
+						futurePlayer = f;
+						break;
+					}
+				}
+				
+				if (futurePlayer != null) {
+					CannonFighter newPlayer = CannonFighter.reload((OfflinePlayer) event.getPlayer());
+					
+					CannonFighterJoinGameEvent joinEvent = new CannonFighterJoinGameEvent(newPlayer);
+					Bukkit.getPluginManager().callEvent(joinEvent);
+					
+					upcomingPlayers.remove(futurePlayer);
+					players.add(new ActivePlayer(newPlayer, futurePlayer.getServer()));
+					
+					if (players.size() == ARENA.getMaxPlayers())
+						CommunicationGameClient.getInstance().sendGameFull();
+					return;
+				}
+				
+				// not a player, is spectator
+				futurePlayer = null;
+				for (FuturePlayer f : upcomingSpectators) {
+					if (f.getName().equals(event.getPlayer().getName())) {
+						futurePlayer = f;
+						break;
+					}
+				}
+				
+				if (futurePlayer != null) {
+					CannonFighter newPlayer = CannonFighter.reload((OfflinePlayer) event.getPlayer());
+					
+					CannonFighterSpectatorJoinGameEvent joinEvent = new CannonFighterSpectatorJoinGameEvent(newPlayer);
+					Bukkit.getPluginManager().callEvent(joinEvent);
+					
+					upcomingSpectators.remove(futurePlayer);
+					spectators.add(new Spectator(newPlayer, futurePlayer.getServer()));
+				}
 			}
-		}
-		
-		if (futurePlayer != null) {
-			CannonFighter newPlayer = CannonFighter.reload((OfflinePlayer) event.getPlayer());
-			
-			CannonFighterJoinGameEvent joinEvent = new CannonFighterJoinGameEvent(newPlayer);
-			Bukkit.getPluginManager().callEvent(joinEvent);
-			
-			upcomingPlayers.remove(futurePlayer);
-			players.add(new ActivePlayer(newPlayer, futurePlayer.getServer()));
-			
-			if (players.size() == ARENA.getMaxPlayers())
-				CommunicationGameClient.getInstance().sendGameFull();
-			return;
-		}
-		
-		// not a player, is spectator
-		futurePlayer = null;
-		for (FuturePlayer f : upcomingSpectators) {
-			if (f.getName().equals(event.getPlayer().getName())) {
-				futurePlayer = f;
-				break;
-			}
-		}
-		
-		if (futurePlayer != null) {
-			CannonFighter newPlayer = CannonFighter.reload((OfflinePlayer) event.getPlayer());
-			
-			CannonFighterSpectatorJoinGameEvent joinEvent = new CannonFighterSpectatorJoinGameEvent(newPlayer);
-			Bukkit.getPluginManager().callEvent(joinEvent);
-			
-			upcomingSpectators.remove(futurePlayer);
-			spectators.add(new Spectator(newPlayer, futurePlayer.getServer()));
-		}
+		}.runTaskLater(this, 20);
 	}
 	
 	@EventHandler
