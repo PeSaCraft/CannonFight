@@ -266,20 +266,21 @@ public class IceCannon extends Cannon implements Listener {
 			
 			private void slowDown(final Player p) {
 				CannonFighter c = CannonFighter.get((OfflinePlayer) p);
-				
+				System.out.println("Slow down " + c.getName());
 				if (!CannonFightUtil.PLUGIN.isActivePlayer(c))
 					// only slow down players ingame
 					return;
-				
 				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue(), 0, true, false);
+				System.out.println("add potioneffect " + c.getName());
 				c.addPotionEffect(pe, new PotionEffectOverCallback() {
 					
 					@Override
 					public void potionEffectEnded() {
 						p.setWalkSpeed(1);
+						System.out.println("potion vorbei " + p.getName());
 					}
 				});
-				
+				System.out.println("walkspeed " + (1.15f - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue()));
 				p.setWalkSpeed(1.15f - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue());
 			}
 			
