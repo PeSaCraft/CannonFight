@@ -207,43 +207,13 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 	
 	private static void start() {
 		gameState = GameState.STARTING;
-		
 		//setup players
-		for (ActivePlayer active : players) {
-			CannonFighter c = active.getPlayer();
-			Player p = c.getPlayer();
-			ARENA.teleport(c);
-			
-			active.createCage();
-			
-			Configuration config = CannonFightUtil.PLUGIN.getConfig();
-			
-			p.setMaxHealth(config.getDouble("game.livesPerLive"));
-			p.setHealth(p.getMaxHealth());
-			p.setFoodLevel(20);
-			
-			Inventory inv = p.getInventory();
-			
-			inv.clear();
-			
-			for (int i = 0; i < c.getSlots(); i++) {
-				Cannon cannon = c.getActiveItem(i);
-				if (cannon == null)
-					// skip empty slots
-					continue;
-				inv.setItem(i, cannon.getItem());
-			}
-			
-		}
+		for (ActivePlayer active : players)
+			setupPlayerForGame(active);
 		
 		// setup spectators
-		for (Spectator spectator : spectators) {
-			CannonFighter c = spectator.getPlayer();
-			Player p = c.getPlayer();
-			ARENA.teleportSpectator(c);
-			
-			p.setGameMode(GameMode.SPECTATOR);
-		}
+		for (Spectator spectator : spectators)
+			setupSpectatorForGame(spectator);
 		
 		new BukkitRunnable() {
 			private int time = CannonFightUtil.PLUGIN.getConfig().getInt("game.time.start");
@@ -348,9 +318,41 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 				time--;
 			}
 		}.runTaskTimer(CannonFightUtil.PLUGIN, 0, 20);
-		
 	}
 	
+	private static void setupSpectatorForGame(Spectator spectator) {
+		CannonFighter c = spectator.getPlayer();
+		Player p = c.getPlayer();
+		ARENA.teleportSpectator(c);
+		
+		p.setGameMode(GameMode.SPECTATOR);
+	}
+
+	private static void setupPlayerForGame(ActivePlayer active) {
+		CannonFighter c = active.getPlayer();
+		Player p = c.getPlayer();
+		ARENA.teleport(c);
+		
+		active.createCage();
+		
+		Configuration config = CannonFightUtil.PLUGIN.getConfig();
+		p.setMaxHealth(config.getDouble("game.livesPerLive"));
+		p.setHealth(p.getMaxHealth());
+		p.setFoodLevel(20);
+		
+		Inventory inv = p.getInventory();
+		
+		inv.clear();
+		
+		for (int i = 0; i < c.getSlots(); i++) {
+			Cannon cannon = c.getActiveItem(i);
+			if (cannon == null)
+				// skip empty slots
+				continue;
+			inv.setItem(i, cannon.getItem());
+		}
+	}
+
 	private static void leave(Participant part) {
 		CannonFighter c = part.getPlayer();
 		
