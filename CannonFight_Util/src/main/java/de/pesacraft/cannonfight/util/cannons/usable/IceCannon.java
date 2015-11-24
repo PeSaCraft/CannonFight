@@ -255,12 +255,12 @@ public class IceCannon extends Cannon implements Listener {
 			@Override
 			public void hitBlock(Location location) {
 				int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
-				double radius = Math.pow(this.radius, 2);
+				double radius = this.radius * this.radius;
 				 
 				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++)
 					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++)
 						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities())
-							if (e.getLocation().distanceSquared(location) <= radius && e instanceof Player)
+							if (e instanceof Player && e.getLocation().distanceSquared(location) <= radius)
 								slowDown((Player) e);
 			}
 			
