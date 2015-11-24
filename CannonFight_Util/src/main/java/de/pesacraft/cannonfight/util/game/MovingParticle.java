@@ -50,9 +50,16 @@ public class MovingParticle implements Listener {
 			return;
 		
 		particleTrailRunnable.cancel();
-		HandlerList.unregisterAll(this);
 		
 		hitHandler.hitBlock(event.getEntity().getLocation());
+		
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				HandlerList.unregisterAll(MovingParticle.this);
+			}
+		}.runTaskLater(CannonFightUtil.PLUGIN, 1);
 	}
 	
 	@EventHandler
@@ -61,8 +68,16 @@ public class MovingParticle implements Listener {
 			return;
 		
 		particleTrailRunnable.cancel();
-		HandlerList.unregisterAll(this);
 		
 		hitHandler.hitEntity(event);
+		
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				HandlerList.unregisterAll(MovingParticle.this);
+			}
+		}.runTaskLater(CannonFightUtil.PLUGIN, 1);
+		
 	}
 }
