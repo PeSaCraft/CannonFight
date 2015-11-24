@@ -256,7 +256,7 @@ public class IceCannon extends Cannon implements Listener {
 			public void hitBlock(Location location) {
 				int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
 				double radius = this.radius * this.radius;
-				 
+		
 				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++)
 					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++)
 						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities())
@@ -276,12 +276,38 @@ public class IceCannon extends Cannon implements Listener {
 					
 					@Override
 					public void potionEffectEnded() {
-						p.setWalkSpeed(1);
+						p.setWalkSpeed(0.1f);
 						System.out.println("potion vorbei " + p.getName());
 					}
 				});
-				System.out.println("walkspeed " + (1.15f - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue()));
-				p.setWalkSpeed(1.15f - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue());
+				/* standard walkspeed = 0.1f
+				 * 0.1f := 1w							| -30 %
+				 * 0.1f - 0.3 * 0.1f := 1w - 0.3 * 1w
+				 * 0.097f := 0.97w
+				 * what to add to get speed after decreasing by 30 %?
+				 * -> value after adding is x
+				 * x - 30 % x has to be the wanted speed
+				 * x - 0.3 * x = speed
+				 * 1w is the original speed
+				 * y is what to add to get x
+				 * 1w + y * 1 = x
+				 * 
+				 * This results in
+				 * y = 10/7 * speed - 1
+				 * and thus
+				 * (1w+y)/10 is the value we want to have for our setWalkSpeed
+				 * that is
+				 * (1 + (10/7) * speed - 1)/10 =
+				 * ((10/7) * speed)/10 = 
+				 * (10 / 7) * (speed / 10) =
+				 * (1 / 7) * (speed / 1) =
+				 * speed / 7
+				 */
+				
+				float resultingSpeed = 1 - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue();
+				float factor = resultingSpeed / 7;
+				System.out.println("walkspeed " + factor);
+				p.setWalkSpeed(factor);
 			}
 			
 			@Override
