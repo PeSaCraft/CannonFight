@@ -247,9 +247,12 @@ public class IceCannon extends Cannon implements Listener {
 			
 			@Override
 			public void hitEntity(EntityDamageByEntityEvent event) {
-				for (Entity e : event.getEntity().getNearbyEntities(radius, radius, radius))
+				System.out.println("event");
+				for (Entity e : event.getEntity().getNearbyEntities(radius, radius, radius)) {
+					System.out.println("entity " + e.getName());
 					if (e instanceof Player)
 						slowDown((Player) e);
+				}
 			}
 
 			@Override
@@ -270,20 +273,20 @@ public class IceCannon extends Cannon implements Listener {
 				if (!CannonFightUtil.PLUGIN.isActivePlayer(c))
 					// only slow down players ingame
 					return;
-				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue(), 0, true, false);
+				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20, 0, true, false);
 				System.out.println("add potioneffect " + c.getName());
 				c.addPotionEffect(pe, new PotionEffectOverCallback() {
 					
 					@Override
 					public void potionEffectEnded() {
-						p.setWalkSpeed(0.1f);
+						p.setWalkSpeed(0.2f);
 						System.out.println("potion vorbei " + p.getName());
 					}
 				});
 				/* standard walkspeed = 0.1f
-				 * 0.1f := 1w							| -30 %
-				 * 0.1f - 0.3 * 0.1f := 1w - 0.3 * 1w
-				 * 0.097f := 0.97w
+				 * 0.2f := 1w							| -30 %
+				 * 0.2f - 0.3 * 0.2f := 1w - 0.3 * 1w
+				 * 0.14f := 0.7w
 				 * what to add to get speed after decreasing by 30 %?
 				 * -> value after adding is x
 				 * x - 30 % x has to be the wanted speed
@@ -295,17 +298,17 @@ public class IceCannon extends Cannon implements Listener {
 				 * This results in
 				 * y = 10/7 * speed - 1
 				 * and thus
-				 * (1w+y)/10 is the value we want to have for our setWalkSpeed
+				 * (1w+y)/5 is the value we want to have for our setWalkSpeed
 				 * that is
-				 * (1 + (10/7) * speed - 1)/10 =
-				 * ((10/7) * speed)/10 = 
-				 * (10 / 7) * (speed / 10) =
-				 * (1 / 7) * (speed / 1) =
-				 * speed / 7
+				 * (1 + (10/7) * speed - 1)/5 =
+				 * ((10/7) * speed)/5 = 
+				 * (10 / 7) * (speed / 5) =
+				 * (2 / 7) * (speed / 1) =
+				 * 2 * speed / 7
 				 */
 				
 				float resultingSpeed = 1 - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue();
-				float factor = resultingSpeed / 7;
+				float factor = 2 * resultingSpeed / 7;
 				System.out.println("walkspeed " + factor);
 				p.setWalkSpeed(factor);
 			}

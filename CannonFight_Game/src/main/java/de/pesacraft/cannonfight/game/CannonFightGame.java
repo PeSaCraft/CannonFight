@@ -546,7 +546,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		Player p = c.getPlayer();
 		
 		p.setGameMode(GameMode.ADVENTURE);
-		p.setWalkSpeed(.1f);
+		p.setWalkSpeed(.2f);
 		
 		if (gameState == GameState.STARTING) {
 			// game already starting, teleport directly into arena
@@ -602,7 +602,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		}
 		
 		Player p = c.getPlayer();
-		p.setWalkSpeed(.1f);
+		p.setWalkSpeed(.2f);
 		
 		if (gameState == GameState.WAITING) {
 			p.teleport(WORLD_LOBBY.getSpawnLocation());
