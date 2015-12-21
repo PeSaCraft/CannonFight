@@ -243,28 +243,50 @@ public class IceCannon extends Cannon implements Listener {
 		Player p = player.getPlayer();
 		
 		new MovingParticle(p, new HitHandler() {
-			int radius = ((Number) getValue(UPGRADE_RADIUS)).intValue();
-			
+			double radius = ((Number) getValue(UPGRADE_RADIUS)).doubleValue();
+			int chunkRadius = radius < 16 ? 1 : (int) ((radius - (radius % 16)) / 16);
+			double radiusSquared = this.radius * this.radius * 4; // (radius * 2)^2
+	
 			@Override
 			public void hitEntity(EntityDamageByEntityEvent event) {
-				System.out.println("event");
-				for (Entity e : event.getEntity().getNearbyEntities(radius, radius, radius)) {
-					System.out.println("entity " + e.getName());
-					if (e instanceof Player)
-						slowDown((Player) e);
+				Location location = event.getEntity().getLocation();
+				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
+					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
+						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities()) {
+							if (e instanceof Player) {
+								double distanceRatio = distSquared(e, location) / radiusSquared;
+								if (distanceRatio <= 1.0D) {
+									slowDown((Player) e);
+								}
+							}
+						}
+					}
 				}
 			}
-
+			
 			@Override
 			public void hitBlock(Location location) {
-				int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
-				double radius = this.radius * this.radius;
-		
-				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++)
-					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++)
-						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities())
-							if (e instanceof Player && e.getLocation().distanceSquared(location) <= radius)
-								slowDown((Player) e);
+				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
+					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
+						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities()) {
+							if (e instanceof Player) {
+								double distanceRatio = distSquared(e, location) / radiusSquared;
+								if (distanceRatio <= 1.0D) {
+									slowDown((Player) e);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			private double distSquared(Entity entity, Location loc) {
+				double distX = entity.getLocation().getX() - loc.getX();
+				double distY = entity.getLocation().getY() - loc.getY();
+				double distZ = entity.getLocation().getZ() - loc.getZ();
+
+				return distX * distX + distY * distY + distZ * distZ;
+
 			}
 			
 			private void slowDown(final Player p) {
