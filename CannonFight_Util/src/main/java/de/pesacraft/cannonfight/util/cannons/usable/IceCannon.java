@@ -295,9 +295,16 @@ public class IceCannon extends Cannon implements Listener {
 				if (!CannonFightUtil.PLUGIN.isActivePlayer(c))
 					// only slow down players ingame
 					return;
-				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20, 0, true, false);
+				
+				float max = 0.2f;
+				float resultingSpeed = (1 - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue()) * max;
+				
+				p.setWalkSpeed(resultingSpeed);
+				System.out.println("walkspeed " + resultingSpeed);
+				
+				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20, 0, true, true);
 				System.out.println("add potioneffect " + c.getName());
-				c.addPotionEffect(pe, new PotionEffectOverCallback() {
+				c.addPotionEffect(pe, false, new PotionEffectOverCallback() {
 					
 					@Override
 					public void potionEffectEnded() {
@@ -305,34 +312,6 @@ public class IceCannon extends Cannon implements Listener {
 						System.out.println("potion vorbei " + p.getName());
 					}
 				});
-				/* standard walkspeed = 0.1f
-				 * 0.2f := 1w							| -30 %
-				 * 0.2f - 0.3 * 0.2f := 1w - 0.3 * 1w
-				 * 0.14f := 0.7w
-				 * what to add to get speed after decreasing by 30 %?
-				 * -> value after adding is x
-				 * x - 30 % x has to be the wanted speed
-				 * x - 0.3 * x = speed
-				 * 1w is the original speed
-				 * y is what to add to get x
-				 * 1w + y * 1 = x
-				 * 
-				 * This results in
-				 * y = 10/7 * speed - 1
-				 * and thus
-				 * (1w+y)/5 is the value we want to have for our setWalkSpeed
-				 * that is
-				 * (1 + (10/7) * speed - 1)/5 =
-				 * ((10/7) * speed)/5 = 
-				 * (10 / 7) * (speed / 5) =
-				 * (2 / 7) * (speed / 1) =
-				 * 2 * speed / 7
-				 */
-				
-				float resultingSpeed = 1 - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue();
-				float factor = 2 * resultingSpeed / 7;
-				System.out.println("walkspeed " + factor);
-				p.setWalkSpeed(factor);
 			}
 			
 			@Override

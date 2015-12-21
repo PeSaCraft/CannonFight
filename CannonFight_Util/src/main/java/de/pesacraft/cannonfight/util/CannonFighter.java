@@ -405,7 +405,7 @@ public class CannonFighter {
 		return getPlayer().teleport(loc);
 	}
 
-	public void addPotionEffect(PotionEffect pe, final PotionEffectOverCallback potionEffectOverCallback) {
+	public void addPotionEffect(PotionEffect pe, boolean visible, final PotionEffectOverCallback potionEffectOverCallback) {
 		BukkitRunnable oldRunnable = potions.get(pe.getType());
 		if (oldRunnable != null)
 			oldRunnable.cancel();
@@ -427,6 +427,7 @@ public class CannonFighter {
 		potions.put(pe.getType(), newRunnable);
 		newRunnable.runTaskLater(CannonFightUtil.PLUGIN, pe.getDuration());
 		
-		this.getPlayer().addPotionEffect(pe, true);
+		if (visible)
+			this.getPlayer().addPotionEffect(pe, true);
 	}
 }
