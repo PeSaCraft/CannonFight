@@ -74,16 +74,19 @@ public class CannonFighter {
 			cannons = new HashMap<String, Cannon>();
 			Document cannons = (Document) doc.get("cannons");
 			
-			for (Entry<String, Object> entry : cannons.entrySet()) {
-				CannonConstructor constructor = Cannons.getConstructorByName(entry.getKey());
-				
-				this.addCannon(constructor.construct(this, (Document) entry.getValue()));
+			if (cannons != null) {
+				for (Entry<String, Object> entry : cannons.entrySet()) {
+					CannonConstructor constructor = Cannons.getConstructorByName(entry.getKey());
+					
+					this.addCannon(constructor.construct(this, (Document) entry.getValue()));
+				}
 			}
-			
 			List<String> activeItems = (List<String>) doc.get("activeItems");
 			
-			for (String c : activeItems) {
-				this.activeItems.add(this.cannons.get(c));
+			if (activeItems != null) {
+				for (String c : activeItems) {
+					this.activeItems.add(this.cannons.get(c));
+				}
 			}
 			
 			// fill list
