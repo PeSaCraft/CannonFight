@@ -751,7 +751,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		
 		// player messages are visible to everyone
 		
-		event.setFormat(Language.getStringMaker("general.chat-format", true).replace("%player%", event.getPlayer().getName()).replace("%message%", event.getMessage()).getString());
+		event.setFormat(Language.getStringMaker("general.chat-format", true).replace("%player%", event.getPlayer().getName()).replace("%message%", event.getMessage().replaceAll("%", "%%")).getString());
 	}
 	
 	@EventHandler

@@ -152,7 +152,7 @@ public class CannonFightHub extends CannonFightPlugin implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
-		event.setFormat(Language.get("general.chat-format", true).replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage()));
+		event.setFormat(Language.get("general.chat-format", true).replaceAll("%player%", event.getPlayer().getName()).replaceAll("%message%", event.getMessage().replaceAll("%", "%%")));
 	}
 	
 	@EventHandler
