@@ -389,7 +389,8 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		p.setHealth(p.getPlayer().getMaxHealth());
 		p.setFoodLevel(20);
 		p.setFireTicks(0);
-		
+		p.setWalkSpeed(.2f);
+		p.setFlySpeed(.2f);
 		p.setGameMode(GameMode.ADVENTURE);
 		
 		p.getInventory().clear();

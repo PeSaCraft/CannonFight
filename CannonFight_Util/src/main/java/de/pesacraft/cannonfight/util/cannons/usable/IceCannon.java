@@ -75,7 +75,7 @@ public class IceCannon extends Cannon implements Listener {
 			registerUpgrade(NAME, UPGRADE_DAMAGE, Integer.class, (Document) doc.get(UPGRADE_DAMAGE), new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
 			registerUpgrade(NAME, UPGRADE_RADIUS, Double.class, (Document) doc.get(UPGRADE_RADIUS), new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
 			registerUpgrade(NAME, UPGRADE_DURATION, Integer.class, (Document) doc.get(UPGRADE_DURATION), new IntegerUpgradeChanger(25, 100, 1, 5, 250, 3));
-			registerUpgrade(NAME, UPGRADE_STRENGTH, Double.class, (Document) doc.get(UPGRADE_STRENGTH), new DoubleUpgradeChanger(25, 100, 0.05, 0.25, 250, 0.05));
+			registerUpgrade(NAME, UPGRADE_STRENGTH, Integer.class, (Document) doc.get(UPGRADE_STRENGTH), new IntegerUpgradeChanger(25, 100, 1, 3, 250, 1));
 		}
 		else {
 			// Cannon not in database
@@ -90,7 +90,7 @@ public class IceCannon extends Cannon implements Listener {
 			registerUpgrade(NAME, UPGRADE_DAMAGE, 2, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 4, 250, 2));
 			registerUpgrade(NAME, UPGRADE_RADIUS, 1.0, Double.class, new DoubleUpgradeChanger(25, 100, 0.1, 0.5, 500, 1.0));
 			registerUpgrade(NAME, UPGRADE_DURATION, 3, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 5, 250, 3));
-			registerUpgrade(NAME, UPGRADE_STRENGTH, 0.05, Double.class, new DoubleUpgradeChanger(25, 100, 0.05, 0.25, 250, 0.05));
+			registerUpgrade(NAME, UPGRADE_STRENGTH, 1, Integer.class, new IntegerUpgradeChanger(25, 100, 1, 3, 250, 1));
 		
 			doc = new Document("name", NAME);	
 			
@@ -295,22 +295,13 @@ public class IceCannon extends Cannon implements Listener {
 				if (!CannonFightUtil.PLUGIN.isActivePlayer(c))
 					// only slow down players ingame
 					return;
-				
-				final float max = 0.1f;
-				float resultingSpeed = (1 - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue()) * max;
-				
-				p.setWalkSpeed(resultingSpeed);
-				System.out.println("walkspeed " + resultingSpeed);
-				
-				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20, 0, true, true);
+						
+				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20, ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).intValue() - 1, true, true);
 				System.out.println("add potioneffect " + c.getName());
-				c.addPotionEffect(pe, false, new PotionEffectOverCallback() {
+				c.addPotionEffect(pe, true, new PotionEffectOverCallback() {
 					
 					@Override
-					public void potionEffectEnded() {
-						p.setWalkSpeed(max);
-						System.out.println("potion vorbei " + p.getName());
-					}
+					public void potionEffectEnded() {}
 				});
 			}
 			
@@ -368,7 +359,7 @@ public class IceCannon extends Cannon implements Listener {
 		case UPGRADE_DURATION:
 			return Language.formatTime(((Number) value).intValue(), TimeOutputs.SECONDS);
 		case UPGRADE_STRENGTH:
-			return Language.formatPercentage(((Number) value).doubleValue());
+			return Language.formatLevel(((Number) value).intValue());
 		}
 		return null;
 	}

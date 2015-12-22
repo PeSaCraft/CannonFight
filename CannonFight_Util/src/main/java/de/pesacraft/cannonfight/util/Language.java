@@ -161,4 +161,8 @@ public class Language {
 	public static String formatPercentage(double percentage) {
 		return doubleFormat.format(percentage * 100) + " %";
 	}
+
+	public static String formatLevel(int level) {
+		return getStringMaker("general.units.level", false).replace("%value%", String.valueOf(level)).getString();
+	}
 }
