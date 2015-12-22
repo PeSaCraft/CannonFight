@@ -296,7 +296,7 @@ public class IceCannon extends Cannon implements Listener {
 					// only slow down players ingame
 					return;
 				
-				float max = 0.2f;
+				final float max = 0.1f;
 				float resultingSpeed = (1 - ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).floatValue()) * max;
 				
 				p.setWalkSpeed(resultingSpeed);
@@ -308,7 +308,7 @@ public class IceCannon extends Cannon implements Listener {
 					
 					@Override
 					public void potionEffectEnded() {
-						p.setWalkSpeed(0.2f);
+						p.setWalkSpeed(max);
 						System.out.println("potion vorbei " + p.getName());
 					}
 				});
