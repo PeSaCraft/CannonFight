@@ -380,6 +380,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		
 		// normal player or spectator
 		c.resetCannons();
+		c.clearEffects();
 		CannonFighter.remove(c);
 		
 		Player p = c.getPlayer();
@@ -806,7 +807,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		
 		Bukkit.broadcastMessage(msg);
 		
-		if (event.isOutOfGame())
+		if (!event.isOutOfGame())
 			Bukkit.broadcastMessage(Language.getStringMaker("info.remaining-players", true).replace("%player%", String.valueOf(players.size() - 1)).getString());
 	}
 	

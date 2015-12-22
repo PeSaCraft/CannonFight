@@ -430,4 +430,11 @@ public class CannonFighter {
 		if (visible)
 			this.getPlayer().addPotionEffect(pe, true);
 	}
+
+	public void clearEffects() {
+		for (Entry<PotionEffectType, BukkitRunnable> entry : potions.entrySet()) {
+			getPlayer().removePotionEffect(entry.getKey());
+			entry.getValue().cancel();
+		}
+	}
 }
