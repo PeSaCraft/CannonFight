@@ -58,7 +58,7 @@ public class GameBlockManager implements BlockManager {
 		}
 		
 		// new block change for new changes
-		change = new BlockChange(block, material, data);
+		change = new BlockChange(this, block, material, data);
 		change.runTaskLater(CannonFightGame.PLUGIN, ticks);
 		blocks.add(change);
 		
@@ -67,4 +67,7 @@ public class GameBlockManager implements BlockManager {
 		block.setData(data);
 	}
 
+	public void remove(BlockChange change) {
+		blocks.remove(change);
+	}
 }
