@@ -210,8 +210,8 @@ public class IceCannon extends Cannon implements Listener {
 		setUpgradeLevel(UPGRADE_COOLDOWN, levelCooldown);
 		setUpgradeLevel(UPGRADE_DAMAGE, levelDamage);
 		setUpgradeLevel(UPGRADE_RADIUS, levelRadius);
-		setUpgradeLevel(UPGRADE_DURATION, levelRadius);
-		setUpgradeLevel(UPGRADE_STRENGTH, levelRadius);
+		setUpgradeLevel(UPGRADE_DURATION, levelDuration);
+		setUpgradeLevel(UPGRADE_STRENGTH, levelStrength);
 		
 		this.player = player;
 		
