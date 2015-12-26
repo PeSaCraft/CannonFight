@@ -181,6 +181,6 @@ public class CannonFightHub extends CannonFightPlugin implements Listener {
 
 	@Override
 	public BlockManager getBlockManager() {
-		throw new UnsupportedOperationException(Language.getStringMaker("error.hubs-dont-support-block-changes", false).getString());
+		return null;
 	}
 }
