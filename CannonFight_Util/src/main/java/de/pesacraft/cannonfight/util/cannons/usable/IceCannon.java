@@ -319,35 +319,35 @@ public class IceCannon extends Cannon implements Listener {
 
 							Block b = add(pos, x, y, z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, -x, y, z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, x, -y, z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, x, y, -z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, -x, -y, z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, x, -y, -z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, -x, y, -z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 							
 							b = add(pos, -x, -y, -z).getBlock();
 							if (b.getType().isSolid())
-								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, (long) (ticks * random.nextDouble()));
 						}
 					}
 				}
