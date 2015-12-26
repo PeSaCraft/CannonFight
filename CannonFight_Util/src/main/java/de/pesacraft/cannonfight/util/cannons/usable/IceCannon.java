@@ -3,6 +3,7 @@ package de.pesacraft.cannonfight.util.cannons.usable;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.Map;
+import java.util.Random;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -35,6 +37,7 @@ import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
+import de.pesacraft.cannonfight.util.game.BlockManager;
 import de.pesacraft.cannonfight.util.game.HitHandler;
 import de.pesacraft.cannonfight.util.game.MovingParticle;
 import de.pesacraft.cannonfight.util.shop.upgrade.DoubleUpgradeChanger;
@@ -197,6 +200,9 @@ public class IceCannon extends Cannon implements Listener {
 	private CannonFighter player;
 	private ItemStack item;
 	
+	private BlockManager blockManager = CannonFightUtil.PLUGIN.getBlockManager();
+	private Random random = new Random();
+	
 	public IceCannon(CannonFighter player, int levelAmmo, int levelCooldown, int levelDamage, int levelRadius, int levelDuration, int levelStrength) {
 		super(((Number) getUpgrade(NAME, UPGRADE_COOLDOWN, levelCooldown).getValue()).intValue());
 		
@@ -246,31 +252,32 @@ public class IceCannon extends Cannon implements Listener {
 			double radius = ((Number) getValue(UPGRADE_RADIUS)).doubleValue();
 			int chunkRadius = radius < 16 ? 1 : (int) ((radius - (radius % 16)) / 16);
 			double radiusSquared = this.radius * this.radius * 4; // (radius * 2)^2
-	
+			long ticks = ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20;
+			
 			@Override
 			public void hitEntity(EntityDamageByEntityEvent event) {
 				Location location = event.getEntity().getLocation();
-				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
-					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
-						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities()) {
-							if (e instanceof Player) {
-								double distanceRatio = distSquared(e, location) / radiusSquared;
-								if (distanceRatio <= 1.0D) {
-									slowDown((Player) e);
-								}
-							}
-						}
-					}
-				}
+				
+				processHit(location);
 			}
 			
 			@Override
 			public void hitBlock(Location location) {
+				processHit(location);
+			}
+			
+			private void processHit(Location location) {
+				changeSpeed(location);
+				
+				changeBlocks(location);
+			}
+			
+			private void changeSpeed(Location location) {
 				for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
 					for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
 						for (Entity e : new Location(location.getWorld(), location.getX() + (chX * 16), location.getY(), location.getZ() + (chZ * 16)).getChunk().getEntities()) {
 							if (e instanceof Player) {
-								double distanceRatio = distSquared(e, location) / radiusSquared;
+								double distanceRatio = distSquared(e.getLocation(), location) / radiusSquared;
 								if (distanceRatio <= 1.0D) {
 									slowDown((Player) e);
 								}
@@ -280,13 +287,83 @@ public class IceCannon extends Cannon implements Listener {
 				}
 			}
 			
-			private double distSquared(Entity entity, Location loc) {
-				double distX = entity.getLocation().getX() - loc.getX();
-				double distY = entity.getLocation().getY() - loc.getY();
-				double distZ = entity.getLocation().getZ() - loc.getZ();
+			public void changeBlocks(Location pos) {
+				double radius = this.radius + 0.5;
+				
+				final double invRadius = 1 / radius;
+				
+				final int ceilRadius = (int) Math.ceil(radius);
 
-				return distX * distX + distY * distY + distZ * distZ;
+				double nextXn = 0;
+				forX: for (int x = 0; x <= ceilRadius; ++x) {
+					final double xn = nextXn;
+					nextXn = (x + 1) * invRadius;
+					double nextYn = 0;
+					forY: for (int y = 0; y <= ceilRadius; ++y) {
+						final double yn = nextYn;
+						nextYn = (y + 1) * invRadius;
+						double nextZn = 0;
+						forZ: for (int z = 0; z <= ceilRadius; ++z) {
+							final double zn = nextZn;
+							nextZn = (z + 1) * invRadius;
 
+							double distanceSq = lengthSquared(xn, yn, zn);
+							if (distanceSq > 1) {
+								if (z == 0) {
+									if (y == 0)
+										break forX;
+									break forY;
+								}
+								break forZ;
+							}
+
+							Block b = pos.add(x, y, z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(-x, y, z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(x, -y, z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(x, y, -z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(-x, -y, z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(x, -y, -z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(-x, y, -z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+							
+							b = pos.add(-x, -y, -z).getBlock();
+							if (b.getType().isSolid())
+								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
+						}
+					}
+				}
+			}
+			
+			private double distSquared(Location loc1, Location loc2) {
+				double distX = loc1.getX() - loc2.getX();
+				double distY = loc1.getY() - loc2.getY();
+				double distZ = loc1.getZ() - loc2.getZ();
+
+				return lengthSquared(distX, distY, distZ);
+
+			}
+			
+			private double lengthSquared(double x, double y, double z) {
+				return x * x + y * y + z * z;
 			}
 			
 			private void slowDown(final Player p) {
@@ -296,7 +373,7 @@ public class IceCannon extends Cannon implements Listener {
 					// only slow down players ingame
 					return;
 						
-				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20, ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).intValue() - 1, true, true);
+				PotionEffect pe = new PotionEffect(PotionEffectType.SLOW, (int) ticks, ((Number) IceCannon.this.getValue(UPGRADE_STRENGTH)).intValue() - 1, true, true);
 				System.out.println("add potioneffect " + c.getName());
 				c.addPotionEffect(pe, true, new PotionEffectOverCallback() {
 					
