@@ -31,6 +31,7 @@ import de.pesacraft.cannonfight.util.cannons.Cannons;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
+import de.pesacraft.cannonfight.util.game.BlockManager;
 import de.pesacraft.cannonfight.util.CannonFightPlugin;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.CannonFighter;
@@ -176,5 +177,10 @@ public class CannonFightHub extends CannonFightPlugin implements Listener {
 	public boolean isActivePlayer(CannonFighter c) {
 		// nobody is a player in the lobby
 		return false;
+	}
+
+	@Override
+	public BlockManager getBlockManager() {
+		throw new UnsupportedOperationException(Language.getStringMaker("error.hubs-dont-support-block-changes", false).getString());
 	}
 }

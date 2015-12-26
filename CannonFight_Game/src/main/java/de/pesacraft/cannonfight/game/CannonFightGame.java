@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -56,6 +58,7 @@ import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.commands.CoinsCommand;
 import de.pesacraft.cannonfight.util.commands.LanguageReloadCommand;
 import de.pesacraft.cannonfight.util.commands.ShopCommand;
+import de.pesacraft.cannonfight.util.game.BlockManager;
 
 public class CannonFightGame extends CannonFightPlugin implements Listener {
 	
@@ -76,6 +79,8 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 	private static GameState gameState;
 	
 	private static BukkitRunnable playerCheck;
+	
+	private static BlockManager blockManager;
 	
 	@Override
 	public void onEnable() { 
@@ -105,6 +110,8 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		WORLD_LOBBY.setPVP(false);
 				
 		setupCommands();
+		
+		blockManager = new GameBlockManager();
 		
 		players = new HashSet<ActivePlayer>();
 		spectators = new HashSet<Spectator>();
@@ -875,5 +882,10 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 		
 		// no active player that is this CannonFighter
 		return false;
+	}
+
+	@Override
+	public BlockManager getBlockManager() {
+		return blockManager;
 	}
 }
