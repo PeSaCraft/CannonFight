@@ -46,21 +46,24 @@ public class GameBlockManager implements BlockManager {
 	@Override
 	public void setBlockTemporary(Block block, Material material, byte data, long ticks) {
 		ModifiedBlock b = new ModifiedBlock(block);
-		System.out.println("Change " + block.getLocation() + " zu " + material + ":" + data);
+		
 		BlockChange change = getPendingBlockChange(b);
-		System.out.println("Check ob vorhanden");
 		if (change != null) {
 			// timer running for that block
 			// -> gets cancelled
 			change.cancel();
+			change.getBlock().restore();
+
 			blocks.remove(change);
-			System.out.println("JA entfernt!");
 		}
 		
 		// new block change for new changes
 		change = new BlockChange(block, material, data);
-		System.out.println("Neue Änderung dazu!");
 		change.runTaskLater(CannonFightGame.PLUGIN, ticks);
+		
+		// apply change
+		block.setType(material);
+		block.setData(data);
 	}
 
 }
