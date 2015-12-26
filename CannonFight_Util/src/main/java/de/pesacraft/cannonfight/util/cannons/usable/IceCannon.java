@@ -252,7 +252,7 @@ public class IceCannon extends Cannon implements Listener {
 			double radius = ((Number) getValue(UPGRADE_RADIUS)).doubleValue();
 			int chunkRadius = radius < 16 ? 1 : (int) ((radius - (radius % 16)) / 16);
 			double radiusSquared = this.radius * this.radius * 4; // (radius * 2)^2
-			long ticks = ((Number) IceCannon.this.getValue(UPGRADE_DURATION)).intValue() * 20;
+			long ticks = ((Number) getValue(UPGRADE_DURATION)).intValue() * 20;
 			
 			@Override
 			public void hitEntity(EntityDamageByEntityEvent event) {
