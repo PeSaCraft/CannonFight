@@ -317,40 +317,44 @@ public class IceCannon extends Cannon implements Listener {
 								break forZ;
 							}
 
-							Block b = pos.add(x, y, z).getBlock();
+							Block b = add(pos, x, y, z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(-x, y, z).getBlock();
+							b = add(pos, -x, y, z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(x, -y, z).getBlock();
+							b = add(pos, x, -y, z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(x, y, -z).getBlock();
+							b = add(pos, x, y, -z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(-x, -y, z).getBlock();
+							b = add(pos, -x, -y, z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(x, -y, -z).getBlock();
+							b = add(pos, x, -y, -z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(-x, y, -z).getBlock();
+							b = add(pos, -x, y, -z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 							
-							b = pos.add(-x, -y, -z).getBlock();
+							b = add(pos, -x, -y, -z).getBlock();
 							if (b.getType().isSolid())
 								blockManager.setBlockTemporary(b, random.nextBoolean() ? Material.ICE : Material.PACKED_ICE, (byte) 0, ticks);
 						}
 					}
 				}
+			}
+			
+			private Location add(Location loc, double x, double y, double z) {
+				return new Location(loc.getWorld(), loc.getX() + x, loc.getY() + y, loc.getZ() + z);
 			}
 			
 			private double distSquared(Location loc1, Location loc2) {
@@ -359,7 +363,6 @@ public class IceCannon extends Cannon implements Listener {
 				double distZ = loc1.getZ() - loc2.getZ();
 
 				return lengthSquared(distX, distY, distZ);
-
 			}
 			
 			private double lengthSquared(double x, double y, double z) {
