@@ -55,10 +55,10 @@ public class ModifiedBlock {
 			return false;
 		ModifiedBlock m = ((ModifiedBlock) obj);
 		
-		if (m.w != this.w) return false;
-		if (m.x != this.x) return false;
-		if (m.y != this.y) return false;
-		if (m.z != this.z) return false;
+		if (!isSimilar(m)) return false;
+		
+		if (m.mat != this.mat) return false;
+		if (m.data != this.data) return false;
 		
 		return true;
 	}
@@ -71,5 +71,20 @@ public class ModifiedBlock {
 	@Override
 	public String toString() {
 		return "ModifiedBlock{world=" + w + ", x=" + x + ", y=" + y + ", z=" + z + ", mat=" + mat + ", data=" + data + "}";
+	}
+
+	public void restore() {
+		Block b = getLocation().getBlock();
+		b.setType(getMaterial());
+		b.setData(getData());
+	}
+
+	public boolean isSimilar(ModifiedBlock b) {
+		if (!b.w.equals(this.w)) return false;
+		if (b.x != this.x) return false;
+		if (b.y != this.y) return false;
+		if (b.z != this.z) return false;
+		
+		return true;
 	}
 }
