@@ -255,11 +255,7 @@ public class IceCannon extends Cannon implements Listener {
 			long ticks = ((Number) getValue(UPGRADE_DURATION)).intValue() * 20;
 			
 			@Override
-			public void hitEntity(EntityDamageByEntityEvent event) {
-				Location location = event.getEntity().getLocation();
-				
-				processHit(location);
-			}
+			public void hitEntity(EntityDamageByEntityEvent event) {}
 			
 			@Override
 			public void hitBlock(Location location) {
