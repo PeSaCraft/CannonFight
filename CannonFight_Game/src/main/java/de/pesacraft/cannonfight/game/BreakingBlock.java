@@ -29,14 +29,17 @@ public class BreakingBlock {
 		if (amount <= 0)
 			throw new IllegalArgumentException();
 		
+		System.out.println("Status vorher: " + state + " dazu " + amount);
 		state += amount;
-		
+		System.out.println("Neuer Status: " + state);
 		if (state >= 10) {
+			System.out.println("Block zerstören!");
 			state = -1;
 			
 			manager.destroyBlock(this);
 		}
 		else {
+			System.out.println("Crack effect");
 			PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(block.hashCode(), new BlockPosition(block.getX(), block.getY(), block.getZ()), state);
 			((CraftServer) Bukkit.getServer()).getHandle().sendAll(packet, ((CraftWorld) block.getWorld()).getHandle());
 		}

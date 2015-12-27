@@ -78,11 +78,13 @@ public class GameBlockManager implements BlockManager {
 
 	@Override
 	public void crackBlock(Block block, int amount) {
+		System.out.println("BreakingBlocks durchsuchen");
 		BreakingBlock b = getBreakingBlock(block);
 		
-		if (b == null)
+		if (b == null) {
+			System.out.println("Neuer BreakingBlock " + block.getLocation());
 			b = new BreakingBlock(block, this);
-		
+		}
 		b.damage(amount);
 	}
 	
