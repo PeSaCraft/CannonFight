@@ -62,7 +62,6 @@ public class MovingParticle implements Listener {
 		}.runTaskLater(CannonFightUtil.PLUGIN, 1);
 	}
 	
-	/*
 	@EventHandler
 	public void onEntityDamage(EntityDamageByEntityEvent event) {
 		if (event.getDamager() != snowball)
@@ -80,5 +79,5 @@ public class MovingParticle implements Listener {
 			}
 		}.runTaskLater(CannonFightUtil.PLUGIN, 1);
 		
-	}*/
+	}
 }
