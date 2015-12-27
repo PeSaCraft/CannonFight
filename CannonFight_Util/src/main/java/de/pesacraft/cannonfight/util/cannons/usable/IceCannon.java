@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.BlockIterator;
 
 import com.mongodb.client.MongoCollection;
 
@@ -258,7 +259,7 @@ public class IceCannon extends Cannon implements Listener {
 			public void hitEntity(EntityDamageByEntityEvent event) {}
 			
 			@Override
-			public void hitBlock(Location location) {
+			public void hitBlock(Location location, BlockIterator hitBlocks) {
 				processHit(location);
 			}
 			

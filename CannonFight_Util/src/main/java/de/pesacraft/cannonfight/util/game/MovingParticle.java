@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BlockIterator;
 
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 
@@ -51,7 +52,9 @@ public class MovingParticle implements Listener {
 		
 		particleTrailRunnable.cancel();
 		
-		hitHandler.hitBlock(event.getEntity().getLocation());
+		BlockIterator hitBlocks = new BlockIterator(snowball.getWorld(), snowball.getLocation().toVector(), snowball.getVelocity().normalize(), 0.0D, 4);
+		
+		hitHandler.hitBlock(event.getEntity().getLocation(), hitBlocks);
 		
 		new BukkitRunnable() {
 			

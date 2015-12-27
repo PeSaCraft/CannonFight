@@ -12,16 +12,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.BlockIterator;
 
 import com.mongodb.client.MongoCollection;
 
 import de.pesacraft.cannonfight.game.BreakingBlock;
+import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.Language;
@@ -205,8 +208,14 @@ public class StandardCannon extends Cannon {
 			}
 			
 			@Override
-			public void hitBlock(Location location) {
-				BreakingBlock.get(location).damage(((Number) getValue(UPGRADE_DAMAGE)).intValue() / 2);
+			public void hitBlock(Location location, BlockIterator hitBlocks) {
+				Block b;
+				
+				while (hitBlocks.hasNext()) {
+					b = hitBlocks.next();
+					
+					CannonFightUtil.PLUGIN.getBlockManager().crackBlock(b, ((Number) getValue(UPGRADE_DAMAGE)).intValue() / 2);	
+				}
 			}
 
 			@Override
