@@ -8,4 +8,6 @@ public interface BlockManager {
 	public void setBlock(Block block, Material material, byte data);
 	
 	public void setBlockTemporary(Block block, Material material, byte data, long ticks);
+
+	public void crackBlock(Block block, int amount);
 }

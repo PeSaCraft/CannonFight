@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mongodb.client.MongoCollection;
 
+import de.pesacraft.cannonfight.game.BreakingBlock;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.Language;
@@ -29,7 +30,6 @@ import de.pesacraft.cannonfight.util.Language.TimeOutputs;
 import de.pesacraft.cannonfight.util.cannons.Cannon;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cannons;
-import de.pesacraft.cannonfight.util.game.BreakingBlock;
 import de.pesacraft.cannonfight.util.game.HitHandler;
 import de.pesacraft.cannonfight.util.game.MovingParticle;
 import de.pesacraft.cannonfight.util.shop.upgrade.IntegerUpgradeChanger;

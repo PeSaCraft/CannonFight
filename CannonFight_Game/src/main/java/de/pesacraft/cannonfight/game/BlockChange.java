@@ -19,7 +19,7 @@ public class BlockChange extends BukkitRunnable {
 	public void run() {
 		this.block.restore();
 		
-		this.manager.remove(this);
+		this.manager.removeBlockChange(this);
 	}
 	
 	public ModifiedBlock getBlock() {

@@ -12,11 +12,13 @@ import de.pesacraft.cannonfight.util.game.BlockManager;
 import de.pesacraft.cannonfight.util.game.blockrestore.ModifiedBlock;
 
 public class GameBlockManager implements BlockManager {
-	final private List<BlockChange> blocks;
+	final private List<BlockChange> blockChanges;
 	
+	final private List<BreakingBlock> breakingBlocks;
 	
 	public GameBlockManager() {
-		blocks = new ArrayList<BlockChange>();
+		blockChanges = new ArrayList<BlockChange>();
+		breakingBlocks = new ArrayList<BreakingBlock>();
 	}
 	
 	@Override
@@ -29,15 +31,20 @@ public class GameBlockManager implements BlockManager {
 			// timer running for that block
 			// -> gets cancelled
 			change.cancel();
-			blocks.remove(change);
+			blockChanges.remove(change);
 		}
 		
 		block.setType(material);
 		block.setData(data);
+		
+		BreakingBlock breaking = getBreakingBlock(block);
+		if (breaking != null)
+			breakingBlocks.remove(breaking);
+		
 	}
 
 	private BlockChange getPendingBlockChange(ModifiedBlock b) {
-		for (BlockChange change : blocks)
+		for (BlockChange change : blockChanges)
 			if (change.getBlock().isSimilar(b))
 				return change;
 		return null;
@@ -54,20 +61,43 @@ public class GameBlockManager implements BlockManager {
 			change.cancel();
 			change.getBlock().restore();
 
-			blocks.remove(change);
+			blockChanges.remove(change);
 		}
 		
 		// new block change for new changes
 		change = new BlockChange(this, block, material, data);
 		change.runTaskLater(CannonFightGame.PLUGIN, ticks);
-		blocks.add(change);
+		blockChanges.add(change);
 		
 		// apply change
 		block.setType(material);
 		block.setData(data);
 	}
 
-	public void remove(BlockChange change) {
-		blocks.remove(change);
+	public void removeBlockChange(BlockChange change) {
+		blockChanges.remove(change);
+	}
+
+	@Override
+	public void crackBlock(Block block, int amount) {
+		BreakingBlock b = getBreakingBlock(block);
+		
+		if (b == null)
+			b = new BreakingBlock(block, this);
+		
+		b.damage(amount);
+	}
+	
+	private BreakingBlock getBreakingBlock(Block block) {
+		for (BreakingBlock b : breakingBlocks)
+			if (b.getBlock().equals(block))
+				return b;
+		return null;
+	}
+	
+	public void destroyBlock(BreakingBlock breaking) {
+		breakingBlocks.remove(breaking);
+		
+		setBlock(breaking.getBlock(), Material.AIR, (byte) 0);
 	}
 }
