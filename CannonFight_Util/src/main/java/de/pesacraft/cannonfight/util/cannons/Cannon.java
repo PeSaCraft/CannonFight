@@ -1,7 +1,5 @@
 package de.pesacraft.cannonfight.util.cannons;
 
-import static com.mongodb.client.model.Filters.eq;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.google.common.collect.Lists;
 
 import de.pesacraft.cannonfight.util.CannonFighter;
-import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.Language;
 import de.pesacraft.cannonfight.util.cannons.CannonConstructor;
 import de.pesacraft.cannonfight.util.cannons.Cooldown;

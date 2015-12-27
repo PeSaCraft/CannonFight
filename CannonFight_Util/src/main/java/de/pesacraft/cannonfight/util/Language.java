@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
-import de.pesacraft.cannonfight.util.Language.TimeOutputs;
-
 public class Language {
 	private static final DecimalFormat doubleFormat = new DecimalFormat("#.##");
 	private static ResourceBundle MESSAGES;

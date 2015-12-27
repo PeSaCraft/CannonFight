@@ -9,8 +9,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.bukkit.plugin.Plugin;
-
 public class CannonFightUtil {
 
 	public static CannonFightPlugin PLUGIN;

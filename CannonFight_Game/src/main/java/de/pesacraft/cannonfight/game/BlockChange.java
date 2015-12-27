@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.pesacraft.cannonfight.util.game.BlockManager;
 import de.pesacraft.cannonfight.util.game.blockrestore.ModifiedBlock;
 
 public class BlockChange extends BukkitRunnable {

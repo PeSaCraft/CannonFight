@@ -8,8 +8,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -32,7 +30,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.pesacraft.cannonfight.game.api.CannonFighterDeathEvent;
@@ -872,7 +869,7 @@ public class CannonFightGame extends CannonFightPlugin implements Listener {
 
 	@Override
 	public boolean isActivePlayer(CannonFighter c) {
-		if (gameState != gameState.INGAME)
+		if (gameState != GameState.INGAME)
 			// active players are only active ingame
 			return false;
 		

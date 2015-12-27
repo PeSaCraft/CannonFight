@@ -20,7 +20,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import de.pesacraft.cannonfight.hub.commands.JoinCommand;
 import de.pesacraft.cannonfight.hub.commands.SetupCommand;

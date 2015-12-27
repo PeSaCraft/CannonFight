@@ -9,7 +9,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,7 +22,6 @@ import org.bukkit.util.BlockIterator;
 
 import com.mongodb.client.MongoCollection;
 
-import de.pesacraft.cannonfight.game.BreakingBlock;
 import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;

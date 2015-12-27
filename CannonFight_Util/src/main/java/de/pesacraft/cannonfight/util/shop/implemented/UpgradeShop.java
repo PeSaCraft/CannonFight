@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bson.Document;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.google.common.collect.Lists;
 import com.mongodb.client.MongoCollection;
 
-import de.pesacraft.cannonfight.util.CannonFightUtil;
 import de.pesacraft.cannonfight.util.Collection;
 import de.pesacraft.cannonfight.util.ItemSerializer;
 import de.pesacraft.cannonfight.util.Language;
