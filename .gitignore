@@ -32,3 +32,7 @@ build.number
 # Build storage
 */builds
 /bin/
+
+# PMD Analysis
+/.eclipse-pmd
+/pmd-rules/
