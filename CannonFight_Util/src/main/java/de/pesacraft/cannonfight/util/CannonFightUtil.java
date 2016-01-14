@@ -30,10 +30,12 @@ public class CannonFightUtil {
 					if(!target.exists())
 					target.mkdirs();
 					String files[] = source.list();
-					for (String file : files) {
-						File srcFile = new File(source, file);
-						File destFile = new File(target, file);
-						copyWorld(srcFile, destFile);
+					if (files != null) {
+						for (String file : files) {
+							File srcFile = new File(source, file);
+							File destFile = new File(target, file);
+							copyWorld(srcFile, destFile);
+						}
 					}
 				} else {
 					InputStream in = new FileInputStream(source);
