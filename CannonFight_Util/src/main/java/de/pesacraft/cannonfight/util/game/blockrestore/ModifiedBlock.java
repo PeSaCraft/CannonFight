@@ -65,7 +65,7 @@ public class ModifiedBlock {
 	
 	@Override
 	public int hashCode() {
-		return (int) (w.getUID().getMostSignificantBits() << 16 + w.getUID().getLeastSignificantBits() + x << 8 + y << 4 + z);
+		return (int) ((w.getUID().getMostSignificantBits() << 16) + w.getUID().getLeastSignificantBits() + (x << 8) + (y << 4) + z);
 	}
 	
 	@Override

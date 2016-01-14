@@ -77,7 +77,7 @@ public class Language {
 		return new StringMaker(get(key, brand));
 	}
 	
-	public static class StringMaker {
+	public static class StringMaker implements Cloneable {
 		
 		private String string;
 		
